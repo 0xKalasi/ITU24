@@ -1,0 +1,105 @@
+\documentclass[a4paper, 11pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage[czech]{babel}
+    \usepackage[text={17.2cm, 24.7cm}, left=2cm, top=2cm]{geometry}
+    \usepackage{times}
+    \usepackage[hidelinks]{hyperref}
+    \usepackage{indentfirst}
+    \usepackage{graphicx}
+        \graphicspath{{./images/}}
+    \usepackage{float}
+    \usepackage{xcolor}
+
+\newcommand{\image}[3]{ % args: size [% of text width], path to image, caption
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=#1\textwidth]{#2}\caption{#3}
+        \label{fig:\thefigure}
+    \end{figure}
+}
+
+\renewcommand{\t}[1]{\texttt{#1}} % shortcut for tt text
+
+    \title {
+        {\Huge \emph{\textbf{resipi.}}{\huge, Kuchařka nové generace}} \\[0.25em]
+        {\Large \emph{Zadání a návrh aplikace pro projekt do předmětu ITU}}
+    }
+    \author {
+        \textbf{{\Large Tomáš Bordák,} 
+        \emph{\large xborda01}} \hspace{3em}
+        {\Large Martin Jabůrek,} 
+        \emph{\large xjabur02} \\[0.5em]
+        {\Large Ondřej Příjmení,} 
+        \emph{\large login} \hspace{3em}
+        {\Large Tomáš Tomcsányi,} 
+        \emph{\large login}
+    }
+    \date{\today}
+
+\begin{document}
+
+    \maketitle
+
+    \tableofcontents
+    \listoffigures
+    \newpage
+
+    \section{Zadání}
+
+    \subsection{Téma aplikace}
+
+    % stručné uvedením
+    % motivace
+
+    \subsection{Uživatelský průzkum}
+    
+    % kdo je konkrétní uživatel, na koho je daná aplikace mířena?
+    % co uživatel přesně od aplikace potřebuje?
+    % jaké jsou požadavky na aplikaci? (výsledky průzkumu)
+    %% celkové shrnutí
+    %% průzkum každého člena
+
+    \subsection{Specifikace} % Vychází z uživateského průzkumu
+
+    \subsection{Průzkum existujících řešení}
+
+    % sada existicujících aplikací splňujících zadadou funkci
+    %% 3 konkrétní +, -, popř. chybějící prvky každé
+    % závěr
+    %% za každého člena
+    %% alespoň 3 inspirace, ponaučení
+
+    \subsection{Zadání}
+
+    % popis aplikace a klíčové části FE
+
+    \subsection{Rozdělení práce v týmu}
+
+    % Úkoly
+    %% každého člena
+    %% týmové
+    % u nás jednotlivé prvky aplikace
+
+    %%%
+
+    \section{Návrh}
+
+    \subsection{Návrh GUI}
+
+    % popis své části (i.e. vytvořili jsme wireframy)
+    % "logické implikace" - jak ten návrh odráží potřeby
+    % pro každou část screenshot
+
+    \subsection{Výběr technologie}
+
+    % co, ___proč___
+    % FE
+    % BE (taky !)
+
+    \subsection{Návrh API pro back end}
+
+    % klíčové fce
+    % klíčové datové struktury
+    % propojení
+
+\end{document}
