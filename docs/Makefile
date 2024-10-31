@@ -9,7 +9,7 @@ BUILD_DIR = build
 
 all: $(OUT)
 
-$(OUT): $(SRC)
+$(OUT): $(SRC) clean
 	@mkdir -p $(BUILD_DIR)
 	pdflatex --output-directory=$(BUILD_DIR) --jobname=$(OUT) $(SRC)
 	pdflatex --output-directory=$(BUILD_DIR) --jobname=$(OUT) $(SRC)
