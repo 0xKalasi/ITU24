@@ -51,8 +51,8 @@ button {
   font-weight: 600;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: background-color 0.3s;
-  transition-timing-function: ease-out;
+  transition: background-color 0.2s;
+  transition-timing-function: ease-in;
 }
 
 button:hover {
