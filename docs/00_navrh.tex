@@ -4,7 +4,7 @@
     \usepackage[text={17.2cm, 24.7cm}, left=2cm, top=2cm]{geometry}
     \usepackage{times}
     \usepackage[hidelinks]{hyperref}
-    \usepackage{indentfirst}
+    %\usepackage{indentfirst}
     \usepackage{graphicx}
         \graphicspath{{./images/}}
     \usepackage{float}
@@ -23,21 +23,23 @@
 
 \newcommand{\sss}[1]{\subsubsection{#1}} % shortcut for s.s.sec.
 
-    \title {
-        {\Huge \emph{\textbf{resipi.}}{\huge}} \\[0.25em] %, Kuchařka nové generace
-        {\Large \emph{Zadání a návrh aplikace pro projekt do předmětu ITU}}
-    }
-    \author {
-        \textbf{{\Large Tomáš Bordák,}
-        \emph{\large xborda01}} \\[0.5em]
-        {\Large Martin Jabůrek,} 
-        \emph{\large xjabur02} \\[0.3em]
-        {\Large Ondřej Šatinský,} 
-        \emph{\large xsatin03} \\[0.5em]
-        {\Large Tomáš Tomcsányi,} 
-        \emph{\large xtomcs00}
-    }
-    \date{\today}
+\title {
+    {\Huge \emph{\textbf{resipi.}}{\huge}} \\[0.25em] %, Kuchařka nové generace
+    {\Large \emph{Zadání a návrh aplikace pro projekt do předmětu ITU}}
+}
+\author {
+    \textbf{{\Large Tomáš Bordák,}
+    \emph{\large xborda01}} \\[0.5em]
+    {\Large Martin Jabůrek,} 
+    \emph{\large xjabur02} \\[0.3em]
+    {\Large Ondřej Šatinský,} 
+    \emph{\large xsatin03} \\[0.5em]
+    {\Large Tomáš Tomcsányi,} 
+    \emph{\large xtomcs00}
+}
+\date{\today}
+
+% TODO vlna !!!
 
 \begin{document}
 
@@ -70,7 +72,7 @@
     sdílení a vaření podle receptů s využitím moderních informačních technologí.
     Tuto funkcionalitu spojí do moderní a chytré kuchařky,
     ve které si kterýkoli, ať už zkušený, či teprve začínající kuchař, najde
-    přesně to, co jej zajímá.
+    právě to, co jej zajímá.
 
 
     \section{Zadání}
@@ -89,29 +91,68 @@
 
     \sss{Co přesně uživatel od aplikace potřebuje}
 
-    Uživatelé potřebují snadným a jednotným způsobem uchovávat, hledat a vyhledávat mezi recepty. Kromě tohoto
+    Uživatelé potřebují snadným a jednotným způsobem uchovávat, hledat a vyhledávat mezi recepty. Kromě toho
     potřebují recepty sdílet se svými blízkými. Pro usnadnění průběhu vaření dále uživatelé
     potřebují interaktivní a intuitivní způsob, jak se při vaření řídit receptem.
 
-    Každý člen týmu provedl vlastní průzkum. V podkapitolách níže jsou popsány jednotlivé metody
-    a závěry jimi zjištěné. Přesné potřeby uživatelů byly vyhodnoceny na základě tohoto průzkumu.
-
     \sss{Požadavky uživatele}
 
-    % vychází z průzkumu
+    Každý člen týmu provedl vlastní průzkum. V následujících kapitolách jsou popsána naše zjištění.
+    Přesné potřeby uživatelů byly vyhodnoceny na základě tohoto průzkumu.
+
+    Všichni členové týmu vybrali skupinu potenciálních uživatelů, se kterou individuálně provedli interview.
+    Takto byly určeny potřeby každé kategorie osob, které je pak nutné reflektovat
+    ve výsledné aplikaci. Rozhovory byly provedeny s lidmi různých věkových kategorií. Jednalo se
+    zejména o naše přátele a sourozence, ale i rodiče, kteří zastupovali starší uživatele.
+    Zároveň byli zvoleni uživatelé s různou úrovní zkušeností s používáním informačních
+    technologií. Šlo o uživatele s málo zkušnenostmi (typicky rodiče), každodenní uživatele
+    mobilních zařízení (kamarádi a sourozenci) a dokonce i uživatele s oborovými znalostmi
+    v informatice.
+
+    \newpage
+
+    V interview jsme se řídili následujícími předem připravenými otázkami:
+    \begin{enumerate}[itemsep=0em, parsep=0em, label=\textbf{\arabic*)}]
+        \item Jak často vaříš?
+        \item Používáš při vaření kuchařku?
+        \item Hledáš recepty na internetu?
+        \item Podle čeho vyhledáváš?
+        \item Co se ti na tom líbí a co se ti naopak nelíbí?
+        \item Kdyby existovala nějaká aplikace, která by ti umožnila tyhle věci vyhledávat, používal/a bys ji?
+        \item Co by si v ní chtěl/a dělat?
+        \item Proč?
+        \item Máš přátele se kterými sdílíš recepty?
+        \item Uvítal/a bys, kdyby to taková aplikace zjednodušila?
+        \item Jaké používáš sociální sítě?
+        \item Používáš tuto síť k vyhledávání receptů?
+    \end{enumerate}
+
+    Interview vždy následovala \uv{praktická} část, kde jsme potenciálním uživatelům
+    předložili sadu podobných aplikací popsaných v \ref{pruz_exist_res}. Každý z nás dal svým
+    uživatelům na vyzkoušení vlastní zvolené aplikace a sledoval jejich uživatelskou
+    zkučenost s nimi.
+
     \sss{Uživatelský průzkum Tomáše B.}
     \sss{Uživatelský průzkum Martina}
     \sss{Uživatelský průzkum Ondřeje}
     \sss{Uživatelský průzkum Tomáše T.}
     % shrnutí průzkumu každého každého člena
+
     \sss{Celkové shrnutí uživatelského průzkumu\,--\,výsledná specifikace}
     % celkové shrnutí
 
-    \subsection{Průzkum existujících řešení}
+    \subsection{Průzkum existujících řešení}\label{pruz_exist_res}
 
     \sss{Existujícící aplikace řešicí požadovanou funkci}
 
-    % celkový seznam
+    Každý z nás vyhledal několik aplikací řešící podobný problém jako my.
+    Jsou to následující:
+    
+    \begin{itemize}
+        \setlength\itemsep{0em}
+        \item ...
+        \item ...
+    \end{itemize}
 
     \sss{Průzkum aplikací Tomáše B.}
     \sss{Průzkum aplikací Martina}
@@ -162,80 +203,10 @@
     % ZDŮVODNĚNÍ
 
 
-    \subsection{Náveh API k BE} 
+    \subsection{Návrh API k BE} 
 
     % popis API (klíčové funkce !), popř. knihovny
     % klíčové datové struktury modelu
     % napojení BE na FE (tzn API na GUI, které funkce dělají co)
-
-    %%%
-
-
-
-
-
-
-
-
-    %\sss{Osobní interview}
-
-    Každý člen týmu vybral skupinu potenciálních uživatelů, se kterou individuálně provedl interview.
-    Účelem tohoto šetření bylo určit potřeby každé kategorie osob, které je pak nutné reflektovat
-    ve výsledné aplikaci. Rozhovory byly provedeny s lidmi různých věkových kategorií. Jednalo se
-    zejména o naše přátele a sourozence, ale i rodiče, kteří zastupovali starší uživatele.
-    Zároveň byli uživatelé zvoleni tak, aby měli různou zkušenost s používáním informačních
-    technologií. Jednalo se o uživatele s málo zkušnenostmi (typicky rodiče), každodenní uživatele
-    mobilních zařízení (kamarádi a sourozenci) a dokonce i uživatele s oborovými znalostmi
-    v informatice.
-
-    Pro interview byla sestavena sada otázek, které se každý člen týmu držel:
-
-    \begin{enumerate}[itemsep=0.25em, parsep=0em, label=\arabic*)]
-        \item Jak často vaříš?
-        \item Používáš při vaření kuchařku?
-        \item Hledáš recepty na internetu?
-        \item Podle čeho vyhledáváš?
-        \item Co se ti na tom líbí / nelíbí?
-        \item Kdyby existovala nějaká aplikace, která by ti umožnila tyhle věci vyhledávat, používal/a bys ji?
-        \item Co by si v ní chtěl/a dělat?
-        \item Proč?
-        \item Máš přátele se kterými sdílíš recepty?
-        \item Uvítal/a bys, kdyby to taková aplikace zjednodušila?
-        \item Jaké používáš sociální sítě?
-        \item Používáš tuto síť k vyhledávání receptů?
-    \end{enumerate}
-
-    % shrnutí získaných znalostí
-    % ? uvedení výsledků výzkumu v příloze ?
-
-    % Specifikace vychází z uživateského průzkumu
-
-    %\sss{Osobní zhodnocení existujících řešení}
-
-    Výše popsanému interview vždy následovala \uv{praktická} část, kde jsme potenciálním uživatelům
-    předložili sadu podobných aplikací zvolených v \ref{pruz_exist_res}. Každý z nás dal svým
-    uživatelům na vyzkoušení vlastní zvolené aplikace.
-
-    % opět shrnutí získaných znalostí, individuální věc
-    % ? potenciální příloha s kompletním průzkumem ?
-
-    %\sss{Online dotazník}
-    Aplikace je mířena zejména na studenty středních a vysokých škol. Právě tato věková kategorie
-    nejen vaří, ale hlavně má nejvíce zkušeností s různými sociálními sítěmi. Je však
-    nutné zmínit, že aplikace se na tuto skupinu neomezuje. V uživatelském průzkumu
-    byl kladen důraz na co nejširší záběr. Je tedy kladen ohled i na zkušenější kuchaře, typicky
-    vyššího věku, co se ale nemusí tolik orientovat v informačních technologiích.
-    Aplikace by měla být dobře využitelná každým, kdo chce vařit.
-    %\subsection{Průzkum existujících řešení}
-    \label{pruz_exist_res}
-
-    Každý člen týmu vyhledal sadu aplikací řešící podobný problém 
-    % sada existicujících aplikací splňujících zadadou funkci
-    %% 3 konkrétní +, -, popř. chybějící prvky každé
-    % závěr
-    %% za každého člena
-    %% alespoň 3 inspirace, ponaučení
-
-    %%%
 
 \end{document}
