@@ -9,8 +9,9 @@
         \graphicspath{{./images/}}
     \usepackage{float}
     \usepackage{xcolor}
+    \usepackage{enumitem}
 
-\newcommand{\image}[3]{ % args: size [% of text width], path to image, caption
+\newcommand{\image}[3]{ % args: size [factor of text width], path to image, caption
     \begin{figure}[H]
         \centering
         \includegraphics[width=#1\textwidth]{#2}\caption{#3}
@@ -20,8 +21,10 @@
 
 \renewcommand{\t}[1]{\texttt{#1}} % shortcut for tt text
 
+\newcommand{\sss}[1]{\subsubsection{#1}} % shortcut for s.s.sec.
+
     \title {
-        {\Huge \emph{\textbf{resipi.}}{\huge, Kuchařka nové generace}} \\[0.25em]
+        {\Huge \emph{\textbf{resipi.}}{\huge}} \\[0.25em] %, Kuchařka nové generace
         {\Large \emph{Zadání a návrh aplikace pro projekt do předmětu ITU}}
     }
     \author {
@@ -44,9 +47,8 @@
     \listoffigures
     \newpage
 
-    \section{Zadání}
 
-    \subsection{Téma aplikace a motivace}
+    \section{Téma aplikace a motivace}
 
     Představíme-li si kuchařku, možná se nám vybaví babiččin volně svázaný sešit se všemi jejími
     osvědčenými recepty. S dnešní rozšířeností a dostupností počítačů, jako jsou i chytré telefony,
@@ -70,28 +72,112 @@
     ve které si kterýkoli, ať už zkušený, či teprve začínající kuchař, najde
     přesně to, co jej zajímá.
 
-    \subsection{Průzkum existujících řešení}
-    \label{pruz_exist_res}
 
-    % sada existicujících aplikací splňujících zadadou funkci
-    %% 3 konkrétní +, -, popř. chybějící prvky každé
-    % závěr
-    %% za každého člena
-    %% alespoň 3 inspirace, ponaučení
+    \section{Zadání}
 
-    \subsection{Uživatelský průzkum}
+
+    \subsection{Uživatelský průzkum a specifikace}
     
+    \sss{Kdo je konkrétní uživatel}
+
     Aplikace je mířena zejména na studenty středních a vysokých škol. Právě tato věková kategorie
     nejen vaří, ale hlavně má nejvíce zkušeností s různými sociálními sítěmi. Je však
     nutné zmínit, že aplikace se na tuto skupinu neomezuje. V uživatelském průzkumu
     byl kladen důraz na co nejširší záběr. Je tedy kladen ohled i na zkušenější kuchaře, typicky
     vyššího věku, co se ale nemusí tolik orientovat v informačních technologiích.
     Aplikace by měla být dobře využitelná každým, kdo chce vařit.
-    
-    Každý člen týmu provedl vlastní průzkum. V podkapitolách níže jsou popsány jednotlivé metody
-    a závěry jimi zjištěné.
 
-    \subsubsection{Osobní interview}
+    \sss{Co přesně uživatel od aplikace potřebuje}
+
+    Uživatelé potřebují snadným a jednotným způsobem uchovávat, hledat a vyhledávat mezi recepty. Kromě tohoto
+    potřebují recepty sdílet se svými blízkými. Pro usnadnění průběhu vaření dále uživatelé
+    potřebují interaktivní a intuitivní způsob, jak se při vaření řídit receptem.
+
+    Každý člen týmu provedl vlastní průzkum. V podkapitolách níže jsou popsány jednotlivé metody
+    a závěry jimi zjištěné. Přesné potřeby uživatelů byly vyhodnoceny na základě tohoto průzkumu.
+
+    \sss{Požadavky uživatele}
+
+    % vychází z průzkumu
+    \sss{Uživatelský průzkum Tomáše B.}
+    \sss{Uživatelský průzkum Martina}
+    \sss{Uživatelský průzkum Ondřeje}
+    \sss{Uživatelský průzkum Tomáše T.}
+    % shrnutí průzkumu každého každého člena
+    \sss{Celkové shrnutí uživatelského průzkumu\,--\,výsledná specifikace}
+    % celkové shrnutí
+
+    \subsection{Průzkum existujících řešení}
+
+    \sss{Existujícící aplikace řešicí požadovanou funkci}
+
+    % celkový seznam
+
+    \sss{Průzkum aplikací Tomáše B.}
+    \sss{Průzkum aplikací Martina}
+    \sss{Průzkum aplikací Ondřeje}
+    \sss{Průzkum aplikací Tomáše T.}
+
+    % individuální průzkumy, 2 aplikace, 3x +, 3x - (vč. inspirací, absencí)
+
+    \sss{Závěr průzkumu}
+
+    % celkový závěr, 3 inspirace/ponaučení
+
+
+    \subsection{Zadání}
+
+    % popis cílové app.
+    % klíčové vlastnosti FE
+
+    \subsection{Rozdělení práce na FE}
+
+    % viz. dc
+    % (máme stejný framework, každý má jistou rozsáhlou část stejné app.)
+    % Úkoly
+    %% každého člena
+    %% týmové
+    % u nás jednotlivé prvky aplikace
+
+
+    \section{Návrh}
+
+
+    \subsection{Návrh GUI}
+
+    \sss{Návrh Tomáše B.}
+    \sss{Návrh Martina}
+    \sss{Návrh Ondřeje}
+    \sss{Návrh Tomáše T.}
+
+    % popisy návrhů
+    % jak jsou řešeny požadavky uživatele
+    % včetně obrázků
+
+
+    \subsection{Výběr technologií}
+
+    % FE (vue)
+    % popř. BE, služby (...)
+    % ZDŮVODNĚNÍ
+
+
+    \subsection{Náveh API k BE} 
+
+    % popis API (klíčové funkce !), popř. knihovny
+    % klíčové datové struktury modelu
+    % napojení BE na FE (tzn API na GUI, které funkce dělají co)
+
+    %%%
+
+
+
+
+
+
+
+
+    %\sss{Osobní interview}
 
     Každý člen týmu vybral skupinu potenciálních uživatelů, se kterou individuálně provedl interview.
     Účelem tohoto šetření bylo určit potřeby každé kategorie osob, které je pak nutné reflektovat
@@ -104,7 +190,7 @@
 
     Pro interview byla sestavena sada otázek, které se každý člen týmu držel:
 
-    \begin{enumerate}
+    \begin{enumerate}[itemsep=0.25em, parsep=0em, label=\arabic*)]
         \item Jak často vaříš?
         \item Používáš při vaření kuchařku?
         \item Hledáš recepty na internetu?
@@ -122,7 +208,9 @@
     % shrnutí získaných znalostí
     % ? uvedení výsledků výzkumu v příloze ?
 
-    \subsubsection{Osobní zhodnocení existujících řešení}
+    % Specifikace vychází z uživateského průzkumu
+
+    %\sss{Osobní zhodnocení existujících řešení}
 
     Výše popsanému interview vždy následovala \uv{praktická} část, kde jsme potenciálním uživatelům
     předložili sadu podobných aplikací zvolených v \ref{pruz_exist_res}. Každý z nás dal svým
@@ -131,51 +219,23 @@
     % opět shrnutí získaných znalostí, individuální věc
     % ? potenciální příloha s kompletním průzkumem ?
 
-    \subsubsection{Online dotazník}
+    %\sss{Online dotazník}
+    Aplikace je mířena zejména na studenty středních a vysokých škol. Právě tato věková kategorie
+    nejen vaří, ale hlavně má nejvíce zkušeností s různými sociálními sítěmi. Je však
+    nutné zmínit, že aplikace se na tuto skupinu neomezuje. V uživatelském průzkumu
+    byl kladen důraz na co nejširší záběr. Je tedy kladen ohled i na zkušenější kuchaře, typicky
+    vyššího věku, co se ale nemusí tolik orientovat v informačních technologiích.
+    Aplikace by měla být dobře využitelná každým, kdo chce vařit.
+    %\subsection{Průzkum existujících řešení}
+    \label{pruz_exist_res}
 
-    % TODO Tom T.
-    %
-
-    % co uživatel přesně od aplikace potřebuje?
-    % jaké jsou požadavky na aplikaci? (výsledky průzkumu)
-    %% celkové shrnutí
-    %% průzkum každého člena
-
-    \subsection{Specifikace}
-    
-    % Vychází z uživateského průzkumu
-
-    \subsection{Zadání}
-
-    % popis aplikace a klíčové části FE
-
-    \subsection{Rozdělení práce v týmu}
-
-    % Úkoly
-    %% každého člena
-    %% týmové
-    % u nás jednotlivé prvky aplikace
+    Každý člen týmu vyhledal sadu aplikací řešící podobný problém 
+    % sada existicujících aplikací splňujících zadadou funkci
+    %% 3 konkrétní +, -, popř. chybějící prvky každé
+    % závěr
+    %% za každého člena
+    %% alespoň 3 inspirace, ponaučení
 
     %%%
-
-    \section{Návrh}
-
-    \subsection{Návrh GUI}
-
-    % popis své části (i.e. vytvořili jsme wireframy)
-    % "logické implikace" - jak ten návrh odráží potřeby
-    % pro každou část screenshot
-
-    \subsection{Výběr technologie}
-
-    % co, ___proč___
-    % FE
-    % BE (taky !)
-
-    \subsection{Návrh API pro back end}
-
-    % klíčové fce
-    % klíčové datové struktury
-    % propojení
 
 \end{document}
