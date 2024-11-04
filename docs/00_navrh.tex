@@ -168,7 +168,6 @@
         \item Recepty, zejména s poutavým videem, pravidelně sdílí - s její mámou i se mnou.
     \end{itemize}
 
-   
 
     \sss{Uživatelský průzkum Martina}
 
@@ -216,7 +215,6 @@
         Je však nutné zmínit, že na ni narazila vlastně omylem. Kdyby náhodou neklikla na přísadu, vůbec by se
         o tomto nedozvěděla.
     \end{itemize}
-    % mám zmínit výživové údaje? stejně to nebudeme implementovat
 
     \noindent\textbf{Daan, kamarád z Erasmu} \\
 
@@ -323,30 +321,52 @@
 
     \sss{Celkové shrnutí uživatelského průzkumu\,--\,výsledná specifikace}
 
-    %%  Tom T.
-    % přepočet jednotek
-    % vyhledávání podle aleregnů
-    % jednoduché ukládání receptů
+    Z průzkumů jednotlivých členů týmu jsme definovali následující uživatelské požadavky na aplikaci,
+    které by měla splňovat:
+    \begin{itemize}
+        \item Tvorba a správa vlastních receptů
+        \begin{itemize}
+            \item Přidávání, úprava a mazání ingrediencí
+            \item Přidávání, úprava a mazání kroků receptu
+            \item Nastavení výchozího počtu porcí a času přípravy
+            \item Kategorizace podle alergenů, použitých nestandardních
+            pomůcek a kategorií jídel (tzn.\ slané, zákusek, atd.)
+            \item Zveřejnění receptu ostatním uživatelům
+        \end{itemize}
 
-    %%  Martin
-    % hodnocení receptů (např. star rating 0-5, likes, blicí až oblizující se smajlík, ...)
-    % pro prostorovou náročnost mobilní webová aplikace
-    % přepočítávání přísad podle počtu osob
-    % čeština, respektive NE angličtina
-    % omezení podle potřebných nástrojů
-    % filtrování podle diety
-    % tagování uživatelů na recept (jako způsob jejich jejich sdílení)
-    % náhodné vyhledáváná á la instagram
+        \item Ukládání receptů ostatních uživatelů a poznámek k nim
 
-	%% Ondra
-	% ukládání receptů a poznámek
-	% konverze jednotek
-	% cook mode
+        \item Hledání a prohlížení veřejných receptů podle přísad,
+        alergenů, potřebných nestandardních pomůcek a kategorií jídla
 
-    %% Tomáš B.
-    % vyhledávaní receptů podle teho jakou ingrediencii NEobsahují - bez vajec, bez masa
-    % funkce časovaču nebo stopek
-    % orgaizace uložených receptů do uživatelem vytvořených kategorií
+        \item Hodnocení veřejných receptů
+
+        \item Přepočítávání množství přísad podle přímo zadaného počtu porcí
+
+        \item Tvorba a správa omezení (filtrů) pro vyhledávání
+
+        \item Interaktivní režim vaření
+        \begin{itemize}
+            \item Ovládání aktualáně zobrazeného kroku receptu včetně jeho přísad
+            \item Funkce časovače a stopek
+        \end{itemize}
+
+        \item Konverze jednotek v zobrazeném receptu i interaktivním režimu
+
+        \item Sdílení a správa konverzací a skupin
+        \begin{itemize}
+            \item Správa vlastního profilu (jméno, informace a fotografie)
+            \item Zobrazení profilu a receptů jiného uživatele s možností odeslat žádost o přáteltví
+            \item Správa přátelství a osobních chatů s historií zpráv
+            \item Správa skupinových chatů více uživatelů s historií zpráv  
+            \item Sdílení receptu do zprávy pomocí funkce tagování osob nebo skupin 
+        \end{itemize}
+
+    \end{itemize}
+
+    Z průzkumu dále vyplývá implementovat aplikaci pro mobilní zařízení, v našem případě
+    se bude jednat o mobilní webovou aplikaci.
+
 
     \subsection{Průzkum existujících řešení}\label{pruz_exist_res}
 
@@ -374,8 +394,6 @@
 			\t{\href{https://www.allrecipes.com/}{allrecipes}}
     \end{itemize}
 
-    % V následujících kapitolách je podrobněji popsáno který z nás zkoumal
-    % kterou \uv{vzorovou} aplikaci a k jakým závěrům tak dospěl.
     \noindent Ke každé z nich jsme našli 3 výhody a 3 nevýhody, z kterých se chceme poučit a navrhnout tak lepší aplikaci. 
 
     \sss{Průzkum aplikací Tomáše B.}
@@ -503,8 +521,6 @@
         \item[\textbf{-}] Příliš mnoho funkcí, což vede ke zmatku v tom, kde se uživatel nachází a co vlastně v danou chvíli dělá
     \end{itemize}
 
-    % individuální průzkumy, 2 aplikace, 3x +, 3x - (vč. inspirací, absencí)
-
     \sss{Závěr průzkumu}
 
     % TODO
@@ -594,7 +610,7 @@
 
     \subsection{Návrh API k BE} 
 
-    \image{0.8}{ITU_návrh_architektury.drawio.png}{Návrh architektury aplikace}
+    \image{1}{ITU_návrh_architektury.drawio.png}{Návrh architektury aplikace}
 
     % popis API (klíčové funkce !), popř. knihovny
     % klíčové datové struktury modelu
