@@ -1,4 +1,4 @@
-%    _            _        _____  _    _  __                              
+%     _            _        _____  _    _  __                              
 %    | |_ ___     (_) ___  |_   _|/ \  | |/ /   _____   _____ _ __         
 %    | __/ _ \    | |/ _ \   | | / _ \ | ' /   / _ \ \ / / _ \ '__|        
 %    | || (_) |   | |  __/   | |/ ___ \| . \  | (_) \ V /  __/ |     _ _ _ 
@@ -46,8 +46,6 @@
     \emph{\large xtomcs00}
 }
 \date{\today}
-
-% TODO vlna !!!
 
 \begin{document}
 
@@ -574,7 +572,6 @@
     si kladl za úkol zobrazit, jak bude uživatel pracovat se všemi funkcemi
     přímo spojenými s danou částí zadání.
 
-    % jak návrh řeší problémy uživatele?
     Návrh byl proveden tak, aby akce, o které mají naši uživatelé zájem, byly co nejsnazší
     na provedení:
     \begin{itemize}
@@ -599,6 +596,7 @@
     \sss{Návrh Ondřeje}
     \sss{Návrh Tomáše T.}
 
+    %%% TODO:
     % popisy návrhů
     % jak jsou řešeny požadavky uživatele
     % včetně obrázků
@@ -624,10 +622,38 @@
 
     \subsection{Návrh API k BE} 
 
-    % popis API (klíčové funkce !), popř. knihovny
-    % klíčové datové struktury modelu
-    % napojení BE na FE (tzn API na GUI, které funkce dělají co)
+    Samotnou architekturu naší aplikace popisuje tento diagram:
 
-    \image{1}{ITU_návrh_architektury.drawio.png}{Návrh architektury aplikace}
+    \image{0.8}{ITU_návrh_architektury.drawio.png}{Princip architektury aplikace}
+
+    Dále, pro implementaci našeho API jsme využili knihovnu Supabase. Tato
+    knihovna poskytuje své vlastní API, pomocí kterého s ní v tom našem komunikujeme a
+    získáváme data. Dotazy našeho vlastního API jsou tak zjednodušeny a představují pouze volání
+    funkcí.
+
+    Pro různé úkoly byly vytvořeny různé funkce tak, aby byly intuitivně použitelné
+    při tvorbě GUI. Příkladem v části pro ukládání receptů mohou být funkce
+    \t{createRecipe} nebo \t{updateRecipe}. Charakter funkcí pro ostatní části
+    je veskrze podobný.
+
+    Volání funkcí na FE pak bude podle akcí provedených uživatelem zajišťovat
+    použité Vue.js, které detekuje událost ze strany uživatele
+    a provede akci, jako např. \t{@click} nebo \t{@scroll}. \\
+
+    \textbf{Klíčové datové struktury modelu}
+
+    Jak už bylo uvedeno, v našem modelu jsou data ukládána do databáze PostgreSQL
+    pomocí rozhraní služby Supabase.
+    Zde jsou uložena všechna naše data v několika tabulkách. Jaké tabulky byly použity
+    je vidět v následujícím diagramu:
+
+    \image{1}{itu_erd.drawio.png}{Návrh databáze}
+
+    Jednotlivé tabulky mají navíc specifické barevné rozdělení, které určuje, jaké části
+    kterého člena týmu daná skupina tabulek náleží. Je však nutné zmínit, že v případě potřeby
+    daný člen samozřejmě přistupuje i do přilehlých tabulek (např. na stránce uživatele
+    zobrazit jeho recepty).
 
 \end{document}
+
+% TODO vlna !!!
