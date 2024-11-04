@@ -319,7 +319,7 @@
         \item přehledný seznam ingrediencí a jasný postup přípravy.
     \end{itemize}
 
-    \sss{Celkové shrnutí uživatelského průzkumu\,--\,výsledná specifikace}
+    \sss{Celkové shrnutí uživatelského průzkumu\,--\,výsledná specifikace}\label{user_sum}
 
     Z průzkumů jednotlivých členů týmu jsme definovali následující uživatelské požadavky na aplikaci,
     které by měla splňovat:
@@ -347,7 +347,7 @@
 
         \item Interaktivní režim vaření
         \begin{itemize}
-            \item Ovládání aktualáně zobrazeného kroku receptu včetně jeho přísad
+            \item Ovládání aktuálně zobrazeného kroku receptu včetně jeho přísad
             \item Funkce časovače a stopek
         \end{itemize}
 
@@ -472,10 +472,10 @@
 	\begin{itemize}
 		\item[\textbf{+}] Videa pro kroky u některých receptů
 		\item[\textbf{+}] Při prvním otevžení aplikace se spustí jednoduchá anketa
-
 		\item[\textbf{+}] Vyhledávání podle filtrů
 		\item[\textbf{+}] Upravitelné množstí porcí
 		\item[\textbf{+}] Komentáře
+        \item[ ]
 		\item[\textbf{-}] U kroků chybí časovače a ukládání pokroku
 		\item[\textbf{-}] Vkládání receptů pomocí obyčejného formuláře
 		\item[\textbf{-}] Neumožňuje konverzi jednotek
@@ -487,6 +487,7 @@
 		\item[\textbf{+}] Smysluplné kategorizování jídel
 		\item[\textbf{+}] Nutriční tabulky
 		\item[\textbf{+}] Tlačítko pro tisk receptu
+        \item[ ]
 		\item[\textbf{-}] Pouze textové kroky, chybí možnost vytváření časovačů
 		\item[\textbf{-}] Vyhledávání pouze pomocí textu
 		\item[\textbf{-}] Neumožuje filtrovat podle alergenů nebo kategorií
@@ -521,26 +522,43 @@
         \item[\textbf{-}] Příliš mnoho funkcí, což vede ke zmatku v tom, kde se uživatel nachází a co vlastně v danou chvíli dělá
     \end{itemize}
 
-    \sss{Závěr průzkumu}
+    \sss{Závěr průzkumu}\label{app_sum}
 
-    % TODO
-    
-    %celkový závěr, 3 inspirace/ponaučení
+    Z našich uživatelských průzkumů jsme jako tým zvolili jako nejdůležitější inspirace následující:
+    \begin{itemize}
+        \item Možnost diskuse o sdílených receptech
+        \item Nesmíme se snažit dělat příliš věcí naráz, rozhraní musí být jednoduché,
+        zejména pak zadávání receptů
+        \item Štítky k receptům jsou jednoduchým řešením jejich organizace a smysluplné kategorizace
+    \end{itemize}
 
 
     \subsection{Zadání}
 
-    % popis cílové app.
-    % klíčové vlastnosti FE
+    Cílová aplikace \emph{resipe.} bude představovat chytrou kuchařku zjednodušující jejím uživatelům vaření
+    nejen zobrazováním receptů textovou formou, ale i interaktivním způsobem krok po kroku. Zároveň jim
+    umožní recepty interaktivně vyhledávat s použitím uložitelných uživatelských filtrů a samostatně
+    zaznamenávat a zveřejňovat. Součástí aplikace bude možnost sdílení receptů dalším uživatelům či do
+    skupin uživatelů a možnost navázat textovou konverzací ve stejném chatu.
+
+    Pro FE bude klíčové přehledně a zřejmě zobrazit interaktivní prvky aplikace a konzistentním
+    způsobem svázat jednotlivé části tak, aby působily co nejvíce jako jediný celek.
 
     \subsection{Rozdělení práce na FE}
 
-    % viz. dc
-    % (máme stejný framework, každý má jistou rozsáhlou část stejné app.)
-    % Úkoly
-    %% každého člena
-    %% týmové
-    % u nás jednotlivé prvky aplikace
+    Jenotliví členové týmu si rozdělí práci následujícím způsobem:
+    \begin{itemize}
+        \item \textbf{Tomáš B.}\,--\,Vyhledávání s uložitelnými filtry, preferencemi
+        \item \textbf{Martin}\,--\,správa sdílení, konverzací a skupin
+        \item \textbf{Ondřej}\,--\,Interaktivní režim s ukládáním stavu
+        \item \textbf{Tomáš T.}\,--\,kompletní správa receptů: jejich tvorba, úprava a mazání
+    \end{itemize}
+
+    Společnými úkoly na FE jsou pak propojení jednotlivých částí a zajištění jednotnosti
+    rozhraní.
+
+    Všichni členové týmu budou společně vyvíjet jednu aplikaci, výsledkem bude celek
+    obsahující funkcionalitu, jaká je popsána v \ref{user_sum} a \ref{app_sum}.
 
 
     \section{Návrh}
@@ -588,10 +606,6 @@
 
     \subsection{Výběr technologií}
 
-    % FE (vue)
-    % popř. BE, služby (...)
-    % ZDŮVODNĚNÍ
-
     Pro frontend jsme vybrali Javascript framework Vue.js, protože:
     \begin{itemize}
         \item sme v něm schopní vytvořit SPA (Single-Page Application) - browser načíta stránku jenom jednou a poté mění její obsah dynamicky, změny v GUI se projeví okamžitě
@@ -610,10 +624,10 @@
 
     \subsection{Návrh API k BE} 
 
-    \image{1}{ITU_návrh_architektury.drawio.png}{Návrh architektury aplikace}
-
     % popis API (klíčové funkce !), popř. knihovny
     % klíčové datové struktury modelu
     % napojení BE na FE (tzn API na GUI, které funkce dělají co)
+
+    \image{1}{ITU_návrh_architektury.drawio.png}{Návrh architektury aplikace}
 
 \end{document}
