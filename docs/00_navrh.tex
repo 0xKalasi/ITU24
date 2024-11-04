@@ -569,6 +569,21 @@
     % popř. BE, služby (...)
     % ZDŮVODNĚNÍ
 
+    Pro frontend jsme vybrali Javascript framework Vue.js, protože:
+    \begin{itemize}
+        \item sme v něm schopní vytvořit SPA (Single-Page Application) - browser načíta stránku jenom jednou a poté mění její obsah dynamicky, změny v GUI se projeví okamžitě
+        \item je jednoduchý a díky výborné dokumentaci a komunitě okolo Vue, se dají základy naučit relativně rychle
+        \item umožňuje reaktivitu dat a zobrazení - dynamika a zlepšení používaní aplikace
+        \item je založený na komponentech - znovu používaní a modularita
+        \item Vue ekosystém - vue-router pro routovaní, vuex nebo pinia k manažmentu stavu aplikace (dat)
+        \item je nenáročný na výkon - optimalizace nakládaní ze zdroji
+        \item Tomáš B. už má zkušenosti s používaním Vue.js, což týmu zkrátilo čas při učení se tohoto frameworku
+    \end{itemize}
+
+    Pro náš backend jsme zvolili Supabase, open-source řešení Backend-as-a-Service (BaaS). 
+    Využíváme i Supabase REST API kvůli jednoduché manipulaci a její dokumentaci. 
+    Supabase vytváří API dokumentaci ke každé tabulce, která popisuje fungování rozhraní na několika příkladech. 
+    V Supabase používáme bezplatný plán s neobmedzeným počtem API požadavků, 500 MB databázovým a 1 GB souborovým uložiskem, zdíleným CPU a 500 MB RAM.
 
     \subsection{Návrh API k BE} 
 
