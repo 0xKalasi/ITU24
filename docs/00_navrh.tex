@@ -47,6 +47,8 @@
 }
 \date{\today}
 
+\setlist[itemize]{itemsep=0em, topsep=1em}
+
 \begin{document}
 
     \maketitle
@@ -375,21 +377,21 @@
     
     \begin{itemize}
         \setlength\itemsep{0em}
-        \item Webová stránka \url{https://baksmurf.nl/en/}
-        \item Mobilní aplikace
-            \t{\href{https://play.google.com/store/apps/details?id=com.mufumbo.android.recipe.search&hl=cs}{Cookpad}}
-        \item Mobilní aplikace
-            \t{\href{https://play.google.com/store/apps/details?id=com.tudorspan.recipekeeper}{Recipe Keeper}}
         \item Mobilní aplikace 
             \t{\href{https://apps.apple.com/us/app/google-keep-notes-and-lists/id1029207872}{Google Keep}}
         \item Mobilní aplikace 
             \t{\href{https://apps.apple.com/us/app/yummly-recipes-meal-planning/id589625334}{Yummly Recipes \& Meal Planning}}
+        \item Webová stránka \url{https://baksmurf.nl/en/}
         \item Mobilní aplikace
-            \t{\href{https://play.google.com/store/apps/details?id=com.foodient.whisk&hl=en&pli=1}{Samsung Food: Meal Planning}}
+            \t{\href{https://play.google.com/store/apps/details?id=com.mufumbo.android.recipe.search&hl=cs}{Cookpad}}
         \item Mobilní aplikace
 			\t{\href{https://tasty.co/}{Tasty}}
         \item Webová stránka
 			\t{\href{https://www.allrecipes.com/}{allrecipes}}
+        \item Mobilní aplikace
+            \t{\href{https://play.google.com/store/apps/details?id=com.tudorspan.recipekeeper}{Recipe Keeper}}
+        \item Mobilní aplikace
+            \t{\href{https://play.google.com/store/apps/details?id=com.foodient.whisk&hl=en&pli=1}{Samsung Food: Meal Planning}}
     \end{itemize}
 
     \noindent Ke každé z nich jsme našli 3 výhody a 3 nevýhody, z kterých se chceme poučit a navrhnout tak lepší aplikaci. 
@@ -546,10 +548,10 @@
 
     Jenotliví členové týmu si rozdělí práci následujícím způsobem:
     \begin{itemize}
-        \item \textbf{Tomáš B.}\,--\,Vyhledávání s uložitelnými filtry, preferencemi
-        \item \textbf{Martin}\,--\,správa sdílení, konverzací a skupin
-        \item \textbf{Ondřej}\,--\,Interaktivní režim s ukládáním stavu
-        \item \textbf{Tomáš T.}\,--\,kompletní správa receptů: jejich tvorba, úprava a mazání
+        \item \textbf{Tomáš B.}\,--\,Komplexní vyhledávání, ukládání a hodnocení cizích receptů
+        \item \textbf{Martin}\,--\,Správa uživatelských profilů, sdílení receptů, konverzací a skupin
+        \item \textbf{Ondřej}\,--\,Interaktivní režim s ukládáním stavu a časovači
+        \item \textbf{Tomáš T.}\,--\,Kompletní správa receptů: jejich tvorba, úprava a mazání
     \end{itemize}
 
     Společnými úkoly na FE jsou pak propojení jednotlivých částí a zajištění jednotnosti
@@ -606,12 +608,12 @@
 
     Pro frontend jsme vybrali Javascript framework Vue.js, protože:
     \begin{itemize}
-        \item sme v něm schopní vytvořit SPA (Single-Page Application) - browser načíta stránku jenom jednou a poté mění její obsah dynamicky, změny v GUI se projeví okamžitě
+        \item sme v něm schopní vytvořit SPA (Single-Page Application)\,--\,browser načíta stránku jenom jednou a poté mění její obsah dynamicky, změny v GUI se projeví okamžitě
         \item je jednoduchý a díky výborné dokumentaci a komunitě okolo Vue, se dají základy naučit relativně rychle
         \item umožňuje reaktivitu dat a zobrazení - dynamika a zlepšení používaní aplikace
         \item je založený na komponentech - znovu používaní a modularita
         \item Vue ekosystém - vue-router pro routovaní, vuex nebo pinia k manažmentu stavu aplikace (dat)
-        \item je nenáročný na výkon - optimalizace nakládaní ze zdroji
+        \item je nenáročný na výkon - optimalizace nakládaní se zdroji
         \item Tomáš B. už má zkušenosti s používaním Vue.js, což týmu zkrátilo čas při učení se tohoto frameworku
     \end{itemize}
 
@@ -626,7 +628,7 @@
 
     \image{0.8}{ITU_návrh_architektury.drawio.png}{Princip architektury aplikace}
 
-    Dále, pro implementaci našeho API jsme využili knihovnu Supabase. Tato
+    Pro implementaci našeho API jsme využili knihovnu Supabase. Tato
     knihovna poskytuje své vlastní API, pomocí kterého s ní v tom našem komunikujeme a
     získáváme data. Dotazy našeho vlastního API jsou tak zjednodušeny a představují pouze volání
     funkcí.
@@ -634,7 +636,7 @@
     Pro různé úkoly byly vytvořeny různé funkce tak, aby byly intuitivně použitelné
     při tvorbě GUI. Příkladem v části pro ukládání receptů mohou být funkce
     \t{createRecipe} nebo \t{updateRecipe}. Charakter funkcí pro ostatní části
-    je veskrze podobný.
+    je veskrze podobný. 
 
     Volání funkcí na FE pak bude podle akcí provedených uživatelem zajišťovat
     použité Vue.js, které detekuje událost ze strany uživatele
@@ -644,8 +646,8 @@
 
     Jak už bylo uvedeno, v našem modelu jsou data ukládána do databáze PostgreSQL
     pomocí rozhraní služby Supabase.
-    Zde jsou uložena všechna naše data v několika tabulkách. Jaké tabulky byly použity
-    je vidět v následujícím diagramu:
+    Zde jsou uložena všechna naše data v několika tabulkách. 
+    Tabulky v databázi byly vytvořeny podle předtím navrženého Entity Relationship Diagramu, viz.:
 
     \image{1}{itu_erd.drawio.png}{Návrh databáze}
 
