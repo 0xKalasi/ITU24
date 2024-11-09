@@ -1,21 +1,27 @@
 <script setup>
-    import { readAllUsers } from "../../utils/users_api.js";
+    import { readAllUsers, switchUser } from "../../utils/users_api.js";
     import { useRouter } from "vue-router";
+    import { useUserStore } from '../stores/userStore';
+    const currentUser = useUserStore();
+
+    const router = useRouter();
 
     const users = await readAllUsers();
-    const router = useRouter();
+
 </script>
 
 <template>
     <Button label="Zpět" @click="router.back()"></Button>
     <h2>Uživatelé</h2>
 
-    <div>
-        <ul>
-            <li v-for="user in users">
-                {{ user.name }}
-            </li>
-        </ul>
-    </div>
+    <h3>Právě přihlášen {{ currentUser.name }}</h3>
+
+    <table>
+        <tr v-for="user in users">
+            <th>{{ user.name }}</th>
+            <Button @click="switchUser(user.id); router.push('/')">Přepnout</Button>
+        </tr>
+    </table>
+    <Button @click="switchUser(0); router.push('/')">Odhlásit</Button>
 
 </template>
