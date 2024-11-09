@@ -8,6 +8,8 @@ import Aura from '@primevue/themes/aura';
 
 import 'primeicons/primeicons.css'
 
+import Button from "primevue/button";
+
 import { createPinia } from 'pinia'
 const pinia = createPinia();
 
@@ -19,4 +21,7 @@ app.use(PrimeVue, {
         preset: Aura
     }
 });
+
+app.component("Button", Button);
+
 app.mount("#app");

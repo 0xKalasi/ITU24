@@ -1,5 +1,5 @@
 <script setup>
-import navigationButton from "../components/navigationButton.vue";
+  import navigationButton from "../components/navigationButton.vue";
 </script>
 
 <template>

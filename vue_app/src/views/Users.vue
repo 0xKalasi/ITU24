@@ -1,7 +1,6 @@
 <script setup>
     import { readAllUsers } from "../../utils/users_api.js";
     import { useRouter } from "vue-router";
-    import Button from "primevue/button";
 
     const users = await readAllUsers();
     const router = useRouter();
