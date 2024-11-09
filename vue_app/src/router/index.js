@@ -5,6 +5,7 @@ import Users from "../views/Users.vue";
 import Homepage from "../views/Homepage.vue";
 import NotFound from "../views/NotFound.vue";
 import Profile from "../views/Profile.vue";
+import EditProfile from "../views/EditProfile.vue";
 import Recipes from "../views/Recipes.vue";
 
 const routes = [
@@ -13,6 +14,8 @@ const routes = [
   { path: "/users", component: Users },
   { path: "/profile", component: Profile },
   { path: "/profile/recipes", component: Recipes },
+  { path: "/profile/edit", component: EditProfile },
+
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];
 

@@ -37,6 +37,7 @@ const switchUser = async (id) => {
     const userStore = useUserStore();
     const u = await readUser(id);
 
+    // switching concerns local store - currently active user
     if (u != null) {
         userStore.id = u.id;
         userStore.name = u.name;
@@ -48,7 +49,31 @@ const switchUser = async (id) => {
     }
 }
 
+const updateUser = async (id, name, bio) => {
+    // update DB
+    const { data, error } = await supabase
+      .from('User')
+      .update({ name: name, bio: bio })
+      .eq('id', id)
+      .select()
+
+    // update local store
+    const userStore = useUserStore();
+    userStore.name = name;
+    userStore.bio = bio;
+
+    // TODO: what should I return????
+
+    if (error) {
+        console.log(error);
+        return null;
+    }
+
+    return;
+}
+
 export {
     readAllUsers,
-    switchUser
+    switchUser,
+    updateUser
 };

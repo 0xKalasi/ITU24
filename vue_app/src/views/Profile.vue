@@ -6,6 +6,7 @@ const currentUser = useUserStore();
 
 const router = useRouter();
 
+// redirect in case of manual access to /profile
 if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profile when logged out, back button gets stuck in a loop
   router.push('/users');
 }
@@ -21,5 +22,7 @@ if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profi
   <br/><br/>
 
   <Button icon="pi pi-inbox" label="Moje recepty" @click="router.push('/profile/recipes')"></Button>
+  <br/>
+  <Button icon="pi pi-pencil" label="Upravit profil" @click="router.push('/profile/edit')"></Button>
 
 </template>
