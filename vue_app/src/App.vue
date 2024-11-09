@@ -14,8 +14,8 @@ console.log('userId is: ', userId.value);
 </script>
 
 <template>
-    <h3>{{ user.id }}</h3>
-    <h1>/ vue app /</h1>
-    <Button icon-pos="right">dasdas</Button>
-    <routerView></routerView>
+    <h1><i>resipe.</i></h1>
+    <Suspense>
+        <routerView></routerView>
+    </Suspense>
 </template>
