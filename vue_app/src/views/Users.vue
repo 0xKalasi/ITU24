@@ -14,14 +14,11 @@
     <Button label="Zpět" @click="router.back()"></Button>
     <h2>Uživatelé</h2>
 
-    <h3>Právě přihlášen {{ currentUser.name }}</h3>
-
     <table>
         <tr v-for="user in users">
             <th>{{ user.name }}</th>
-            <Button @click="switchUser(user.id); router.push('/')">Přepnout</Button>
+            <Button @click="switchUser(user.id); router.push('/')">Přihlásit</Button>
         </tr>
     </table>
-    <Button @click="switchUser(0); router.push('/')">Odhlásit</Button>
 
 </template>
