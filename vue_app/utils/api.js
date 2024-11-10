@@ -11,7 +11,31 @@ const readAllRecipes = async () => {
     else {
         console.log(error);
         return null;
-    } 
+    }
+}
+
+const readRecipe = async ( id ) => {
+
+	const { data: recipes, error } = await supabase
+		.from( 'Recipe' )
+		.select(`
+			*,
+			Ingredients (*),
+			Step (*, Timer(*), StepIngredients(*)),
+			RecipeCategories(Categories (*)),
+			Utencils (*),
+			RecipeAlergens(Alergens( id, name))
+		`)
+		.eq( 'id', id )
+
+	if ( error ) {
+		console.log( error )
+	}
+
+	if ( recipes.length == 0 )
+		return null;
+
+	return recipes[ 0 ];
 }
 
 const readPublicRecipes = async () => {
@@ -281,5 +305,5 @@ export {
     readPublicRecipes,
     readPublicRecipe,
     readAlergen,
-    createRecipe
+	readRecipe
 };
