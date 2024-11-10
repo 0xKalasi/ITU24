@@ -1,9 +1,27 @@
 <script setup>
+import Button from 'primevue/button';
+import { useUserStore } from './stores/userStore';
+import { computed } from 'vue';
+import navigation from './components/navigation.vue';
+
+const user = useUserStore();
+const userId = computed(() => user.id)
+
+console.log('userId is: ', userId.value);
+
+user.id = 3;
+
+console.log('userId is: ', userId.value);
 </script>
 
 <template>
-    <h1><i>resipe.</i></h1>
     <Suspense>
         <routerView></routerView>
     </Suspense>
+    <navigation></navigation>
+    <div style="height: 100px;"></div> <!-- so navigation isnt blocking text -->
 </template>
+
+<style scoped>
+</style>
+

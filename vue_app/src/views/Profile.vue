@@ -25,4 +25,9 @@ if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profi
   <br/>
   <Button icon="pi pi-pencil" label="Upravit profil" @click="router.push('/profile/edit')"></Button>
 
+  <navigationButton
+    :text="`show ${username}'s recipes`"
+    :path="`/users/${username}/recipes`"
+  />
+  <Button icon="pi pi-user" label="Uživatelé" @click="router.push('/users')"></button>
 </template>

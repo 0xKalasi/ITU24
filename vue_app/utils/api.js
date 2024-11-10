@@ -14,6 +14,62 @@ const readAllRecipes = async () => {
     } 
 }
 
+const readPublicRecipes = async () => {
+    const { data: recipes, error } = await supabase
+    .from('Recipe')
+    .select(`
+        *,
+        User (id, name, bio)
+    `)
+    .eq('private', false)
+    /* .order('some_column', { ascending: true })  */
+
+    if(!error)
+        return recipes;
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+/* TODO: recipe categories */
+const readPublicRecipe = async (id) => {
+    const { data: recipes, error } = await supabase
+    .from('Recipe')
+    .select(`
+        *,
+        Ingredients (*),
+        Step (*),
+        Utencils (*),
+        RecipeAlergens(
+        alergen: Alergens (id, name))
+    `)
+    .eq('id', id)
+
+    if(!error)
+        return recipes[0];
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+const readAlergen = async (id) => {
+    const { data: alergens, error } = await supabase
+    .from('Alergens')
+    .select('*')
+    .eq('id', id)
+
+    if(!error)
+        return alergens[0];
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+
+
 // set Array to null, if there isnt any
 var recipeDataObj = {
     name: String,
@@ -222,5 +278,8 @@ const createRecipe = async (data) => {
 
 export { 
     readAllRecipes,
+    readPublicRecipes,
+    readPublicRecipe,
+    readAlergen,
     createRecipe
 };
