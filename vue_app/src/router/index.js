@@ -5,13 +5,14 @@ import Homepage from "../views/Homepage.vue";
 import NotFound from "../views/NotFound.vue";
 import Profile from "../views/Profile.vue";
 import EditProfile from "../views/EditProfile.vue";
-import Recipes from "../views/Recipes.vue";
 import CookMode from "../views/CookMode.vue";
 import CookModeStep from "../views/CookModeStep.vue";
 import PublicRecipe from "../views/PublicRecipe.vue";
 import Chats from "../views/Chats.vue";
 import Chat from "../views/Chat.vue";
 import Filters from "../views/Filters.vue";
+import AddNewRecipe from "../views/AddNewRecipe.vue";
+import Recipes from "../views/MyRecipes.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -25,7 +26,7 @@ const routes = [
   { path: "/profile/edit", component: EditProfile },
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },
-
+  { path: "/addnewrecipe", component: AddNewRecipe },
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];
 

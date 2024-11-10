@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { switchUser } from "../../utils/users_api.js";
 import { useRouter } from "vue-router";
 import { readPublicRecipes } from "../../utils/api";
+import navigationButton from "../components/navigationButton.vue";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
