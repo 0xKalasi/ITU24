@@ -49,6 +49,8 @@ console.log(recipe);
             <b>{{ step.number }}. {{ step.name }} </b>
             <div class="stepText">{{ step.text }}</div>
         </div>
+
+	<Button @click="router.push( '/cookmode/' + recipeId )" >Vařit</Button>
 </template>
 
 <style scoped>
