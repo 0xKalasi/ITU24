@@ -11,12 +11,6 @@ const router = useRouter();
 const searchValue = ref("");
 
 const publicRecipes = await readPublicRecipes();
-
-/* for(let i = 0; i < publicRecipe.RecipeAlergens.length; i++){
-  const alergen = await readAlergen(publicRecipe.RecipeAlergens[i].alergen)
-  console.log(alergen);
-} */
-
 </script>
 
 <template>
@@ -45,7 +39,6 @@ const publicRecipes = await readPublicRecipes();
     </div>
     <div class="devider"></div>
   </div>
-  <h2>Homepage</h2>
 
    <!-- <div v-if="currentUser.id == 0">
     <i>Nepřihlášený uživatel</i>
