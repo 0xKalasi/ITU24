@@ -122,7 +122,10 @@ const readChat = async (sender, receiver) => {
 
   const { data: Messages, error } = await supabase
   .from('Message')
-  .select('*')
+  .select(`
+    *,
+    Recipe (name)
+  `)
   .eq('chat_id', chatId)
   .order('created_at', { ascending: true })
 

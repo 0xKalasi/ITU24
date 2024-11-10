@@ -8,7 +8,7 @@ import EditProfile from "../views/EditProfile.vue";
 import CookMode from "../views/CookMode.vue";
 import CookModeStep from "../views/CookModeStep.vue";
 import PublicRecipe from "../views/PublicRecipe.vue";
-import Chats from "../views/Chats.vue";
+import Friends from "../views/Friends.vue";
 import Chat from "../views/Chat.vue";
 import Filters from "../views/Filters.vue";
 import AddNewRecipe from "../views/AddNewRecipe.vue";
@@ -17,7 +17,7 @@ import Recipes from "../views/MyRecipes.vue";
 const routes = [
   { path: "/", component: Homepage },
   { path: "/recipes", component: Recipes},
-  { path: "/chats", component: Chats},
+  { path: "/chats", component: Friends},
   { path: "/chats/:user_id", component: Chat }, // chat with myself and "user_id" user
   { path: "/filters", component: Filters},
   { path: "/recipe/public/:recipe_id", component: PublicRecipe},

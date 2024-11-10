@@ -31,6 +31,7 @@ import ButtonGroup from "primevue/buttongroup";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
+import Message from "primevue/message";
 
 /* HERE REGISTER EACH PRIMEVUE COMPONENT AS A GLOBAL COMPONENT */
 /* app.component("html_tag_name", ImportedPrimeVueComponent); */
@@ -40,6 +41,7 @@ app.component("ButtonGroup", ButtonGroup);
 app.component("IconField", IconField);
 app.component("InputIcon", InputIcon);
 app.component("InputText", InputText);
+app.component("Message", Message);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */

@@ -12,7 +12,7 @@ const friends = await readUsersFriends(currentUser.id);
 </script>
 
 <template>  
-  <h2>Chaty</h2>
+  <h2>Přátelé</h2>
 
   <div v-if="currentUser.id == 0">
     Pro zobrazení chatů se přihlaste.

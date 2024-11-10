@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { readUser, readChat, sendChatMessage } from "../../utils/users_api.js";
+import { readRecipe } from "../../utils/api.js";
 import { ref, computed, onUnmounted } from "vue";
 
 import { useUserStore } from '../stores/userStore';
@@ -58,14 +59,17 @@ const handleSending = async () => {
     {{ message.content }}
 
     <div v-if="message.recipe_id != null">
-      {{ message.recipe_id }}
+      <Message severity="info" icon="pi pi-sort-alt" @click="router.push(`/recipe/public/${message.recipe_id}`)">
+        {{ message.Recipe.name }}
+      </Message>
+      <br/>
     </div>
   </div>
     
   <!-- TODO: style........ -->
   <div style="bottom: 70px; position: fixed; display: flex; justify-content: center;">
     <InputText v-model="textMessage" size="large"/>
-    <Button icon="pi pi-arrow-right" style="margin-left: 10px;"
+    <Button icon="pi pi-send" style="margin-left: 10px;"
       @click="handleSending">
     </Button>
   </div>
