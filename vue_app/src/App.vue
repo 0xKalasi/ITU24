@@ -5,13 +5,8 @@ import { computed } from 'vue';
 import navigation from './components/navigation.vue';
 
 const user = useUserStore();
-const userId = computed(() => user.id)
+//const userId = computed(() => user.id)
 
-console.log('userId is: ', userId.value);
-
-user.id = 3;
-
-console.log('userId is: ', userId.value);
 </script>
 
 <template>

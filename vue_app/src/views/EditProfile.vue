@@ -20,7 +20,7 @@ if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profi
 <template>
   <!-- TODO: back probably isn't right... it can make you stuck in a loop
         => we probably want something more like "go to previous page" => route hierarchy without the last page -->
-  <Button label="Zpět" @click="router.back()"></Button>
+  <!--<Button label="Zpět" @click="router.back()"></Button>-->
   
   <h2>Edit Profile</h2>
 

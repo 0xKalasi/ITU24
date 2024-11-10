@@ -1,33 +1,34 @@
 <script setup>
 import { useRouter } from "vue-router";
+import { switchUser } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-// redirect in case of manual access to /profile
-if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profile when logged out, back button gets stuck in a loop
-  router.push('/users');
-}
-
 </script>
 
-<template>
-  <Button label="Zpět" @click="router.back()"></Button>
-  
-  <h2>Profile</h2>
-  <h3>{{ currentUser.name }}</h3>
-  {{ currentUser.bio }}
-  <br/><br/>
+<template> 
+  <h2>Profil</h2>
 
-  <Button icon="pi pi-inbox" label="Moje recepty" @click="router.push('/profile/recipes')"></Button>
+  <div v-if="currentUser.id == 0">
+    Pro zobrazení profilu se přihlaste.
+  </div>
+
+  <div v-else>
+    <h3>{{ currentUser.name }}</h3>
+    {{ currentUser.bio }}
+  </div>
+
+  <Button icon="pi pi-user" label="Přepnout uživatele" @click="router.push('/users')"></Button>
   <br/>
-  <Button icon="pi pi-pencil" label="Upravit profil" @click="router.push('/profile/edit')"></Button>
+  <Button v-if="currentUser.id != 0" icon="pi pi-pencil" label="Upravit profil"
+    @click="router.push('/profile/edit')">
+  </Button>
 
-  <navigationButton
-    :text="`show ${username}'s recipes`"
-    :path="`/users/${username}/recipes`"
-  />
-  <Button icon="pi pi-user" label="Uživatelé" @click="router.push('/users')"></button>
+  <!--
+  <Button icon="pi pi-pencil" label="Upravit profil" @click="router.push('/profile/edit')"></Button>
+  -->
+
 </template>

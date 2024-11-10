@@ -10,12 +10,14 @@ import CookMode from "../views/CookMode.vue";
 import CookModeStep from "../views/CookModeStep.vue";
 import PublicRecipe from "../views/PublicRecipe.vue";
 import Chats from "../views/Chats.vue";
+import Chat from "../views/Chat.vue";
 import Filters from "../views/Filters.vue";
 
 const routes = [
   { path: "/", component: Homepage },
   { path: "/recipes", component: Recipes},
   { path: "/chats", component: Chats},
+  { path: "/chats/:user_id", component: Chat }, // chat with myself and "user_id" user
   { path: "/filters", component: Filters},
   { path: "/recipe/public/:recipe_id", component: PublicRecipe},
   { path: "/users", component: Users },
@@ -23,6 +25,7 @@ const routes = [
   { path: "/profile/edit", component: EditProfile },
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },
+
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];
 
