@@ -43,7 +43,7 @@ const handleSending = async () => {
     return;
   }
 
-  sendChatMessage(currentUser.id, peerUserId, textMessage.value);
+  sendChatMessage(currentUser.id, peerUserId, textMessage.value, null);
   textMessage.value="";
 }
 

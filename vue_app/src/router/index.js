@@ -18,6 +18,7 @@ import Filters from "../views/Filters.vue";
 import AddNewRecipe from "../views/AddNewRecipe.vue";
 import Recipes from "../views/MyRecipes.vue";
 import CreateFilter from "../views/CreateFilter.vue"
+import Share from "../views/Share.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -36,6 +37,8 @@ const routes = [
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },
   { path: "/addnewrecipe", component: AddNewRecipe },
+  { path: "/share/:recipe_id", component: Share },
+
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];
 

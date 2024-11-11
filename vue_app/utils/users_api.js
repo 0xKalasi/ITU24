@@ -137,7 +137,7 @@ const readChat = async (sender, receiver) => {
   return Messages;
 }
 
-const sendChatMessage = async (sender, receiver, text) => {
+const sendChatMessage = async (sender, receiver, text, recipeId) => {
   const chatId = await getChatFromUserIds(sender, receiver);
 
   const { data, error } = await supabase
@@ -145,7 +145,8 @@ const sendChatMessage = async (sender, receiver, text) => {
   .insert([{
     content: text,
     chat_id: chatId,
-    person_posted: sender
+    person_posted: sender,
+    recipe_id: recipeId
   }])
   .select()
   
@@ -154,7 +155,7 @@ const sendChatMessage = async (sender, receiver, text) => {
     return null;
   }
 
-  return;
+  return data;
 }
 
 //const acceptFriendRequest = async (status) => {
