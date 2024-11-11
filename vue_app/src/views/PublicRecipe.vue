@@ -47,7 +47,7 @@ const actionButtons = ref([
         label: 'Send',
         icon: 'pi pi-send',
         command: () => {
-            console.log("SpeedDial: Send")
+            router.push(`/share/${recipe.id}`);
         }
     },
 ])
