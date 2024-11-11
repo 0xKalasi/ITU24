@@ -19,8 +19,8 @@ const friends = await readUsersFriends(currentUser.id);
   </div>
 
   <div v-else>
-    <Button label="Nevyřízené" icon="pi pi-clock"></Button>
-    <Button label="Zablokované" icon="pi pi-times"></Button>
+    <Button label="Příchozí" icon="pi pi-clock" @click="router.push('/requests')"></Button>
+    <Button label="Zablokované" icon="pi pi-times" @click="router.push('/blocked')"></Button>
     <br/><br/>
 
     <div v-for="friend in friends">

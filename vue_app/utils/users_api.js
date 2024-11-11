@@ -157,6 +157,14 @@ const sendChatMessage = async (sender, receiver, text) => {
   return;
 }
 
+//const acceptFriendRequest = async (status) => {
+//  const { data, error } = await supabase
+//  .from('FriendStatus')
+//  .update({ other_column: 'otherValue' })
+//  .eq('some_column', 'someValue')
+//  .select()      
+//}
+
 export {
   readAllUsers,
   readUser,
@@ -164,5 +172,5 @@ export {
   updateUser,
   readUsersFriends,
   readChat,
-  sendChatMessage
+  sendChatMessage,
 };
