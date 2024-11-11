@@ -12,6 +12,7 @@ const isLoading = ref(true);
 readPublicRecipe(recipeId).then(async (result) => {
     recipe = result;
     isLoading.value = false;
+    console.log(recipe);
 })
 
 let showAlert = ref(false);
@@ -19,11 +20,18 @@ let alertKey = ref(0);
 
 const actionButtons = ref([
     {
-        label: 'Cook',
+        label: '',
+        icon: 'pi pi-user',
+        command: () => {
+            router.push(`/profile/${recipe.creator}`);
+        },
+    },
+    {
+        label: 'Cook mode',
         icon: 'pi pi-play',
         command: () => {
             console.log("SpeedDial: Cook")
-            router.push('/cookmode/' + recipeId)
+            router.push(`/cookmode/${recipeId}`)
         }
     },
     {
@@ -47,13 +55,14 @@ const actionButtons = ref([
 
 <template>
     <Alert v-if="showAlert" type="success" text="Succesfully saved" :key="alertKey"></Alert>
+
+    <LoadingScreen v-if="isLoading"/>
     
-    <LoadingScreen v-if="isLoading"></LoadingScreen>
     <div v-else>
          <div style="position: relative; display: flex; align-items: center; min-width: 320px">
             <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
             <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
-            <SpeedDial :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -11%);">
+            <SpeedDial :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -8%);">
             </SpeedDial>
         </div> 
 
