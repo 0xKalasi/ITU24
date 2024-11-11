@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { switchUser } from "../../utils/users_api.js";
 import { useRouter } from "vue-router";
-import { readPublicRecipes, readPublicRecipesFilterName } from "../../utils/api";
+import { readPublicRecipes, readPublicRecipesFilterName, readFilters } from "../../utils/api";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -11,7 +11,9 @@ const router = useRouter();
 const searchValue = ref("");
 
 const publicRecipes = ref();
-const isLoading = ref(false); 
+const filters = ref();
+
+const isLoading = ref(false);
 
 const search = async () => {
   isLoading.value = true;
@@ -22,8 +24,11 @@ const search = async () => {
   })
 }
 
-onMounted(() => {
+onMounted(async () => {
   search();
+
+  if(currentUser.id)
+    filters.value = await readFilters(currentUser.id)
 }) 
 </script>
 
@@ -38,10 +43,10 @@ onMounted(() => {
       </IconField>
     </div>
  
-    <div class="filters">
-      <Button type="button" label="Filter 1"/>
-      <Button type="button" label="Filter 2"/>
-      <Button type="button" label="Filtry" badge="2" @click="router.push('/filters')"/>
+    <div class="filters" style="display: flex; justify-content: center">
+      <Tag value="Filter 1"/>
+      <Tag value="Filter 2"/>
+      <Tag value="Filtry" severity="warn" icon="pi pi-search" @click="router.push('/filters')"/>
     </div>
 
     <div v-for="(recipe, index) in publicRecipes" :key="recipe.id" @click="router.push(`/recipe/public/${recipe.id}`)"> 
@@ -55,19 +60,6 @@ onMounted(() => {
     <div v-if="index != publicRecipes.length - 1" class="devider"></div>
   </div>
 </div>
-
-   <!-- <div v-if="currentUser.id == 0">
-    <i>Nepřihlášený uživatel</i>
-    <br/>
-    <Button icon="pi pi-users" label="Uživatelé" @click="router.push('/users')"></button>
-  </div>
-  <div v-else>
-    Aktuální uživatel: {{ currentUser.name }}
-    <br/>
-    <Button v-if="currentUser.id != 0" icon="pi pi-user" label="Profil" @click="router.push('/profile')"></button>
-      <br/>
-    <Button @click="switchUser(0)">Odhlásit</Button>
-  </div>  -->
 
 </template>
 

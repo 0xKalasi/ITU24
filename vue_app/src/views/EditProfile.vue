@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { updateUser } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
+import BasicHeader from "../components/basicPageHeader.vue";
 const currentUser = useUserStore();
 
 const newName = currentUser.name;
@@ -18,7 +19,7 @@ if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profi
 </script>
 
 <template>
-  <h2>Edit Profile</h2>
+  <BasicPageHeader text="Nastavení profilu"></BasicPageHeader>
 
   <p>Uživatelské jméno:</p>
   <input v-model="newName"></input>

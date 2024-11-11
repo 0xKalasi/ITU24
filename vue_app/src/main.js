@@ -25,6 +25,11 @@ app.use(PrimeVue, {
     }
 });
 
+/* HERE IMPORT OUR CUSTOM COMPONENTS */
+import Alert from "../src/components/alert.vue";
+import LoadingScreen from "../src/components/loadingScreen.vue";
+import BasicPageHeader from "../src/components/basicPageHeader.vue";
+
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
 import ButtonGroup from "primevue/buttongroup";
@@ -34,11 +39,10 @@ import InputText from "primevue/inputtext";
 import Tag from "primevue/tag";
 import SpeedDial from "primevue/speeddial";
 import Message from "primevue/message";
-import Alert from "../src/components/alert.vue";
-import LoadingScreen from "../src/components/loadingScreen.vue";
 
-/* HERE REGISTER EACH PRIMEVUE COMPONENT AS A GLOBAL COMPONENT */
-/* app.component("html_tag_name", ImportedPrimeVueComponent); */
+
+/* HERE REGISTER COMPONENTS AS A GLOBAL COMPONENTS */
+/* app.component("html_tag_name", ImportedComponent); */
 /* use like this in .vue files -> <html_tag_name></html_tag_name> */
 app.component("Button", Button);
 app.component("ButtonGroup", ButtonGroup);
@@ -50,6 +54,7 @@ app.component("SpeedDial", SpeedDial);
 app.component("Message", Message);
 app.component("Alert", Alert);
 app.component("LoadingScreen", LoadingScreen);
+app.component("BasicPageHeader", BasicPageHeader);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */
