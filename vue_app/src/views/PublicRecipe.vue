@@ -50,12 +50,12 @@ const actionButtons = ref([
     
     <LoadingScreen v-if="isLoading"></LoadingScreen>
     <div v-else>
-        <div style="position: relative; display: flex; align-items: center; width: 85vw;">
+         <div style="position: relative; display: flex; align-items: center; min-width: 320px">
             <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
             <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
             <SpeedDial :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -11%);">
             </SpeedDial>
-        </div>
+        </div> 
 
         <div style="display: inline">
             <Tag style="margin-right: 4px;" v-for="category in recipe.RecipeCategories" >{{ category.category.name }}</Tag>
