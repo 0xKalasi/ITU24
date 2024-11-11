@@ -146,6 +146,32 @@ const readFilters = async (id) => {
     } 
 }
 
+const readAllAlergens = async() => {
+    const { data: alergens, error } = await supabase
+    .from('Alergens')
+    .select('*')
+
+    if(!error)
+        return alergens;
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+const readAllCategories = async () => {
+    const { data: categories, error } = await supabase
+    .from('Categories')
+    .select('*')
+
+    if(!error)
+        return categories;
+    else {
+        console.log(error);
+        return null;
+    } 
+} 
+
 export { 
     readAllRecipes,
     readPublicRecipesFilterName,
@@ -154,5 +180,7 @@ export {
     readAlergen,
 	readRecipe,
     readUsersPublicRecipe,
-    readFilters
+    readFilters,
+    readAllAlergens,
+    readAllCategories
 };

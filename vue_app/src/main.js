@@ -39,6 +39,7 @@ import InputText from "primevue/inputtext";
 import Tag from "primevue/tag";
 import SpeedDial from "primevue/speeddial";
 import Message from "primevue/message";
+import FloatLabel from "primevue/floatlabel";
 
 
 /* HERE REGISTER COMPONENTS AS A GLOBAL COMPONENTS */
@@ -52,6 +53,7 @@ app.component("InputText", InputText);
 app.component('Tag', Tag);
 app.component("SpeedDial", SpeedDial);
 app.component("Message", Message);
+app.component("FloatLabel", FloatLabel);
 app.component("Alert", Alert);
 app.component("LoadingScreen", LoadingScreen);
 app.component("BasicPageHeader", BasicPageHeader);
