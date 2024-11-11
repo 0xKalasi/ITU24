@@ -19,15 +19,19 @@ const friends = await readUsersFriends(currentUser.id);
   </div>
 
   <div v-else>
-    <Button label="Příchozí" icon="pi pi-clock" @click="router.push('/requests')"></Button>
+    <Button label="Příchozí" icon="pi pi-clock" @click="router.push('/requests')"></Button> <!-- TODO badge with req. cnt. -->
     <Button label="Zablokované" icon="pi pi-times" @click="router.push('/blocked')"></Button>
     <br/><br/>
 
     <div v-for="friend in friends">
-      <div v-if="friend.state == 'accepted'"> <!-- TODO render list of blocked users -->
-        {{ friend.User.name }}
-        <Button label="Chat" icon="pi pi-comment" @click="router.push(`/chats/${friend.User.id}`)"></Button>
-
+      <div v-if="friend.state == 'accepted'" style="margin-bottom: 50px"> <!-- TODO render list of blocked users -->
+        <Message @click="router.push(`/profile/${friend.User.id}`)" severity="secondary">
+          {{ friend.User.name }}
+        </Message>
+        <Button label="Chat" icon="pi pi-comment"
+          @click="router.push(`/chats/${friend.User.id}`)"
+          style="float: right">
+        </Button>
       </div>
     </div>
   </div>

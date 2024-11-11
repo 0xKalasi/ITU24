@@ -1,5 +1,7 @@
 import { supabase } from "./supabase";
 
+// TODO: add checks for recipes being public !!!
+
 const readAllRecipes = async () => {
     const { data: recipes, error } = await supabase
     .from('Recipe')
@@ -100,6 +102,20 @@ const readPublicRecipe = async (id) => {
         console.log(error);
         return null;
     } 
+}
+
+const readUsersPublicRecipe = async (uid) => {
+    const { data: recipes, error } = await supabase
+    .from('Recipe')
+    .select('*')
+    .eq('creator', uid);
+
+    if (error) {
+        console.log(error);
+        return null;
+    }
+
+    return recipes;
 }
 
 const readAlergen = async (id) => {
@@ -330,5 +346,6 @@ export {
     readPublicRecipes,
     readPublicRecipe,
     readAlergen,
-	readRecipe
+	readRecipe,
+    readUsersPublicRecipe
 };

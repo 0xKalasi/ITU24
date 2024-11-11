@@ -4,6 +4,7 @@ import Users from "../views/Users.vue";
 import Homepage from "../views/Homepage.vue";
 import NotFound from "../views/NotFound.vue";
 import Profile from "../views/Profile.vue";
+import ForeignUser from "../views/ForeignUser.vue";
 import EditProfile from "../views/EditProfile.vue";
 import CookMode from "../views/CookMode.vue";
 import CookModeStep from "../views/CookModeStep.vue";
@@ -27,6 +28,7 @@ const routes = [
   { path: "/recipe/public/:recipe_id", component: PublicRecipe},
   { path: "/users", component: Users },
   { path: "/profile", component: Profile },
+  { path: "/profile/:user_id", component: ForeignUser },
   { path: "/profile/edit", component: EditProfile },
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },

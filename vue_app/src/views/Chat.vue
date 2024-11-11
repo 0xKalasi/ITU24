@@ -42,7 +42,13 @@ const handleSending = async () => {
 
 
 <template>  
-  <h2>Chat s uživatelem <br/>{{ peerUser.name }}</h2>
+  <h2>Chat s uživatelem
+    <Message severity="secondary" @click="router.push(`/profile/${peerUserId}`)"
+      style="display: inline-block"
+      size="large">
+      {{ peerUser.name }}
+    </Message>
+  </h2>
 
   <div v-if="messages.length == 0">
     Dosud jste uživateli neposlal/a žádné zprávy.

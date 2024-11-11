@@ -95,7 +95,7 @@ const getChatFromUserIds = async (sender, receiver) => {
   // TODO extremely stupid, maybe there is a better way ???
   // user 1 has always smaller id then user 2
   if (sender > receiver) {
-    var aux = sender;
+    let aux = sender;
     sender = receiver;
     receiver = aux;
   }
@@ -163,6 +163,12 @@ const sendChatMessage = async (sender, receiver, text) => {
 //  .update({ other_column: 'otherValue' })
 //  .eq('some_column', 'someValue')
 //  .select()      
+//}
+
+//const getFriendRequestCount = async (userId) => {
+//  console.log("HERE");
+//
+//  return "7";
 //}
 
 export {
