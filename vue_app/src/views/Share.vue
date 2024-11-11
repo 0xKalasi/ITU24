@@ -49,8 +49,8 @@ const send = async (fid) => {
     text="Nepodařilo se odeslat recept.">
   </Alert>
 
-  <Button label="Zpět" icon="pi pi-arrow-left" @click="router.back()"></Button>
-  <h2>Sdílet <a>{{ recipe.name }}</a> s:</h2>
+  <BasicPageHeader text="Sdílej"></BasicPageHeader>
+  <h2><a>{{ recipe.name }}</a></h2>
 
   <div v-if="friendCnt == 0">Nemůžete sdílet recept, Váš seznam přátel je prázdný.</div>
 
