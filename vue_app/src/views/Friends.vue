@@ -11,8 +11,15 @@ const friends = await readUsersFriends(currentUser.id);
 
 </script>
 
-<template>  
-  <h2>Přátelé</h2>
+<template> 
+  <div style="display: flex; align-items: center">
+    <h2>Přátelé</h2>
+
+    <Button label="Groupchaty" icon="pi pi-comments"
+      @click="console.log('GROUPCHATS')"
+      style="margin-left: auto">
+    </Button>
+  </div>
 
   <div v-if="currentUser.id == 0">
     Pro zobrazení chatů se přihlaste.
