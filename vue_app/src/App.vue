@@ -5,7 +5,6 @@ import { computed } from 'vue';
 import navigation from './components/navigation.vue';
 
 const user = useUserStore();
-//const userId = computed(() => user.id)
 
 </script>
 

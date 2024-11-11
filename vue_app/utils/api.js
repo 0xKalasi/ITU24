@@ -56,7 +56,29 @@ const readPublicRecipes = async () => {
     } 
 }
 
-/* TODO: recipe categories */
+const readPublicRecipesFilterName = async (filterName) => {
+    // make a query first, add filter only if user filtered somehting
+    let query = supabase
+    .from('Recipe')
+    .select(`
+        *,
+        User (id, name, bio)
+    `)
+    .eq('private', false)
+
+    if(filterName)
+        query = query.ilike('name', `%${filterName}%`)
+    
+    const { data: recipes, error } = await query
+   
+    if(!error)
+        return recipes;
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
 const readPublicRecipe = async (id) => {
     const { data: recipes, error } = await supabase
     .from('Recipe')
@@ -65,8 +87,10 @@ const readPublicRecipe = async (id) => {
         Ingredients (*),
         Step (*),
         Utencils (*),
+        RecipeCategories(
+        category: Categories(id, name)),
         RecipeAlergens(
-        alergen: Alergens (id, name))
+        alergen: Alergens(id, name))
     `)
     .eq('id', id)
 
@@ -302,6 +326,7 @@ const createRecipe = async (data) => {
 
 export { 
     readAllRecipes,
+    readPublicRecipesFilterName,
     readPublicRecipes,
     readPublicRecipe,
     readAlergen,

@@ -1,56 +1,101 @@
 <script setup>
-import { readPublicRecipe } from '../../utils/api';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { readPublicRecipe } from '../../utils/api';
 
 const router = useRouter();
 const recipeId = router.currentRoute.value.params.recipe_id;
 
-const recipe = await readPublicRecipe(recipeId);
-console.log(recipe);
+let recipe = '';
+const isLoading = ref(true); 
+
+readPublicRecipe(recipeId).then(async (result) => {
+    recipe = result;
+    isLoading.value = false;
+})
+
+let showAlert = ref(false);
+let alertKey = ref(0);
+
+const actionButtons = ref([
+    {
+        label: 'Cook',
+        icon: 'pi pi-play',
+        command: () => {
+            console.log("SpeedDial: Cook")
+            router.push('/cookmode/' + recipeId)
+        }
+    },
+    {
+        label: 'Save',
+        icon: 'pi pi-bookmark',
+        command: () => {
+            console.log("SpeedDial: Save")
+            showAlert.value = true;
+            alertKey.value++;
+        }
+    },
+    {
+        label: 'Send',
+        icon: 'pi pi-send',
+        command: () => {
+            console.log("SpeedDial: Send")
+        }
+    },
+])
 </script>
 
 <template>
-    <!-- TODO: recipe categories -->
-    <!-- TODO: nejde pridavat do Utencils dalsie utencils k receptu  -->
+    <Alert v-if="showAlert" type="success" text="Succesfully saved" :key="alertKey"></Alert>
+    
+    <LoadingScreen v-if="isLoading"></LoadingScreen>
+    <div v-else>
+        <div style="position: relative; display: flex; align-items: center; width: 85vw;">
+            <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
+            <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
+            <SpeedDial :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -11%);">
+            </SpeedDial>
+        </div>
 
-    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%">
-        <Button @click="router.back" icon="pi pi-angle-left" style="height: 40px;"/>
-        <h2 style="flex-grow: 1; text-align: center;">{{ recipe.name }}</h2>
+        <div style="display: inline">
+            <Tag style="margin-right: 4px;" v-for="category in recipe.RecipeCategories" >{{ category.category.name }}</Tag>
+        </div>
+    
+    <div style="margin: 8px 0px;">
+        <Tag severity="warn" icon="pi pi-clock" style="margin-right: 4px">{{ recipe.time_to_cook / 60 }} minut</Tag>
+        <Tag severity="warn"> {{ recipe.portions }} 
+            <span v-if="recipe.portions < 5">porce</span>
+            <span v-else>porcí</span> 
+        </Tag> 
     </div>
 
-    <p>porce: {{ recipe.portions }}, čas: {{ recipe.time_to_cook / 60 }} minut</p>
 
     <div>
-        <h4 style="display: inline;">Alergeny: </h4>
-        <span v-for="(alergen, index) in recipe.RecipeAlergens" :key="alergen.alergen.id">
-            {{ alergen.alergen.name }} ({{ alergen.alergen.id }})<span v-if="index < recipe.RecipeAlergens.length - 1">, </span>
-        </span>
+        <h4>Alergeny</h4>
+        <Tag severity="danger" style="margin-right: 4px" v-for="(alergen, index) in recipe.RecipeAlergens" :key="alergen.alergen.id">
+            {{ alergen.alergen.name }} ({{ alergen.alergen.id }})
+        </Tag>
+    </div>
+
+    <div>
+        <h4>Nutné náčiní</h4>
+        <Tag severity="info" style="margin-right: 4px;" v-for="utencil in recipe.Utencils">{{ utencil.name }}</Tag>
     </div>
 
     <h4>Ingredience</h4>
     <ul>
         <li v-for="ingredient in recipe.Ingredients">
             {{ ingredient.name }} {{ ingredient.quantity }} {{ ingredient.unit }}
-            <ul v-if="ingredient.notes"> 
-                <li>{{ ingredient.notes }}</li>
-            </ul>
+            <Tag v-if="ingredient.notes" style="padding: 0.5px 4px">{{ ingredient.notes }}</Tag>
         </li>
     </ul>
 
-    <div>
-        <h4 style="display: inline;">Nutné náčiní: </h4>
-        <span v-for="(utencil, index) in recipe.Utencils">
-            {{ utencil.name }}<span v-if="index < recipe.Utencils.length - 1">, </span>
-        </span>
-    </div>
-
     <h4>Kroky</h4>
         <div v-for="step in recipe.Step">
-            <b>{{ step.number }}. {{ step.name }} </b>
+            <b>{{ step.number }}. {{ step.name }}</b>
             <div class="stepText">{{ step.text }}</div>
         </div>
-
-	<Button @click="router.push( '/cookmode/' + recipeId )" >Vařit</Button>
+    </div>  
 </template>
 
 <style scoped>
@@ -59,4 +104,7 @@ console.log(recipe);
     margin-bottom: 10px;
 }
 
+h4 {
+    margin-bottom: 8px;
+}
 </style>
