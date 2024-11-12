@@ -32,7 +32,6 @@ function load_timers() {
 			update_timers();
 		}
 	)
-
 }
 
 function update_timers() {
@@ -52,12 +51,16 @@ function update_timers() {
 
 			t.time = t.rem_length - diff;
 
+			/* timer finishes */
 			if ( t.time <= 0 ) {
 				t.time = 0;
 				t.state = 2;
+
+				// TODO: show popup
 			}
 		}
 
+		/* update open timer model */
 		if ( open_timer_model.id == t.id ) {
 			open_timer_model.time.value = t.time;
 			open_timer_model.state.value = t.state;
@@ -79,7 +82,12 @@ function new_timer() {
 function open_timer( timer ) {
 	tm_open.value = true
 
-	open_timer_model = { id: timer.id, name: timer.name, state: ref( timer.state ), time: ref( timer.time ) };
+	open_timer_model = {
+		id: timer.id,
+		name: timer.name,
+		state: ref( timer.state ),
+		time: ref( timer.time )
+	}
 }
 
 function create_timer( timer ) {
@@ -171,8 +179,8 @@ function change_timer_time( delta ) {
 				<Button @click="change_timer_time( -1  )">-1 s</Button>
 				<Button @click="change_timer_time( +10 )">+10 s</Button>
 				<Button @click="change_timer_time( -10 )">-10 s</Button>
-				<Button @click="change_timer_time( +1 * 60 )">+1 min</Button>
-				<Button @click="change_timer_time( -1 * 60 )">-1 min</Button>
+				<Button @click="change_timer_time( +1  * 60 )">+1 min</Button>
+				<Button @click="change_timer_time( -1  * 60 )">-1 min</Button>
 				<Button @click="change_timer_time( +10 * 60 )">+10 min</Button>
 				<Button @click="change_timer_time( -10 * 60 )">-10 min</Button>
 				<br>
@@ -186,16 +194,18 @@ function change_timer_time( delta ) {
 	</Teleport>
 
 	<div class="timer_view">
-		<Button v-for="(timer, index) in timers" @click="open_timer( timer )" >
-			<div v-if="timer.name">
-				<h3>{{ timer.name }}</h3>
-			</div>
-			<h4 v-if="timer.state == 2">Hotovo</h4>
-			<p v-if="timer.state != 2">{{ format_time( timer.time ) }}</p>
-		</Button>
+		<h4>Časovače</h4>
+		<div>
+			<Button v-for="(timer, index) in timers" @click="open_timer( timer )" >
+				<div v-if="timer.name">
+					<h3>{{ timer.name }}</h3>
+				</div>
+				<h4 v-if="timer.state == 2">Hotovo</h4>
+				<p v-if="timer.state != 2">{{ format_time( timer.time ) }}</p>
+			</Button>
 
-		<Button @click="new_timer">+</Button>
-
+			<Button @click="new_timer">+</Button>
+		</div>
 	</div>
 </template>
 
@@ -210,6 +220,7 @@ function change_timer_time( delta ) {
 	height: 60%;
 	margin-left: 0%;
 }
+
 .modal_background {
 	position: fixed;
 	background-color: #000000cc;
@@ -224,8 +235,30 @@ function change_timer_time( delta ) {
 .timer_view {
 	background-color: var(--p-primary-950);
 	border-radius: var(--p-button-border-radius);
+	overflow-y: scroll;
+}
+
+.timer_view > h4 {
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+	margin-left: 1em;
+}
+
+.timer_view > div {
+	background-color: var(--p-primary-900);
+	border-radius: var(--p-button-border-radius);
 	padding: var(--p-button-padding-y) var(--p-button-padding-x);
 	overflow-y: scroll;
+}
+
+.timer_view button h3 {
+	margin-top: 0.2em;
+	margin-bottom: 0em;
+}
+
+.timer_view button p {
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
 }
 
 .p-button {
