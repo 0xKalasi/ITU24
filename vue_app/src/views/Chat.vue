@@ -1,8 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { readUser, readChat, sendChatMessage } from "../../utils/users_api.js";
-import { readRecipe } from "../../utils/api.js";
-import { ref, computed, onUnmounted, onBeforeMount } from "vue";
+import { ref, onUnmounted, onBeforeMount, onMounted, onUpdated } from "vue";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -12,13 +11,22 @@ const router = useRouter();
 const peerUserId = router.currentRoute.value.params.user_id;
 const peerUser = await readUser(peerUserId);
 
-// TODO maybe use subscribe
+// TODO maybe use subscribe?
 const messages = ref();
 const textMessage = ref("");
 
 const isLoading = ref(false);
 
-onBeforeMount (() => { // before messages.length is accessed, message is not yet defined
+const scrollDown = () => {
+  window.scrollTo(0, document.body.scrollHeight);
+};
+
+onMounted(() => {
+  scrollDown();
+});
+// TODO: go down when: // a message appears on the screen (user sent always, peer sent ONLY WHEN ALL THE WAY DOWN)
+
+onBeforeMount (() => { // before messages.length is accessed in template, message is not yet defined
   isLoading.value = true;
   readChat(currentUser.id, peerUserId)
   .then(async (result) => {
@@ -34,17 +42,21 @@ onUnmounted (() => {
 });
 
 const intervalId = setInterval(async () => {
+  // TODO !!! potential solution for scrolling and messages - initially use readChat -> get latest timestamp ->
+    // -> in interval only retrieve messages with stored timestamp -> append to messages (rerender?) -> 
+    // check whether to scroll down again, do so if the message was sent from client, do so if it was sent
+    // from peer only if we're already at the bottom -> refresh latest timestamp -> do again in next
+    // interval iteration -> repeat forever until closed
   messages.value = await readChat(currentUser.id, peerUserId);
 }, 1000);
 
 const handleSending = async () => {
-  // Do not send an empty message
-  if (textMessage.value.length == 0) {
+  if (textMessage.value.length == 0) { // Do not send an empty message
     return;
   }
 
-  sendChatMessage(currentUser.id, peerUserId, textMessage.value, null);
-  textMessage.value="";
+sendChatMessage(currentUser.id, peerUserId, textMessage.value, null);
+textMessage.value="";
 }
 
 </script>
@@ -84,14 +96,15 @@ const handleSending = async () => {
         <br/>
       </div>
     </div>
-      
-    <!-- TODO: style........ -->
+
     <div style="bottom: 70px; position: fixed; display: flex; justify-content: center;">
       <InputText v-model="textMessage" size="large"/>
       <Button icon="pi pi-send" style="margin-left: 10px;"
         @click="handleSending">
       </Button>
     </div>
+
+    <div style="height: 30px"></div>
   </div>
 
 </template>
