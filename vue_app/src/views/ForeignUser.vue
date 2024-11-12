@@ -5,6 +5,7 @@ import { readUser } from "../../utils/users_api.js";
 import { readUsersPublicRecipe } from "../../utils/api.js";
 
 import { useUserStore } from '../stores/userStore';
+import BasicPageHeader from "../components/basicPageHeader.vue";
 const currentUser = useUserStore();
 
 const router = useRouter();
@@ -19,7 +20,8 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
 </script>
 
 <template>  
-  <Button label="Zpět" icon="pi pi-arrow-left" @click="router.back()"></Button>
+  <BasicPageHeader text="Profil uživatele" />
+  <!-- <Button label="Zpět" icon="pi pi-arrow-left" @click="router.back()"></Button> -->
 
   <h2>{{ viewedUser.name }}</h2>
   {{ viewedUser.bio }}

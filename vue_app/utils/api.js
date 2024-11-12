@@ -264,7 +264,7 @@ const readFilters = async (id) => {
     const { data: filters, error } = await supabase
     .from('Filter')
     .select('*')
-    .eq('id', id)
+    .eq('user', id)
 
     if(!error)
         return filters;
@@ -332,6 +332,84 @@ const readAllCategories = async () => {
     } 
 } 
 
+const saveRecipe = async (notes, user_id, recipe_id) => {
+    const { data: recipe, error } = await supabase
+    .from('SavedRecipes')
+    .insert([
+        { 
+            notes: notes,
+            user: user_id,
+            recipe: recipe_id
+        },
+    ])
+    .select()
+    
+    if(!error)
+        return recipe;
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+const getRecipeImage = async (recipe_id) => {
+    /* /recipes/${recipe_id}/main.jpg */
+
+    const pathToImage = `/recipes/${recipe_id}/main.jpg`;
+    const { data: imgUrl, error } = supabase.storage.from('Images').getPublicUrl(pathToImage);
+    console.log(imgUrl.publicUrl);
+    return imgUrl.publicUrl;
+}
+
+const getSavedRecipes = async (user_id) => {
+    const { data: recipes, error } = await supabase
+    .from('SavedRecipes')
+    .select(`
+        *,
+        Recipe(*)
+        `)
+    .eq('user', user_id)
+
+    if(!error)
+        return recipes;
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+const createFilter = async (user_id, name, allergenIds) => {
+    const { data: filter, error } = await supabase
+    .from('Filter')
+    .insert([
+      { 
+        name: name,
+        user: user_id,
+      }
+    ])
+    .select()
+    .single(); /* this is the same as filter[0] */
+
+  if (error) 
+    return null;
+
+  /* bulk insert */
+  const filterAlergensData = allergenIds.map(alergenId => ({
+    filter: filter.id, /* id from filter insert */
+    alergen: alergenId,
+  }));
+  console.log(filterAlergensData);
+
+  const { data: filterAlergens, filterAlergensErr } = await supabase
+    .from('FilterAlergens')
+    .insert(filterAlergensData);
+
+  if (filterAlergensErr) 
+    return null
+   else 
+    return 1;
+}
+
 export { 
     readAllRecipes,
     readPublicRecipesFilterName,
@@ -349,4 +427,9 @@ export {
 	deleteCookTimer,
 	updateCookTimer,
 	deleteCookState,
+    readAllCategories,
+    saveRecipe,
+    getRecipeImage,
+    getSavedRecipes,
+    createFilter
 };

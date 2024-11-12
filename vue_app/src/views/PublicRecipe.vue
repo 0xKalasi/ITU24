@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { readPublicRecipe } from '../../utils/api';
+import { readPublicRecipe, saveRecipe, getRecipeImage } from '../../utils/api';
+import { useUserStore } from '../stores/userStore'
 
 const router = useRouter();
 const recipeId = router.currentRoute.value.params.recipe_id;
+
+const user = useUserStore();
 
 let recipe = '';
 const isLoading = ref(true); 
@@ -15,8 +18,12 @@ readPublicRecipe(recipeId).then(async (result) => {
     console.log(recipe);
 })
 
-let showAlert = ref(false);
-let alertKey = ref(0);
+const showAlert = ref(false);
+const alertKey = ref(0);
+const alertType = ref("");
+const alertText = ref("");
+
+const path = await getRecipeImage(1);
 
 const actionButtons = ref([
     {
@@ -31,16 +38,25 @@ const actionButtons = ref([
         icon: 'pi pi-play',
         command: () => {
             console.log("SpeedDial: Cook")
-            router.push(`/cookmode/${recipeId}`)
+            router.push(`/cookmode/${recipe.id}`)
         }
     },
     {
         label: 'Save',
         icon: 'pi pi-bookmark',
         command: () => {
-            console.log("SpeedDial: Save")
-            showAlert.value = true;
-            alertKey.value++;
+            saveRecipe(null, user.id, recipe.id)
+            .then(async (result) => {
+                if (result) {
+                    alertType.value = "success";
+                    alertText.value = "Uloženo";
+                } else {
+                    alertType.value = "error";
+                    alertText.value = "Nepodařilo se uložiť";
+                }
+                showAlert.value = true;
+                alertKey.value++;
+            })
         }
     },
     {
@@ -54,17 +70,20 @@ const actionButtons = ref([
 </script>
 
 <template>
-    <Alert v-if="showAlert" type="success" text="Succesfully saved" :key="alertKey"></Alert>
+    <Alert v-if="showAlert" :type="alertType" :text="alertText" :key="alertKey"></Alert>
 
     <LoadingScreen v-if="isLoading"/>
     
     <div v-else>
-         <div style="position: relative; display: flex; align-items: center; min-width: 320px">
+        <div style="position: relative; display: flex; align-items: center; min-width: 320px">
             <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
             <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
             <SpeedDial :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -8%);">
             </SpeedDial>
         </div> 
+        <!-- <div v-if="recipe.id == 1" style="margin-bottom: 8px;">
+            <Image :src="path" alt="Image" width="250"/>
+        </div> -->
 
         <div style="display: inline">
             <Tag style="margin-right: 4px;" v-for="category in recipe.RecipeCategories" >{{ category.category.name }}</Tag>

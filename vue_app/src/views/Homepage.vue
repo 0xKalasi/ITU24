@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { switchUser } from "../../utils/users_api.js";
 import { useRouter } from "vue-router";
-import { readPublicRecipes, readPublicRecipesFilterName, readFilters } from "../../utils/api";
+import { readPublicRecipes, readPublicRecipesFilterName, readFilters, getRecipeImage } from "../../utils/api";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -24,8 +24,11 @@ const search = async () => {
   })
 }
 
-onMounted(async () => {
+const path = ref();
+
+onBeforeMount(async () => {
   search();
+  path.value = await getRecipeImage(1);
 
   if(currentUser.id)
     filters.value = await readFilters(currentUser.id)
@@ -53,6 +56,9 @@ onMounted(async () => {
       <div>
         {{ recipe.User.name }}
       </div>
+      <div v-if="recipe.id == 1">
+            <Image :src="path" alt="Image" width="250"/>
+        </div>
       <div class="recipe">
         <div>({{ recipe.id }}) {{ recipe.name }}</div>
         <div class="recipe-likes">{{ recipe.like_count }} likes {{ recipe.times_cooked }}x </div>

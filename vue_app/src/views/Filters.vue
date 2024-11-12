@@ -13,11 +13,12 @@ console.log(filters);
 <template>
     <BasicPageHeader text="Uložené filtry"></BasicPageHeader> 
 
-    <h2>{{ user.name }}</h2>
-    <h3>Filters</h3>
-    <div v-if="filters.length" v-for="filter in filters">
-        {{ filter.name }}
+    <div v-if="filters.length" style="margin: 20px 0">
+        <div v-for="filter in filters">
+            <Message severity="warn">{{ filter.name }}</Message>
+        </div>  
     </div>
+    
     <h4 v-else>Nemáte žádne filtry</h4>
     <Button @click="router.push('/filters/create')">Vytvoř filter</Button>
 
