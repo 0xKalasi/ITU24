@@ -4,9 +4,14 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 
-import { readRecipe } from "../../utils/api.js";
+import { readRecipe, getCookState } from "../../utils/api.js";
 
 const recipe_id = route.params.recipe_id;
+
+import { useUserStore } from '../stores/userStore';
+const currentUser = useUserStore();
+
+const user_id = currentUser.id;
 
 let recipe_vm = {
 	ready: ref( false ),
@@ -37,6 +42,18 @@ readRecipe( recipe_id ).then(
 	}
 )
 
+function open_cook_step() {
+
+	getCookState( user_id, recipe_id, null )
+	.then(
+		( value ) => {
+			const step_number = value.step_number ? value.step_number : 1;
+			router.replace('/cookmode/' + recipe_id + '/' + step_number )
+		}
+	)
+
+}
+
 </script>
 
 <template>
@@ -44,39 +61,28 @@ readRecipe( recipe_id ).then(
 		Načítání receptu...
 	</div>
 	<div v-if="recipe_vm.ready.value">
-		<p>{{ recipe_vm.name }}</p>
+		<h2>{{ recipe_vm.name }}</h2>
 
-		<p>Porce: {{ recipe_vm.portion_count }}</p>
-		<p>Očekávaný čas: {{ recipe_vm.time_to_cook }}</p>
+		<h4>Porce:</h4> {{ recipe_vm.portion_count }}
+		<h4>Očekávaný čas:</h4> {{ recipe_vm.time_to_cook.value / 60 }} minut
 
-		Ingredience:
+		<h4>Ingredience:</h4>
 		<ul>
 			<li v-for="(ingredient, index) in recipe_vm.ingredients">
+				<input type="checkbox"/>
 				{{ ingredient.name }} {{ ingredient.quantity }} {{ ingredient.unit }}
+				<div class="note" v-if="ingredient.notes">{{ ingredient.notes }}</div>
 			</li>
 		</ul>
 
-		Kategorie:
-		<ul>
-			<li v-for="(category, index) in recipe_vm.categories">
-				{{ category.name }}
-			</li>
-		</ul>
-
-		Náčiní:
+		<h4>Náčiní:</h4>
 		<ul>
 			<li v-for="(utencil, index) in recipe_vm.utencils">
+				<input type="checkbox"/>
 				{{ utencil.name }}
 			</li>
 		</ul>
 
-		Alergeny:
-		<ul>
-			<li v-for="(alergen, index) in recipe_vm.alergens">
-				{{ alergen.id }}. {{ alergen.name }}
-			</li>
-		</ul>
-
-		<Button @click="router.replace('/cookmode/' + recipe_id + '/1')">Vařit</Button>
+		<Button @click="open_cook_step">Vařit</Button>
 	</div>
 </template>

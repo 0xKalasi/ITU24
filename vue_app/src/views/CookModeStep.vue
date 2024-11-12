@@ -1,15 +1,20 @@
 <script setup>
 import { ref } from "vue";
-
-import { readRecipe } from "../../utils/api.js";
-
+import { readRecipe, getCookState, deleteCookState } from "../../utils/api.js";
+import TimerView from '../components/timerView.vue';
 import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
+import { useUserStore } from '../stores/userStore';
+const currentUser = useUserStore();
 
+const user_id = currentUser.id;
 const recipe_id = parseInt( route.params.recipe_id );
 let step_number = parseInt( route.params.step_number );
 let max_step_number = Infinity;
+
+/* create or load cook state */
+let cook_state = await getCookState( user_id, recipe_id, step_number );
 
 let step_vm = {
 	ready: ref( false ),
@@ -21,9 +26,14 @@ let step_vm = {
 function render() {
 	step_vm.ready.value = false;
 
+	getCookState( user_id, recipe_id, step_number ).then(
+		( value ) => { cook_state = value }
+	);
+	//console.log( cook_state );
+
 	readRecipe( recipe_id ).then(
 		( value ) => {
-			console.log( value );
+			//console.log( value );
 
 			let step = value.Step[ step_number - 1 ];
 
@@ -61,6 +71,8 @@ function recipe() {
 
 function finish() {
 	router.back();
+
+	deleteCookState( cook_state.id )
 }
 
 </script>
@@ -70,8 +82,10 @@ function finish() {
 		Načítání receptu...
 	</div>
 	<div v-if="step_vm.ready.value">
-		<p>Krok {{step_vm.number}}: {{step_vm.name}}</p>
+		<h4>Krok {{step_vm.number}}: {{step_vm.name}}</h4>
 		<p>{{step_vm.text}}</p>
+
+		<TimerView :cook_state_id="cook_state.id"/>
 
 		<Button v-if="step_number == 1" @click="recipe">Recept</Button>
 
