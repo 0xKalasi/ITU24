@@ -420,7 +420,6 @@ export {
     readUsersPublicRecipe,
     readFilters,
     readAllAlergens,
-    readAllCategories,
 	getCookTimers,
 	createCookTimer,
 	getCookState,
