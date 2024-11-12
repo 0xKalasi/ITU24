@@ -9,6 +9,7 @@ import { readRecipe, getCookState } from "../../utils/api.js";
 const recipe_id = route.params.recipe_id;
 
 import { useUserStore } from '../stores/userStore';
+import BasicPageHeader from "../components/basicPageHeader.vue";
 const currentUser = useUserStore();
 
 const user_id = currentUser.id;
@@ -61,7 +62,8 @@ function open_cook_step() {
 		Načítání receptu...
 	</div>
 	<div v-if="recipe_vm.ready.value">
-		<h2>{{ recipe_vm.name }}</h2>
+		<BasicPageHeader :text="recipe_vm.name.value"></BasicPageHeader>
+		<!-- <h2>{{ recipe_vm.name }}</h2> -->
 
 		<h4>Porce:</h4> {{ recipe_vm.portion_count }}
 		<h4>Očekávaný čas:</h4> {{ recipe_vm.time_to_cook.value / 60 }} minut

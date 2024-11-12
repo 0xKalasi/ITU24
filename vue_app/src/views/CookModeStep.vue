@@ -6,6 +6,7 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 import { useUserStore } from '../stores/userStore';
+import BasicPageHeader from "../components/basicPageHeader.vue";
 const currentUser = useUserStore();
 
 const user_id = currentUser.id;
@@ -82,7 +83,8 @@ function finish() {
 		Načítání receptu...
 	</div>
 	<div v-if="step_vm.ready.value">
-		<h4>Krok {{step_vm.number}}: {{step_vm.name}}</h4>
+		<BasicPageHeader :text="`Krok ${step_vm.number.value}: ${step_vm.name.value}`"></BasicPageHeader>
+		<!-- <h4>Krok {{step_vm.number}}: {{step_vm.name}}</h4> -->
 		<p>{{step_vm.text}}</p>
 
 		<TimerView :cook_state_id="cook_state.id"/>
