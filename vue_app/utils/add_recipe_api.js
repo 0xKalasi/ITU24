@@ -147,14 +147,26 @@ async function insertRecipe(recipeData) {
       // Insert the recipe data and get the recipe ID
       const recipeId = await insertRecipe(recipeData);
       if (!recipeId) return false; // If recipe insertion fails, stop
-  
+      var alergenInserted = true, categoriesInserted = true, stepsInserted = true, timersInserted = true, utencilsInserted = true, ingredientsInserted = true;
       // Insert related tables
-      const alergenInserted = await insertRecipeAlergens(recipeId, recipeData.alergens);
-      const categoriesInserted = await insertRecipeCategories(recipeId, recipeData.categories);
-      const stepsInserted = await insertSteps(recipeId, recipeData.steps);
-      const timersInserted = await insertTimers(recipeId, recipeData.timers);
-      const utencilsInserted = await insertUtencils(recipeId, recipeData.utencils);
-      const ingredientsInserted = await insertIngredients(recipeId, recipeData.ingredients);
+      if(recipeData.alergens){
+        alergenInserted = await insertRecipeAlergens(recipeId, recipeData.alergens);
+      }
+      if(recipeData.categories){
+        categoriesInserted = await insertRecipeCategories(recipeId, recipeData.categories);
+      }
+      if(recipeData.steps){
+        stepsInserted = await insertSteps(recipeId, recipeData.steps);
+      }
+      if(recipeData.timers){ 
+        timersInserted = await insertTimers(recipeId, recipeData.timers);
+      }
+      if(recipeData.utencils){
+        utencilsInserted = await insertUtencils(recipeId, recipeData.utencils);
+      }
+      if(recipeData.ingredients){
+        ingredientsInserted = await insertIngredients(recipeId, recipeData.ingredients);
+      }
   
       if (
         alergenInserted &&

@@ -8,9 +8,11 @@
   import { useUserStore } from '../stores/userStore';
   import MyOnFloatLabel from '../components/myOnFloatLabel.vue';
   import PhotoUploader from '../components/photoUploader.vue';
+  import { useRouter } from "vue-router";
 
 
   const currentUser = useUserStore();
+  const router = useRouter();
 
 
   const recipe = ref({
@@ -20,18 +22,13 @@
     creator: currentUser.id,
     private: true,
     portions: 4,
-    time_to_cook: 5300,
+    time_to_cook: 0,
     alergens: [],
     categories: [],
     steps: [],
     ingredients: [],
-    utencils: [
-        {name: ""}
-    ],
-    timers: [
-        { step_number: 1, description: 'Boil for 10 minutes', time: 600 },
-    ]
-
+    utencils: [],
+    timers: []
   });
 
   // Ingredient data
@@ -131,10 +128,11 @@
     }
 
 
+
   </script>
 
 <template>
-  <BasicPageHeader text="AddRecipe"/>
+  <BasicPageHeader text="Add Recipe"/>
     <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
   
      <!-- Title TextArea Input -->
@@ -261,9 +259,9 @@
         <Button label="Delete" class="p-button-danger"></Button>
       </div>
 
-      <!-- Delete Button -->
+      <!-- Create Button -->
       <div class="p-text-right">
-        <Button label="Create" class="p-button-ok" @click="insertCompleteRecipe(recipe)"></Button>
+        <Button label="Create" class="p-button-ok" @click='router.push("/profile/"+currentUser.id); insertCompleteRecipe(recipe);'></Button>
       </div>
 
     </div>
