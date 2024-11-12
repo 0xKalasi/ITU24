@@ -3,7 +3,6 @@
   import InputText from 'primevue/inputtext';
   import InputNumber from 'primevue/inputnumber';
   import Textarea from 'primevue/textarea';
-  import Dropdown from 'primevue/dropdown';
   import Button from 'primevue/button';
   import { insertCompleteRecipe } from '../../utils/add_recipe_api'
   import { useUserStore } from '../stores/userStore';

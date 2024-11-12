@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { useRecipeStore } from '../stores/recipeStore';
 import FileUpload from 'primevue/fileupload';
 
 // Define prop for v-model binding and disable functionality
