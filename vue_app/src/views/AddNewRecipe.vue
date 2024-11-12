@@ -8,7 +8,7 @@
   import { insertCompleteRecipe } from '../../utils/add_recipe_api'
   import { useUserStore } from '../stores/userStore';
   import MyOnFloatLabel from '../components/myOnFloatLabel.vue';
-  import PhotoUploader from '../components/PhotoUploader.vue';
+  import PhotoUploader from '../components/photoUploader.vue';
 
 
   const currentUser = useUserStore();
