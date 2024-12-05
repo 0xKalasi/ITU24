@@ -20,7 +20,7 @@
         <NavigationButton :showOnlyBackBtn="false"></NavigationButton>
     </div>
     <div v-else>
-        <Button type="button" label="AddRecipe" @click="router.push('/addnewrecipe')"/>
+        <Button type="button" label="Přidat recept" @click="router.push('/addnewrecipe')"/>
     </div>
 
     <h3 style="margin-top: 50px;">Vaše recepty</h3>
