@@ -30,6 +30,10 @@ const friends = await readUsersFriends(currentUser.id);
     <Button label="Zablokované" icon="pi pi-times" @click="router.push('/blocked')"></Button>
     <br/><br/>
 
+    <div v-if="friends.length == 0">
+      Seznam přátel je prázdný.
+    </div>
+
     <div v-for="friend in friends">
       <Message @click="router.push(`/profile/${friend.id}`)" severity="secondary">
         {{ friend.name }}

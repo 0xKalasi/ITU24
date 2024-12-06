@@ -20,7 +20,11 @@ const friendRequests = await readUsersRequests(currentUser.id);
   <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
   <br/><br/>
 
-  <div v-for="request in friendRequests">
+  <div v-if="friendRequests.length == 0">
+    Nemáte žádné žádosti o přátelství.
+  </div>
+
+  <div v-else v-for="request in friendRequests">
     <Message @click="router.push(`/profile/${request.id}`)" severity="secondary">
       {{ request.name }}
     </Message>

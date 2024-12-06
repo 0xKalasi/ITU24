@@ -20,6 +20,10 @@ const blockedUsers = await readUsersBlocked(currentUser.id);
   <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
   <br/><br/>
 
+  <div v-if="blockedUsers.length == 0">
+    Seznam zablokovaných uživatelů je prázdný.
+  </div>
+
   <div v-for="blocked in blockedUsers">
     <Message @click="router.push(`/profile/${blocked.id}`)" severity="secondary">
       {{ blocked.name }}
