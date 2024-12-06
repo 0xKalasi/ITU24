@@ -1,13 +1,13 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUsersFriends } from "../../utils/users_api.js";
+import { readUsersRequests } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-const friends = await readUsersFriends(currentUser.id);
+const friendRequests = await readUsersRequests(currentUser.id);
 
 </script>
 
@@ -20,16 +20,13 @@ const friends = await readUsersFriends(currentUser.id);
   <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
   <br/><br/>
 
-  <div v-for="friend in friends">
-    <div v-if="friend.state == 'pending'" style="margin-bottom: 50px"> <!-- TODO render list of blocked users -->
-      <Message @click="router.push(`/profile/${friend.User.id}`)" severity="secondary">
-        {{ friend.User.name }}
-      </Message>
-      <Button label="Přijmout" icon="pi pi-check" @click="console.log('PŘIJMOUT')"></Button>
-      <Button label="Odmítnout" icon="pi pi-times" @click="console.log('ODMÍTNOUT')"></Button>
-      <br/>
-
-    </div>
+  <div v-for="request in friendRequests">
+    <Message @click="router.push(`/profile/${request.id}`)" severity="secondary">
+      {{ request.name }}
+    </Message>
+    <Button style="float: left" label="Přijmout" icon="pi pi-check" @click="console.log('PŘIJMOUT')"></Button>
+    <Button style="float: right" label="Odmítnout" icon="pi pi-times" @click="console.log('ODMÍTNOUT')"></Button>
+    <br/><br/>
   </div>
 
 </template>

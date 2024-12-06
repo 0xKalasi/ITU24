@@ -48,14 +48,14 @@ const router = createRouter({
   routes,
 });
 
-/* NAVIGATION GUARDS */
-router.beforeEach((to, from) => {
-  const user = useUserStore();
-
-  /* if user is not signed in, go to /users to choose user */
-  /* to.path !== '/users' is there to avoid infinite redirect */
-  if(user.id == 0 && to.path !== '/users')
-    return '/users'
-}) 
+///* NAVIGATION GUARDS */
+//router.beforeEach((to, from) => {
+//  const user = useUserStore();
+//
+//  /* if user is not signed in, go to /users to choose user */
+//  /* to.path !== '/users' is there to avoid infinite redirect */
+//  if(user.id == 0 && to.path !== '/users')
+//    return '/users'
+//}) 
 
 export default router;

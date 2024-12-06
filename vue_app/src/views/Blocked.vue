@@ -1,13 +1,13 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUsersFriends } from "../../utils/users_api.js";
+import { readUsersBlocked } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-const friends = await readUsersFriends(currentUser.id);
+const blockedUsers = await readUsersBlocked(currentUser.id);
 
 </script>
 
@@ -20,16 +20,17 @@ const friends = await readUsersFriends(currentUser.id);
   <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
   <br/><br/>
 
-  <div v-for="friend in friends">
-    <div v-if="friend.state == 'blocked'" style="margin-bottom: 50px"> <!-- TODO render list of blocked users -->
-      <Message @click="router.push(`/profile/${friend.User.id}`)" severity="secondary">
-        {{ friend.User.name }}
-      </Message>
-      <Button label="Odblokovat" icon="pi pi-lock-open"
-        @click="console.log('ODBLOKOVAT')"
-        style="float: right">
-      </Button>
-    </div>
+  <div v-for="blocked in blockedUsers">
+    <Message @click="router.push(`/profile/${blocked.id}`)" severity="secondary">
+      {{ blocked.name }}
+    </Message>
+    <Button
+      label="Odblokovat"
+      icon="pi pi-lock-open"
+      @click="console.log('ODBLOKOVAT')"
+      style="float: right">
+    </Button>
+    <br/><br/>
   </div>
 
 </template>
