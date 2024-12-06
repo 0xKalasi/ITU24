@@ -52,7 +52,9 @@ const send = async (fid) => {
   <BasicPageHeader text="Sdílej"></BasicPageHeader>
   <h2><a>{{ recipe.name }}</a></h2>
 
-  <div v-if="friendCnt == 0">Nemůžete sdílet recept, Váš seznam přátel je prázdný.</div>
+  <div v-if="currentUser.id == 0">Pro sdílení receptu se přihlaste.</div>
+
+  <div v-else-if="friendCnt == 0">Nemůžete sdílet recept, Váš seznam přátel je prázdný.</div>
 
   <div v-else>
     <InputText v-model="textMessage" size="large" 

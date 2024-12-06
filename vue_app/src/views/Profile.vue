@@ -1,6 +1,5 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { switchUser } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -17,7 +16,7 @@ const router = useRouter();
   </div>
 
   <div v-else>
-    <h3>{{ currentUser.name }}</h3>
+    <h3><i>{{ currentUser.name }}</i></h3>
     {{ currentUser.bio }}
   </div>
 

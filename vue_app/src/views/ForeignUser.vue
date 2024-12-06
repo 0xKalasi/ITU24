@@ -47,13 +47,15 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
     </Message>
   </div>
 
-  <br/>
-  <div class="devider"></div>
+  <div v-if="currentUser.id != 0">
+    <br/>
+    <div class="devider"></div>
 
-  <h3>Poslat žádost o přátelství</h3>
-  <Button label="Poslat žádost o přátelství" icon="pi pi-users"
-    @click="console.log(`SEND FRIEND REQUEST`)">
-  </Button>
+    <h3>Poslat žádost o přátelství</h3>
+    <Button label="Poslat žádost o přátelství" icon="pi pi-users"
+      @click="console.log(`SEND FRIEND REQUEST`)">
+    </Button>
+  </div>
 
 </template>
 
