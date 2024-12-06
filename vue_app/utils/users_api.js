@@ -106,13 +106,10 @@ const readUsersByRelation = async (id, state) => {
     friends.push(friend);
   }
 
-  console.log(friends);
-
   return friends;
 }
 
 // Specific functions to get different kinds of user relations:
-
 const readUsersFriends = async (id) => {
   return await readUsersByRelation(id, 'accepted');
 }
@@ -149,9 +146,7 @@ const getChatFromUserIds = async (sender, receiver) => {
 
 const readChat = async (sender, receiver) => {
   const chatId = await getChatFromUserIds(sender, receiver);
-
-  //console.log(chatId);
-
+  
   const { data: Messages, error } = await supabase
   .from('Message')
   .select(`
@@ -190,6 +185,75 @@ const sendChatMessage = async (sender, receiver, text, recipeId) => {
   return data;
 }
 
+const ForeignUserRelation = {
+  loggedOut: "loggedOut",
+  self: "self",
+  noRelation: "noRelation",
+  pending: "pending",
+  accepted: "accepted",
+  blocked: "blocked"
+}
+const getFriendshipState = async (user, peer) => {
+  if (user == 0) {
+    return ForeignUserRelation.loggedOut;
+  }
+
+  if (user == peer) {
+    return ForeignUserRelation.self;
+  }
+
+  if (user > peer) { // friend1 is is always lower
+    let aux = user;
+    user = peer;
+    peer = aux;
+  }
+
+  const { data: state, error } = await supabase
+  .from('FriendStatus')
+  .select('state')
+  .eq('friend1', user)
+  .eq('friend2', peer)
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  if (state.length == 0) { // Assign state according to return
+    return ForeignUserRelation.noRelation;
+  } else if (state[0].state == "pending") {
+    return ForeignUserRelation.pending;
+  } else if (state[0].state == "accepted") {
+    return ForeignUserRelation.accepted;
+  } else if (state[0].state == "blocked") {
+    return ForeignUserRelation.blocked;
+  }
+}
+
+const sendFriendRequest = async (sender, receiver) => {
+  if (sender > receiver) {
+    let aux = sender;
+    sender = receiver;
+    receiver = aux;
+  }
+
+  const { data, error } = await supabase
+  .from('FriendStatus')
+  .insert([{ 
+    friend1: sender,
+    friend2: receiver,
+    state: "pending"
+  }])
+  .select()
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
+}
+
 export {
   readAllUsers,
   readUser,
@@ -200,4 +264,7 @@ export {
   readUsersBlocked,
   readChat,
   sendChatMessage,
+  ForeignUserRelation,
+  getFriendshipState,
+  sendFriendRequest
 };

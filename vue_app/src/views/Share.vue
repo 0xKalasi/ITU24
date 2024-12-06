@@ -13,13 +13,14 @@ const recipeId = router.currentRoute.value.params.recipe_id;
 const recipe = await readPublicRecipe(recipeId);
 
 const friends = await readUsersFriends(currentUser.id);
-const friendCnt = friends.length;
 
 const textMessage = ref("");
 
+console.log(friends);
+
 const buttonsPressed = ref(
   friends.reduce((arr, friend) => {
-    arr[friend.User.id] = false;
+    arr[friend.id] = false;
     return arr;
   }, {})
 );
@@ -54,25 +55,23 @@ const send = async (fid) => {
 
   <div v-if="currentUser.id == 0">Pro sdílení receptu se přihlaste.</div>
 
-  <div v-else-if="friendCnt == 0">Nemůžete sdílet recept, Váš seznam přátel je prázdný.</div>
+  <div v-else-if="friends.length == 0">Nemůžete sdílet recept, Váš seznam přátel je prázdný.</div>
 
   <div v-else>
     <InputText v-model="textMessage" size="large" 
       placeholder="Zde vložte textovou zprávu" style="margin-bottom: 20px"/>
 
-    <div v-for="friend in friends">
-      <div v-if="friend.state == 'accepted'" style="display: flex">
-        <Message 
-          @click="router.push(`/profile/${friend.User.id}`)"
-          severity="secondary">
-          {{ friend.User.name }}
-        </Message>
+    <div v-for="friend in friends" style="display: flex">
+      <Message 
+        @click="router.push(`/profile/${friend.id}`)"
+        severity="secondary">
+        {{ friend.name }}
+      </Message>
 
-        <Button icon="pi pi-send" style="margin-left: 10px"
-          @click="send(friend.User.id)"
-          :class="buttonsPressed[friend.User.id] ? 'p-button-secondary' : 'p-button-primary'">
-        </Button>
-      </div>
+      <Button icon="pi pi-send" style="margin-left: 10px"
+        @click="send(friend.id)"
+        :class="buttonsPressed[friend.id] ? 'p-button-secondary' : 'p-button-primary'">
+      </Button>
     </div>
   </div>
 

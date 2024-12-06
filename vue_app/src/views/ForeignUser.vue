@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { readUser } from "../../utils/users_api.js";
 
 import { readUsersPublicRecipe } from "../../utils/api.js";
+import { sendFriendRequest, ForeignUserRelation, getFriendshipState } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 import BasicPageHeader from "../components/basicPageHeader.vue";
@@ -16,6 +17,8 @@ const viewedUser = await readUser(viewedUserId);
 const usersRecipes = await readUsersPublicRecipe(viewedUserId);
 const recipeCnt = usersRecipes.length;
 const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
+
+const currentFriendshipState = await getFriendshipState(currentUser.id, viewedUserId);
 
 </script>
 
@@ -47,14 +50,35 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
     </Message>
   </div>
 
-  <div v-if="currentUser.id != 0">
+  <!-- Just for completeness; nothing should be output when logged out or self -->
+  <div v-if="currentFriendshipState == ForeignUserRelation.loggedOut"></div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.self"></div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.noRelation">
     <br/>
     <div class="devider"></div>
 
     <h3>Poslat žádost o přátelství</h3>
     <Button label="Poslat žádost o přátelství" icon="pi pi-users"
-      @click="console.log(`SEND FRIEND REQUEST`)">
+      @click="sendFriendRequest(currentUser.id, viewedUserId)">
     </Button>
+  </div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.pending">
+    <br/>
+    <div class="devider"></div>
+
+    pending
+  </div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.accepted">
+    <br/>
+    <div class="devider"></div>
+
+    accepted
+  </div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.blocked">
+    <br/>
+    <div class="devider"></div>
+
+    blocked
   </div>
 
 </template>
