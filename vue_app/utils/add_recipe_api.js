@@ -187,6 +187,18 @@ async function insertRecipe(recipeData) {
       return false;
     }
   }
+
+  async function deleteRecipe(Recipe) {
+    const {data, error}  = await supabase
+    .from( "Recipe" )
+    .delete()
+    .eq( 'id', Recipe.id );
+    if (error) {
+      console.error("Error deleting recipe:", error);
+    } else {
+      console.log("Deleted everything aight");
+    }
+  }
   
   export {
     insertRecipe,
@@ -197,4 +209,5 @@ async function insertRecipe(recipeData) {
     insertUtencils,
     insertIngredients,
     insertCompleteRecipe,
+    deleteRecipe,
   };

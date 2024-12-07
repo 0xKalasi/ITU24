@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { readPublicRecipe, saveRecipe, getRecipeImage } from '../../utils/api';
 import { useUserStore } from '../stores/userStore'
+import { deleteRecipe } from '../../utils/add_recipe_api'
 
 const router = useRouter();
 const recipeId = router.currentRoute.value.params.recipe_id;
@@ -67,6 +68,21 @@ const actionButtons = ref([
         }
     },
 ])
+
+var delete_recipe = false;
+async function deleteRecipeLocal(){
+    if (!delete_recipe){
+        alertType.value = "error";
+        alertText.value = "Naozaj chcete smazat recept?";
+        showAlert.value = true;
+        alertKey.value++;
+        delete_recipe = true;
+    } else {
+        await deleteRecipe(recipe);
+        router.push(`/profile/${user.id}`)
+    }
+
+}
 </script>
 
 <template>
@@ -123,7 +139,12 @@ const actionButtons = ref([
             <b>{{ step.number }}. {{ step.name }}</b>
             <div class="stepText">{{ step.text }}</div>
         </div>
-    </div>  
+        
+        <div v-if="user.id == recipe.creator">
+            <Button class="p-button-danger" @click="deleteRecipeLocal">Zmaž recept</Button>
+            <Button class="p-button-warn" @click="">Uprav recept</Button>
+        </div>
+    </div>
 </template>
 
 <style scoped>

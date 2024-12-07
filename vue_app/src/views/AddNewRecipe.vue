@@ -4,7 +4,7 @@
   import InputNumber from 'primevue/inputnumber';
   import Textarea from 'primevue/textarea';
   import Button from 'primevue/button';
-  import { insertCompleteRecipe } from '../../utils/add_recipe_api'
+  import { insertCompleteRecipe, deleteRecipe } from '../../utils/add_recipe_api'
   import { useUserStore } from '../stores/userStore';
   import MyOnFloatLabel from '../components/myOnFloatLabel.vue';
   import PhotoUploader from '../components/photoUploader.vue';
@@ -70,9 +70,14 @@
 
     // Add new step
     function PushStep() {
-      const stepNum = recipe.value.steps.length + 1;
-      recipe.value.steps.push({ ...newStep.value, number: stepNum });
-      newStep.value = { number: stepNum + 1, text: "", name: `Krok ${stepNum + 1}`, photo: "" };
+      newStep.value.number++; // Increment the step number
+      recipe.value.steps.push({ ...newStep.value }); // Push the step into the recipe
+      newStep.value = { 
+        number: newStep.value.number, // Retain the number for the next step
+        text: "", 
+        name: "Krok " + newStep.value.number, 
+        photo: ""
+      }; // Reset newStep
     }
 
     // Edit step
@@ -127,7 +132,20 @@
       editedUtencil.value = ""; // Clear the edited utensil input
     }
 
+    var delete_recipe = false;
+    async function cancelCreating(){
+        if (!delete_recipe){
+            alertType.value = "error";
+            alertText.value = "Naozaj chcete smazat vaše úpravy?";
+            showAlert.value = true;
+            alertKey.value++;
+            delete_recipe = true;
+        } else {
+            await deleteRecipe(recipe);
+            router.push(`/recipes`)
+        }
 
+    }
 
   </script>
 
@@ -253,14 +271,10 @@
           <InputText value="01:30" class="p-inputtext-sm" style="width: 60px" />
         </div>
       </div>
-  
-      <!-- Delete Button -->
-      <div class="p-text-right">
-        <Button label="Delete" class="p-button-danger"></Button>
-      </div>
 
-      <!-- Create Button -->
-      <div class="p-text-right">
+      <!-- Create, Delete Button -->
+      <div class="flex justify-between items-center px-4">
+        <Button label="Cancel" class="p-button-danger" @click='router.push("/profile/"+currentUser.id); cancelCreating();'></Button>
         <Button label="Create" class="p-button-ok" @click='router.push("/profile/"+currentUser.id); insertCompleteRecipe(recipe);'></Button>
       </div>
 
