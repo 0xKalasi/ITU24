@@ -132,7 +132,7 @@
   </script>
 
 <template>
-  <BasicPageHeader text="Add Recipe"/>
+  <BasicPageHeader text="Vytvoř recept"/>
     <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
   
      <!-- Title TextArea Input -->
@@ -245,11 +245,11 @@
   
       <!-- General Info Section -->
       <div class="p-mb-3">
-        <h3>General info</h3>
+        <h3>Všeobecné informace</h3>
         <div class="p-d-flex p-ai-center p-mb-2">
-          <label class="p-mr-2">Number of portions</label>
+          <label class="p-mr-2">Počet porcí</label>
           <InputNumber v-model="recipe.portions" class="p-inputtext-sm p-mr-3" style="width: 60px" />
-          <label class="p-mr-2">Prep time</label>
+          <label class="p-mr-2">Čas přípravy</label>
           <InputText value="01:30" class="p-inputtext-sm" style="width: 60px" />
         </div>
       </div>
