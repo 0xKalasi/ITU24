@@ -72,28 +72,57 @@ const updateUser = async (id, name, bio) => {
   return;
 }
 
-// TODO works very weirdly...
-const readUsersFriends = async (id) => {
-  const { data: friendStatus, error } = await supabase
+const readUsersByRelation = async (id, state) => {
+  // A logged out user has no friends
+  if (id == 0) {
+    return [];
+  }
+
+  // Select the friendships which the user with given id is in
+  const { data: usersFriendships, error } = await supabase
   .from('FriendStatus')
   .select(`
-    state,
-    User:friend2 (id, name, bio)
+    friend1,
+    friend2
   `)
-  .eq('friend1', id)
+  .or(`friend1.eq.${id},friend2.eq.${id}`)
+  .eq('state', state)
 
   if (error) {
     console.log(error);
     return null;
   }
 
-  return friendStatus;
+  // Get a list of users friend ids
+  // Flatten the array of objects and remove the user themselfs
+  const friendIds = usersFriendships
+                    .flatMap(friendship => Object.values(friendship))
+                    .filter(friendId => (friendId != id));
+
+  // Retrieve data about users friends
+  let friends = [];
+  for (const friendId of friendIds) {
+    let friend = await readUser(friendId);
+    friends.push(friend);
+  }
+
+  return friends;
 }
 
-// Find all messages in chat by its id
+// Specific functions to get different kinds of user relations:
+const readUsersFriends = async (id) => {
+  return await readUsersByRelation(id, 'accepted');
+}
+const readUsersRequests = async (id) => {
+  return await readUsersByRelation(id, 'pending');
+}
+const readUsersBlocked = async (id) => {
+  return await readUsersByRelation(id, 'blocked');
+}
+
+// We get which chat belongs to given users by their ids
+// In db, the first id is always lower, so this works generally in both orders
 const getChatFromUserIds = async (sender, receiver) => {
-  // TODO extremely stupid, maybe there is a better way ???
-  // user 1 has always smaller id then user 2
   if (sender > receiver) {
     let aux = sender;
     sender = receiver;
@@ -117,9 +146,7 @@ const getChatFromUserIds = async (sender, receiver) => {
 
 const readChat = async (sender, receiver) => {
   const chatId = await getChatFromUserIds(sender, receiver);
-
-  //console.log(chatId);
-
+  
   const { data: Messages, error } = await supabase
   .from('Message')
   .select(`
@@ -158,19 +185,122 @@ const sendChatMessage = async (sender, receiver, text, recipeId) => {
   return data;
 }
 
-//const acceptFriendRequest = async (status) => {
-//  const { data, error } = await supabase
-//  .from('FriendStatus')
-//  .update({ other_column: 'otherValue' })
-//  .eq('some_column', 'someValue')
-//  .select()      
-//}
+const ForeignUserRelation = {
+  loggedOut: "loggedOut",
+  self: "self",
+  noRelation: "noRelation",
+  pending: "pending",
+  accepted: "accepted",
+  blocked: "blocked"
+}
+const getFriendshipState = async (user, peer) => {
+  if (user == 0) {
+    return ForeignUserRelation.loggedOut;
+  }
 
-//const getFriendRequestCount = async (userId) => {
-//  console.log("HERE");
-//
-//  return "7";
-//}
+  if (user == peer) {
+    return ForeignUserRelation.self;
+  }
+
+  if (user > peer) { // friend1 is is always lower
+    let aux = user;
+    user = peer;
+    peer = aux;
+  }
+
+  const { data: state, error } = await supabase
+  .from('FriendStatus')
+  .select('state')
+  .eq('friend1', user)
+  .eq('friend2', peer)
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  if (state.length == 0) { // Assign state according to return
+    return ForeignUserRelation.noRelation;
+  } else if (state[0].state == "pending") {
+    return ForeignUserRelation.pending;
+  } else if (state[0].state == "accepted") {
+    return ForeignUserRelation.accepted;
+  } else if (state[0].state == "blocked") {
+    return ForeignUserRelation.blocked;
+  }
+}
+
+// The chats starts existing here and can be accessed when state is "accepted"
+// It is never removed when two people are friends
+const sendFriendRequest = async (sender, receiver) => {
+  if (sender > receiver) {
+    let aux = sender;
+    sender = receiver;
+    receiver = aux;
+  }
+
+  const { statusData, statusError } = await supabase
+  .from('FriendStatus')
+  .insert([{ 
+    friend1: sender,
+    friend2: receiver,
+    state: "pending"
+  }])
+  .select()
+
+  if (statusError) {
+    console.log(statusError);
+    return null;
+  }
+
+  // Create chat
+  const { chatData, chatError } = await supabase
+  .from('Chat')
+  .insert([{
+    user_1: sender,
+    user_2: receiver 
+  }])
+  .select()
+
+  if (chatError) {
+    console.log(chatError);
+    return null;
+  }
+
+  return statusData;
+}
+
+const setFriendState = async(user1, user2, newState) => {
+  if (user1 > user2) {
+    let aux = user1;
+    user1 = user2;
+    user2 = aux;
+  }
+
+  const { data, error } = await supabase
+  .from('FriendStatus')
+  .update({
+    state: newState
+  })
+  .eq('friend1', user1)
+  .eq('friend2', user2)
+  .select()
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
+}
+
+// Exported encapsulating API functions
+const acceptFriendRequest = async(user1, user2) => { // This also works universaly as unblocking
+  return await setFriendState(user1, user2, 'accepted');
+}
+const blockUser = async(user1, user2) => {
+  return await setFriendState(user1, user2, 'blocked');
+}
 
 export {
   readAllUsers,
@@ -178,6 +308,13 @@ export {
   switchUser,
   updateUser,
   readUsersFriends,
+  readUsersRequests,
+  readUsersBlocked,
   readChat,
   sendChatMessage,
+  ForeignUserRelation,
+  getFriendshipState,
+  sendFriendRequest,
+  acceptFriendRequest,
+  blockUser
 };

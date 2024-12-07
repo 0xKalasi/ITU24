@@ -1,13 +1,27 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUsersFriends } from "../../utils/users_api.js";
+import { acceptFriendRequest, readUsersBlocked } from "../../utils/users_api.js";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
+import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-const friends = await readUsersFriends(currentUser.id);
+const blockedUsers = ref([]);
+
+let blockedUsersChanges;
+onMounted(async () => {
+  blockedUsers.value = await readUsersBlocked(currentUser.id);
+
+  blockedUsersChanges = await createSubscription("UPDATE", "FriendStatus", async () => {
+    blockedUsers.value = await readUsersBlocked(currentUser.id);
+  });
+});
+onUnmounted(() => {
+  removeSubscription(blockedUsersChanges);
+});
 
 </script>
 
@@ -20,16 +34,21 @@ const friends = await readUsersFriends(currentUser.id);
   <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
   <br/><br/>
 
-  <div v-for="friend in friends">
-    <div v-if="friend.state == 'blocked'" style="margin-bottom: 50px"> <!-- TODO render list of blocked users -->
-      <Message @click="router.push(`/profile/${friend.User.id}`)" severity="secondary">
-        {{ friend.User.name }}
-      </Message>
-      <Button label="Odblokovat" icon="pi pi-lock-open"
-        @click="console.log('ODBLOKOVAT')"
-        style="float: right">
-      </Button>
-    </div>
+  <div v-if="blockedUsers.length == 0">
+    Seznam zablokovaných uživatelů je prázdný.
+  </div>
+
+  <div v-for="blocked in blockedUsers">
+    <Message @click="router.push(`/profile/${blocked.id}`)" severity="secondary">
+      {{ blocked.name }}
+    </Message>
+    <Button
+      label="Odblokovat"
+      icon="pi pi-lock-open"
+      @click="acceptFriendRequest(currentUser.id, blocked.id)"
+      style="float: right">
+    </Button>
+    <br/><br/>
   </div>
 
 </template>

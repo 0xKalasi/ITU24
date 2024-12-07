@@ -1,13 +1,27 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUsersFriends } from "../../utils/users_api.js";
+import { readUsersFriends, blockUser } from "../../utils/users_api.js";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
+import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-const friends = await readUsersFriends(currentUser.id);
+const friends = ref([]);
+
+let friendListChanges;
+onMounted(async () => {
+  friends.value = await readUsersFriends(currentUser.id);
+
+  friendListChanges = await createSubscription("UPDATE", "FriendStatus", async () => {
+    friends.value = await readUsersFriends(currentUser.id);
+  });
+});
+onUnmounted(() => {
+  removeSubscription(friendListChanges);
+});
 
 </script>
 
@@ -16,7 +30,7 @@ const friends = await readUsersFriends(currentUser.id);
     <h2>Přátelé</h2>
 
     <Button label="Groupchaty" icon="pi pi-comments"
-      @click="console.log('GROUPCHATS')"
+      @click="router.push('/groupchats')"
       style="margin-left: auto">
     </Button>
   </div>
@@ -30,16 +44,29 @@ const friends = await readUsersFriends(currentUser.id);
     <Button label="Zablokované" icon="pi pi-times" @click="router.push('/blocked')"></Button>
     <br/><br/>
 
+    <div v-if="friends.length == 0">
+      Seznam přátel je prázdný.
+    </div>
+
     <div v-for="friend in friends">
-      <div v-if="friend.state == 'accepted'" style="margin-bottom: 50px"> <!-- TODO render list of blocked users -->
-        <Message @click="router.push(`/profile/${friend.User.id}`)" severity="secondary">
-          {{ friend.User.name }}
-        </Message>
-        <Button label="Chat" icon="pi pi-comment"
-          @click="router.push(`/chats/${friend.User.id}`)"
-          style="float: right">
-        </Button>
-      </div>
+      <Message @click="router.push(`/profile/${friend.id}`)" severity="secondary">
+        {{ friend.name }}
+      </Message>
+
+      <Button
+        label="Zablokovat"
+        icon="pi pi-lock"
+        @click="blockUser(currentUser.id, friend.id)"
+        style="float: left">
+      </Button>
+
+      <Button
+        label="Chat"
+        icon="pi pi-comment"
+        @click="router.push(`/chats/${friend.id}`)"
+        style="float: right">
+      </Button>
+      <br/><br/>
     </div>
   </div>
 
