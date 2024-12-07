@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUsersBlocked } from "../../utils/users_api.js";
+import { acceptFriendRequest, readUsersBlocked } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -31,7 +31,7 @@ const blockedUsers = await readUsersBlocked(currentUser.id);
     <Button
       label="Odblokovat"
       icon="pi pi-lock-open"
-      @click="console.log('ODBLOKOVAT')"
+      @click="acceptFriendRequest(currentUser.id, blocked.id)"
       style="float: right">
     </Button>
     <br/><br/>

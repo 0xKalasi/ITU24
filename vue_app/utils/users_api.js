@@ -230,6 +230,8 @@ const getFriendshipState = async (user, peer) => {
   }
 }
 
+// The chats starts existing here and can be accessed when state is "accepted"
+// It is never removed when two people are friends
 const sendFriendRequest = async (sender, receiver) => {
   if (sender > receiver) {
     let aux = sender;
@@ -237,7 +239,7 @@ const sendFriendRequest = async (sender, receiver) => {
     receiver = aux;
   }
 
-  const { data, error } = await supabase
+  const { statusData, statusError } = await supabase
   .from('FriendStatus')
   .insert([{ 
     friend1: sender,
@@ -246,12 +248,58 @@ const sendFriendRequest = async (sender, receiver) => {
   }])
   .select()
 
+  if (statusError) {
+    console.log(statusError);
+    return null;
+  }
+
+  // Create chat
+  const { chatData, chatError } = await supabase
+  .from('Chat')
+  .insert([{
+    user_1: sender,
+    user_2: receiver 
+  }])
+  .select()
+
+  if (chatError) {
+    console.log(chatError);
+    return null;
+  }
+
+  return statusData;
+}
+
+const setFriendState = async(user1, user2, newState) => {
+  if (user1 > user2) {
+    let aux = user1;
+    user1 = user2;
+    user2 = aux;
+  }
+
+  const { data, error } = await supabase
+  .from('FriendStatus')
+  .update({
+    state: newState
+  })
+  .eq('friend1', user1)
+  .eq('friend2', user2)
+  .select()
+
   if (error) {
     console.log(error);
     return null;
   }
 
   return data;
+}
+
+// Exported encapsulating API functions
+const acceptFriendRequest = async(user1, user2) => { // This also works universaly as unblocking
+  return await setFriendState(user1, user2, 'accepted');
+}
+const blockUser = async(user1, user2) => {
+  return await setFriendState(user1, user2, 'blocked');
 }
 
 export {
@@ -266,5 +314,7 @@ export {
   sendChatMessage,
   ForeignUserRelation,
   getFriendshipState,
-  sendFriendRequest
+  sendFriendRequest,
+  acceptFriendRequest,
+  blockUser
 };

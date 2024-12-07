@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUsersFriends } from "../../utils/users_api.js";
+import { readUsersFriends, blockUser } from "../../utils/users_api.js";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -38,6 +38,14 @@ const friends = await readUsersFriends(currentUser.id);
       <Message @click="router.push(`/profile/${friend.id}`)" severity="secondary">
         {{ friend.name }}
       </Message>
+
+      <Button
+        label="Zablokovat"
+        icon="pi pi-lock"
+        @click="blockUser(currentUser.id, friend.id)"
+        style="float: left">
+      </Button>
+
       <Button
         label="Chat"
         icon="pi pi-comment"
