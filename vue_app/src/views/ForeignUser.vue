@@ -5,8 +5,11 @@ import { readUser } from "../../utils/users_api.js";
 import { readUsersPublicRecipe } from "../../utils/api.js";
 import { sendFriendRequest, ForeignUserRelation, getFriendshipState } from "../../utils/users_api.js";
 
+import { ref, onMounted, onUnmounted } from "vue";
+
 import { useUserStore } from '../stores/userStore';
 import BasicPageHeader from "../components/basicPageHeader.vue";
+import { supabase } from "../../utils/supabase.js";
 const currentUser = useUserStore();
 
 const router = useRouter();
@@ -18,13 +21,35 @@ const usersRecipes = await readUsersPublicRecipe(viewedUserId);
 const recipeCnt = usersRecipes.length;
 const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
 
-const currentFriendshipState = await getFriendshipState(currentUser.id, viewedUserId);
+const currentFriendshipState = ref(ForeignUserRelation.loggedOut); // Initially logged out, intially hides the frienship sending part
+let stateChanges;
+
+onMounted(async () => {
+  currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
+
+  stateChanges = supabase
+  .channel('custom-insert-channel')
+  .on(
+    'postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'FriendStatus' },
+    async (payload) => {
+      //console.log('Change received!', payload)
+      currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
+    }
+  )
+  .subscribe();
+});
+
+onUnmounted(() => {
+  if (stateChanges) {
+    supabase.removeChannel(stateChanges);
+  }
+});
 
 </script>
 
 <template>  
   <BasicPageHeader text="Profil uživatele" />
-  <!-- <Button label="Zpět" icon="pi pi-arrow-left" @click="router.back()"></Button> -->
 
   <h2>{{ viewedUser.name }}</h2>
   {{ viewedUser.bio }}
@@ -50,9 +75,10 @@ const currentFriendshipState = await getFriendshipState(currentUser.id, viewedUs
     </Message>
   </div>
 
-  <!-- Just for completeness; nothing should be output when logged out or self -->
+  <!-- Just for completeness; nothing should be output when logged out or looking at own profile -->
   <div v-if="currentFriendshipState == ForeignUserRelation.loggedOut"></div>
   <div v-else-if="currentFriendshipState == ForeignUserRelation.self"></div>
+  <!---->
   <div v-else-if="currentFriendshipState == ForeignUserRelation.noRelation">
     <br/>
     <div class="devider"></div>
@@ -66,19 +92,29 @@ const currentFriendshipState = await getFriendshipState(currentUser.id, viewedUs
     <br/>
     <div class="devider"></div>
 
-    pending
+    <h3>Poslat žádost o přátelství</h3>
+    <a>Žádost byla odeslána a čeká na potvrzení.</a>
   </div>
   <div v-else-if="currentFriendshipState == ForeignUserRelation.accepted">
     <br/>
     <div class="devider"></div>
 
-    accepted
+    <div style="display: flex; align-items: center">
+      <h3>Přátelé</h3>
+      <Button
+          label="Přejít na chat"
+          icon="pi pi-comment"
+          @click="router.push(`/chats/${viewedUserId}`)"
+          style="margin-left: auto">
+      </Button>
+    </div>
   </div>
   <div v-else-if="currentFriendshipState == ForeignUserRelation.blocked">
     <br/>
     <div class="devider"></div>
 
-    blocked
+    <br/>
+    <a style="color: red">S tímto uživatelem nelze komunikovat, je zablokován.</a>
   </div>
 
 </template>
