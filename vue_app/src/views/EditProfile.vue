@@ -2,38 +2,34 @@
 import { useRouter } from "vue-router";
 import { updateUser } from "../../utils/users_api.js";
 
-import { useUserStore } from '../stores/userStore';
-import BasicHeader from "../components/basicPageHeader.vue";
-const currentUser = useUserStore();
+import { useUserStore, profilePreviewStore } from '../stores/userStore';
+import BasicPageHeader from "../components/basicPageHeader.vue";
 
-const newName = currentUser.name;
-const newBio = currentUser.bio;
+const currentUser = useUserStore();
+const previewData = profilePreviewStore();
 
 const router = useRouter();
 
-// redirect in case of manual access to /profile/edit
-if (currentUser.id == 0) { // TODO is this ok?? // when manually going to /profile when logged out, back button gets stuck in a loop
-  router.push('/users');
-}
+// TODO DEBUG !!!
 
 </script>
 
 <template>
-  <BasicPageHeader text="Nastavení profilu"></BasicPageHeader>
+  <BasicPageHeader text="Úprava profilu"></BasicPageHeader>
 
   <p>Uživatelské jméno:</p>
-  <input v-model="newName"></input>
+  <input v-model="previewData.name"></input>
 
   <p>Popisek profilu:</p>
-  <textarea v-model="newBio" rows="5" cols="30"></textarea>
+  <textarea v-model="previewData.bio" rows="5" cols="30"></textarea>
   <br/>
   
   <Button label="Potvrdit Úpravy" icon="pi pi-check"
-    @click="updateUser(currentUser.id, newName, newBio); router.push('/profile')">
+    @click="updateUser(currentUser.id, previewData.name, previewData.bio);router.push('/profile');">
   </Button>
   <br/>
   <Button label="Zobrazit náhled" icon="pi pi-question"
-    @click="console.log('PREVIEW')">
+    @click="router.push(`/profile/edit/preview`)">
   </Button>
 
 </template>

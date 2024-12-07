@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-import { useUserStore } from "../stores/userStore";
+import { useUserStore, profilePreviewStore } from "../stores/userStore";
 
 import Users from "../views/Users.vue";
 import Homepage from "../views/Homepage.vue";
@@ -19,6 +19,7 @@ import AddNewRecipe from "../views/AddNewRecipe.vue";
 import Recipes from "../views/MyRecipes.vue";
 import CreateFilter from "../views/CreateFilter.vue"
 import Share from "../views/Share.vue";
+import ProfilePreview from "../views/ProfilePreview.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -33,11 +34,25 @@ const routes = [
   { path: "/users", component: Users},
   { path: "/profile", component: Profile },
   { path: "/profile/:user_id", component: ForeignUser },
-  { path: "/profile/edit", component: EditProfile },
+  { path: "/profile/edit", component: EditProfile,
+    // The changes from editing need to persist after preview is closed, and only the preview
+    beforeEnter: (to, from) => {
+      const currentUser = useUserStore();
+      const previewData = profilePreviewStore();
+
+      if (from.name != "PREVIEW") {
+        previewData.name = currentUser.name;
+        previewData.bio = currentUser.bio;
+      }
+    }
+  },
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },
   { path: "/addnewrecipe", component: AddNewRecipe },
   { path: "/share/:recipe_id", component: Share },
+  { path: "/profile/edit/preview", component: ProfilePreview,
+    name: "PREVIEW" // Used to make clear the reation with edit page
+   },
 
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];
