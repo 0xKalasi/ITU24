@@ -26,7 +26,7 @@ const currentFriendshipState = ref(ForeignUserRelation.loggedOut); // Initally h
 
 // Frienship state is stored in db, so we need to listen to it
 let stateChanges;
-onMounted(async() => {
+onMounted(async () => {
   // First get the intial value ...
   currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
 

@@ -1,13 +1,27 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { readUsersFriends, blockUser } from "../../utils/users_api.js";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
+import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-const friends = await readUsersFriends(currentUser.id);
+const friends = ref([]);
+
+let friendListChanges;
+onMounted(async () => {
+  friends.value = await readUsersFriends(currentUser.id);
+
+  friendListChanges = await createSubscription("UPDATE", "FriendStatus", async () => {
+    friends.value = await readUsersFriends(currentUser.id);
+  });
+});
+onUnmounted(() => {
+  removeSubscription(friendListChanges);
+});
 
 </script>
 
