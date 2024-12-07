@@ -4,6 +4,7 @@ import { readUser } from "../../utils/users_api.js";
 
 import { readUsersPublicRecipe } from "../../utils/api.js";
 import { sendFriendRequest, ForeignUserRelation, getFriendshipState } from "../../utils/users_api.js";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
 import { ref, onMounted, onUnmounted } from "vue";
 
@@ -21,29 +22,21 @@ const usersRecipes = await readUsersPublicRecipe(viewedUserId);
 const recipeCnt = usersRecipes.length;
 const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
 
-const currentFriendshipState = ref(ForeignUserRelation.loggedOut); // Initially logged out, intially hides the frienship sending part
-let stateChanges;
+const currentFriendshipState = ref(ForeignUserRelation.loggedOut); // Initally hide the state
 
-onMounted(async () => {
+// Frienship state is stored in db, so we need to listen to it
+let stateChanges;
+onMounted(async() => {
+  // First get the intial value ...
   currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
 
-  stateChanges = supabase
-  .channel('custom-insert-channel')
-  .on(
-    'postgres_changes',
-    { event: 'INSERT', schema: 'public', table: 'FriendStatus' },
-    async (payload) => {
-      //console.log('Change received!', payload)
-      currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
-    }
-  )
-  .subscribe();
+  // ... then listen to insertions
+  stateChanges = await createSubscription("INSERT", "FriendStatus", async () => {
+    currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
+  });
 });
-
 onUnmounted(() => {
-  if (stateChanges) {
-    supabase.removeChannel(stateChanges);
-  }
+  removeSubscription(stateChanges);
 });
 
 </script>
