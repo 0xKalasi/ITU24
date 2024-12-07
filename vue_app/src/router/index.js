@@ -21,6 +21,7 @@ import CreateFilter from "../views/CreateFilter.vue"
 import Share from "../views/Share.vue";
 import ProfilePreview from "../views/ProfilePreview.vue";
 import Groupchats from "../views/Groupchats.vue";
+import Groupchat from "../views/Groupchat.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -55,6 +56,7 @@ const routes = [
     name: "PREVIEW" // Used to make clear the reation with edit page
   },
   { path: "/groupchats", component: Groupchats },
+  { path: "/groupchats/:groupchat_id", component: Groupchat },
 
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];

@@ -37,7 +37,39 @@ const readUsersGroupchats = async (userId) => {
   return groups;
 };
 
+const createGroupchat = async (groupName) => {
+  const currentUser = useUserStore();
+
+  // Create the group
+  const { data: createdGroupchat, error: err1 } = await supabase
+  .from('Groupchat')
+  .insert([{
+    name: groupName,
+    creator: currentUser.id
+  }])
+  .select()
+
+  if (err1) {
+    console.log(err1);
+    return null;
+  }
+
+  // Add the creator into it
+  const { data, error: err2 } = await supabase
+  .from('GroupchatMembers')
+  .insert([{
+    user: currentUser.id,
+    groupchat: createdGroupchat[0].id 
+  }])
+  .select()
+
+  if (err2) {
+    console.log(err2);
+    return null;
+  }
+}
+
 export {
   readUsersGroupchats,
-  
+  createGroupchat
 };

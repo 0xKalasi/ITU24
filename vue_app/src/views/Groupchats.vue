@@ -2,13 +2,31 @@
 import { useRouter } from "vue-router";
 import { useUserStore } from '../stores/userStore';
 
-import { readUsersGroupchats } from "../../utils/groupchat_api";
+import { readUsersGroupchats, createGroupchat } from "../../utils/groupchat_api";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+
+import { ref, onMounted, onUnmounted } from "vue";
 
 const currentUser = useUserStore();
 
 const router = useRouter();
 
-const groupchats = await readUsersGroupchats(currentUser.id);
+const groupchats = ref([]);
+
+let groupsChanges;
+onMounted(async () => {
+  groupchats.value = await readUsersGroupchats(currentUser.id);
+
+  groupsChanges = await createSubscription("INSERT", "Groupchat", async () => {
+    groupchats.value = await readUsersGroupchats(currentUser.id);
+  });
+});
+onUnmounted(() => {
+  removeSubscription(groupsChanges);
+});
+
+const createGroup = ref(true);
+const newGroupName = ref("");
 
 </script>
 
@@ -20,14 +38,38 @@ const groupchats = await readUsersGroupchats(currentUser.id);
   </div>
 
   <div v-else>
-    <Button
-      label="Vytvořit skupinu"
-      icon="pi pi-plus"
-      @click="console.log('VYTVOŘIT SKUPINU')"
-      style="float: right">
-    </Button>
 
-    <br/><br/>
+    <div v-if="createGroup == true"> <!-- Just show the group button -->
+      <Button
+        label="Vytvořit skupinu"
+        icon="pi pi-plus"
+        @click="createGroup = !createGroup"
+        style="float: right">
+      </Button>
+
+      <br/><br/>
+    </div>
+    <div v-else>
+      <Button
+        label="Zrušit"
+        icon="pi pi-times"
+        @click="createGroup = !createGroup"
+        style="float:right">
+      </Button>
+      <br/><br/>
+
+      <div class="devider"></div>
+
+      <div style="display: flex; align-items: center;">
+        <input v-model="newGroupName" style="margin-top: 20px; margin-bottom: 20px;"/>
+
+        <Button
+          icon="pi pi-check"
+          @click="createGroupchat(newGroupName); newGroupName = ''; createGroup = !createGroup; "
+          style="margin-left: auto">
+        </Button>
+      </div>
+    </div>
 
     <div v-if="groupchats.length == 0">
       Nejste členem žádné skupiny.
@@ -38,11 +80,12 @@ const groupchats = await readUsersGroupchats(currentUser.id);
     <div v-for="groupchat in groupchats">
       <div style="display: flex; align-items: center;">
         <h3>{{ groupchat.name }}</h3>
-        
+        <!-- TODO MEMBER COUNT -->
+
         <Button
           label="Otevřít"
           icon="pi pi-comments"
-          @click="console.log(groupchat.id)"
+          @click="router.push(`/groupchats/${groupchat.id}`)"
           style="margin-left: auto">
         </Button>
       </div>

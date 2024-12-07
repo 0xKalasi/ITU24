@@ -30,8 +30,8 @@ const createSubscription = async (listenEvent, listenTable, action) => {
 
 const removeSubscription = async (channel) => {
   if (channel) {
-    //await channel.unsubscribe(); // This is a possible alternative
-    supabase.removeChannel(channel);
+    await channel.unsubscribe(); // This is a possible alternative
+    //supabase.removeChannel(channel);
   }
 }
 
