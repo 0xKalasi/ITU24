@@ -20,6 +20,7 @@ import Recipes from "../views/MyRecipes.vue";
 import CreateFilter from "../views/CreateFilter.vue"
 import Share from "../views/Share.vue";
 import ProfilePreview from "../views/ProfilePreview.vue";
+import Groupchats from "../views/Groupchats.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -52,7 +53,8 @@ const routes = [
   { path: "/share/:recipe_id", component: Share },
   { path: "/profile/edit/preview", component: ProfilePreview,
     name: "PREVIEW" // Used to make clear the reation with edit page
-   },
+  },
+  { path: "/groupchats", component: Groupchats },
 
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];

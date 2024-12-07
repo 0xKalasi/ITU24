@@ -30,7 +30,7 @@ onUnmounted(() => {
     <h2>Přátelé</h2>
 
     <Button label="Groupchaty" icon="pi pi-comments"
-      @click="console.log('GROUPCHATS')"
+      @click="router.push('/groupchats')"
       style="margin-left: auto">
     </Button>
   </div>
