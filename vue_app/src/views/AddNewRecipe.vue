@@ -8,12 +8,17 @@
   import { useUserStore } from '../stores/userStore';
   import MyOnFloatLabel from '../components/myOnFloatLabel.vue';
   import PhotoUploader from '../components/photoUploader.vue';
+  import TimePicker from '../components/timePicker.vue';
   import { useRouter } from "vue-router";
 
 
   const currentUser = useUserStore();
   const router = useRouter();
 
+  const showAlert = ref(false);
+  const alertKey = ref(0);
+  const alertType = ref("");
+  const alertText = ref("");
 
   const recipe = ref({
     name: "",
@@ -54,6 +59,10 @@
       editingIngredientIndex.value = index;
       editedIngredient.value = { ...ingredient };
     }
+    // Delete ingredient
+    function deleteIngredient(index) {
+      recipe.value.ingredients.splice(index, 1);
+    }
 
     // Save edited ingredient
     function saveIngredient(index) {
@@ -84,6 +93,11 @@
     function editStep(index, step) {
       editingStepIndex.value = index;
       editedStep.value = { ...step };
+    }
+
+    // Delete step
+    function deleteStep(index) {
+      recipe.value.steps.splice(index, 1);
     }
 
     // Save edited step
@@ -119,6 +133,11 @@
       editedUtencil.value = name;
     }
 
+    // Delete step
+    function deleteUtencil(index) {
+      recipe.value.utencils.splice(index, 1);
+    }
+
     // Save the edited utensil
     function saveUtencil(index) {
       recipe.value.utencils[index].name = editedUtencil.value;
@@ -135,13 +154,13 @@
     var delete_recipe = false;
     async function cancelCreating(){
         if (!delete_recipe){
-            alertType.value = "error";
+            alertType.value = "warn";
             alertText.value = "Naozaj chcete smazat vaše úpravy?";
             showAlert.value = true;
             alertKey.value++;
             delete_recipe = true;
         } else {
-            await deleteRecipe(recipe);
+            //await deleteRecipe(recipe);
             router.push(`/recipes`)
         }
 
@@ -150,6 +169,8 @@
   </script>
 
 <template>
+  <Alert v-if="showAlert" :type="alertType" :text="alertText" :key="alertKey"></Alert>
+
   <BasicPageHeader text="Vytvoř recept"/>
     <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
   
@@ -165,7 +186,7 @@
     v-model="recipe.name"
   />
 </div>
-  
+      <h3>Ingredence</h3>
       <!-- Display each ingredient with edit options -->
       <div v-if="recipe.ingredients.length > 0" class="p-d-flex p-ai-center p-mb-10">
         <div v-for="(ingredient, index) in recipe.ingredients" :key="index" class="p-d-flex p-ai-center p-mb-2">
@@ -175,12 +196,13 @@
             <MyOnFloatLabel :number="true" label="Množství" v-model="editedIngredient.quantity" />
             <MyOnFloatLabel label="Jednotka" v-model="editedIngredient.unit" />
             <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveIngredient(index)" />
-            <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelIngredientEdit" />
-          </template>
+            <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelIngredientEdit" /> -->
+          </template> 
           <template v-else>
             <!-- Display Mode -->
             <li>{{ ingredient.name }}, {{ ingredient.quantity }} {{ ingredient.unit }}
               <Button icon="pi pi-pencil" class="p-button-text p-button-rounded" @click="editIngredient(index, ingredient)" />
+              <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteIngredient(index)" />
             </li>
           </template>
         </div>
@@ -210,12 +232,13 @@
                 <PhotoUploader v-model="editedStep.photo" />
               </div>
               <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveStep(index)" />
-              <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelStepEdit" />
+              <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelStepEdit" /> -->
             </template>
             <template v-else>
               <!-- Display Mode -->
               <li>{{ step.number }} - {{ step.name }} - {{ step.text }} 
                 <Button icon="pi pi-pencil" class="p-button-text p-button-rounded" @click="editStep(index, step)" />
+                <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteStep(index)" />
               </li>
               
               <div v-if="step.photo">
@@ -245,12 +268,13 @@
               <!-- Editing Mode -->
               <InputText v-model="editedUtencil" class="p-inputtext-sm" />
               <Button icon="pi pi-check" class="p-button-text p-button-rounded p-ml-2" @click="saveUtencil(index)" />
-              <Button icon="pi pi-times" class="p-button-text p-button-rounded p-ml-2" @click="cancelEdit" />
+              <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded p-ml-2" @click="cancelEdit" /> -->
             </template>
             <template v-else>
               <!-- Display Mode -->
               <span>{{ utencil.name }} 
                 <Button icon="pi pi-pencil" class="p-button-text p-button-rounded p-ml-2" @click="editUtencil(index, utencil.name)" />
+                <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteUtencil(index)" />
               </span>
             </template>
           </div>
@@ -266,15 +290,29 @@
         <h3>Všeobecné informace</h3>
         <div class="p-d-flex p-ai-center p-mb-2">
           <label class="p-mr-2">Počet porcí</label>
-          <InputNumber v-model="recipe.portions" class="p-inputtext-sm p-mr-3" style="width: 60px" />
+          <InputNumber v-model="recipe.portions" mode="decimal" showButtons :min="0" :max="100" buttonLayout="horizontal" fluid class="p-inputnumber-sm centered-input">
+              <template #incrementicon>
+                  <span class="pi pi-plus" />
+              </template>
+              <template #decrementicon>
+                  <span class="pi pi-minus" />
+              </template>
+          </InputNumber>
+        </div>
+        <div class="p-d-flex p-ai-center p-mb-2">
           <label class="p-mr-2">Čas přípravy</label>
-          <InputText value="01:30" class="p-inputtext-sm" style="width: 60px" />
+          <TimePicker v-model="recipe.time_to_cook" showIcon fluid iconDisplay="input" timeOnly>
+            <template #inputicon="slotProps">
+                <i class="pi pi-clock" @click="slotProps.clickCallback" />
+            </template>
+          </TimePicker>
         </div>
       </div>
+      
 
       <!-- Create, Delete Button -->
       <div class="flex justify-between items-center px-4">
-        <Button label="Cancel" class="p-button-danger" @click='router.push("/profile/"+currentUser.id); cancelCreating();'></Button>
+        <Button label="Cancel" class="p-button-danger" @click='cancelCreating();'></Button>
         <Button label="Create" class="p-button-ok" @click='router.push("/profile/"+currentUser.id); insertCompleteRecipe(recipe);'></Button>
       </div>
 
@@ -329,5 +367,10 @@
   }
   .p-border-top-1 {
     border-top: 1px solid #ddd;
+  }
+
+  /* Centering the numbers inside the InputNumber fields */
+  .centered-input .p-inputtext {
+    text-align: center;
   }
   </style>

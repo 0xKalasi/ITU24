@@ -72,7 +72,7 @@ const actionButtons = ref([
 var delete_recipe = false;
 async function deleteRecipeLocal(){
     if (!delete_recipe){
-        alertType.value = "error";
+        alertType.value = "warn";
         alertText.value = "Naozaj chcete smazat recept?";
         showAlert.value = true;
         alertKey.value++;

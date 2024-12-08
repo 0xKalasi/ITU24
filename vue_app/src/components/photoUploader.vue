@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import FileUpload from 'primevue/fileupload';
 
 // Define prop for v-model binding and disable functionality
@@ -16,6 +16,11 @@ const emit = defineEmits(['update:modelValue']);
 
 // Internal reference to the uploaded file
 const photo = ref(props.modelValue || ''); // Initially set to the current value if passed from parent
+
+// Watch for changes in modelValue from the parent and update internal photo state
+watch(() => props.modelValue, (newValue) => {
+  photo.value = newValue;
+});
 
 // Handle the file selection
 const onFileChange = (event) => {
@@ -35,6 +40,7 @@ const onFileChange = (event) => {
 
 <template>
   <div style="display: flex;">
+    <!-- Display image preview if a photo is selected -->
     <div v-if="photo">
       <img :src="photo" alt="Preview" class="image-preview" />
     </div>
@@ -46,8 +52,6 @@ const onFileChange = (event) => {
       :disabled="disabled"
       ref="fileInput"
     />
-    <!-- Display image preview if a photo is selected -->
-    
   </div>
 </template>
 
