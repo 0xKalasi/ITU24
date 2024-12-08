@@ -69,6 +69,11 @@ const newGroupName = ref("");
           style="margin-left: auto">
         </Button>
       </div>
+
+      <div v-if="groupchats.length == 0"> <!-- Only when there are no groupchats, to make prettier -->
+        <div class="devider"></div>
+        <br/>
+      </div>
     </div>
 
     <div v-if="groupchats.length == 0">
