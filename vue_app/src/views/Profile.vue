@@ -26,8 +26,4 @@ const router = useRouter();
     @click="router.push('/profile/edit')">
   </Button>
 
-  <!--
-  <Button icon="pi pi-pencil" label="Upravit profil" @click="router.push('/profile/edit')"></Button>
-  -->
-
 </template>

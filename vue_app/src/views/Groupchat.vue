@@ -46,6 +46,8 @@ const handleSending = async () => {
   }
 }
 
+const isCreator = (currentUser.id == currentGroup.creator) ? true : false;
+
 const isLoading = ref(false);
 
 </script>
@@ -60,8 +62,7 @@ const isLoading = ref(false);
       <div style="display: flex; align-items: center;">
         <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
         <Button
-          icon="pi pi-pencil"
-          label=""
+          :icon="isCreator ? `pi pi-pencil` : `pi pi-plus`"
           @click="router.push(`/groupchats/edit/${currentGroup.id}`)"></Button>
       </div> <!-- TODO there should be a text description with the button -->
       <div class="devider"></div>

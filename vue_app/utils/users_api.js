@@ -61,15 +61,13 @@ const updateUser = async (id, name, bio) => {
   const userStore = useUserStore();
   userStore.name = name;
   userStore.bio = bio;
-
-  // TODO: what should I return????
-
+  
   if (error) {
     console.log(error);
     return null;
   }
 
-  return;
+  return data;
 }
 
 const readUsersByRelation = async (id, state) => {

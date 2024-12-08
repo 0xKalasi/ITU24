@@ -129,11 +129,29 @@ const sendGroupchatMessage = async (sender, groupchatId, text, recipeId) => {
   return data;
 }
 
+const updateGroupName = async (groupId, newName) => {
+  const { data, error } = await supabase
+  .from('Groupchat')
+  .update({
+    name: newName
+  })
+  .eq('id', groupId)
+  .select()
+  
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
+}
+
 export {
   readGroupchat,
   readUsersGroupchats,
   createGroupchat,
   readGroupchatMessages,
   readGroupchatMembers,
-  sendGroupchatMessage
+  sendGroupchatMessage,
+  updateGroupName
 };
