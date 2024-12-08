@@ -30,7 +30,7 @@ onMounted(async () => {
     await nextTick(); // Needed to get the correct height
     scrollDown();
   });
-})
+});
 onUnmounted(() => {
   removeSubscription(messageChanges);
 });
@@ -70,7 +70,7 @@ onBeforeMount (() => {
   <div v-else style="display: flex; flex-direction: column;">
 
     <!-- Header -->
-    <div style="position: fixed; ">
+    <div style="position: fixed;">
       <div style="display: flex; align-items: center;">
         <h2>Chat s</h2>
         <Message severity="secondary" @click="router.push(`/profile/${peerUserId}`)" size="large">

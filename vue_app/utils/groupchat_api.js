@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 import { useUserStore } from '../src/stores/userStore';
+import { readUser } from "./users_api";
 
 const readGroupchat = async (id) => {
   let { data: groupchat, error } = await supabase
@@ -69,7 +70,70 @@ const createGroupchat = async (groupName) => {
   }
 }
 
+const readGroupchatMessages = async (id) => {  
+  const { data: Messages, error } = await supabase
+  .from('Message')
+  .select(`
+    *,
+    Recipe (name),
+    User (*)
+  `)
+  .eq('groupchat_id', id)
+  .order('created_at', { ascending: true })
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return Messages;
+}
+
+// probably will be unused
+const readGroupchatMembers = async (id) => {
+  const { data: memberIds, error } = await supabase
+  .from('GroupchatMembers')
+  .select('user')
+  .eq('groupchat', id)
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  let members = [];
+  for (const memberId of memberIds) {
+    let user = await readUser(memberId.user);
+    members.push(user);
+  }
+
+  return members;        
+}
+
+const sendGroupchatMessage = async (sender, groupchatId, text, recipeId) => {
+  const { data, error } = await supabase
+  .from('Message')
+  .insert([{
+    content: text,
+    groupchat_id: groupchatId,
+    person_posted: sender,
+    recipe_id: recipeId
+  }])
+  .select()
+  
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
+}
+
 export {
+  readGroupchat,
   readUsersGroupchats,
-  createGroupchat
+  createGroupchat,
+  readGroupchatMessages,
+  readGroupchatMembers,
+  sendGroupchatMessage
 };

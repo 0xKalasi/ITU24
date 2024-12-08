@@ -28,9 +28,6 @@ onUnmounted(() => {
 <template>  
   <h2>Zablokovaní uživatelé</h2>
 
-  <!--<Button label="Příchozí" icon="pi pi-clock" @click="router.push('/requests')"></Button>-->
-  <!--<Button label="Přátelé" icon="pi pi-heart" @click="router.push('/chats')"></Button>-->
-
   <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
   <br/><br/>
 
