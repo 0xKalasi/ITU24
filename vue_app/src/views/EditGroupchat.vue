@@ -19,6 +19,7 @@ const isCreator = (currentUser.id == currentGroup.creator) ? true : false;
 const groupName = ref(currentGroup.name);
 const confirmDelHist = ref(false);
 const confirmDelGroup = ref(false);
+const confirmLeaveGroup = ref(false);
 
 // Alert detection:
 const nameChanged = ref(false);
@@ -159,13 +160,37 @@ const Rename = async () => {
   <div v-else>
 
     <!-- Leave group -->
-    <Button
-      icon="pi pi-times"
-      label="Opustit skupinu"
-      severity="danger"
-      @click="console.log('LEAVE GROUP')"
-      style="margin-top: 10px; margin-bottom: 10px;">
-    </Button>
+    <div v-if="confirmLeaveGroup == false">
+
+      <Button
+        icon="pi pi-times"
+        label="Opustit skupinu"
+        severity="danger"
+        @click="confirmLeaveGroup = true"
+        style="margin-top: 10px; margin-bottom: 10px;">
+      </Button>
+
+    </div>
+    <div v-else>
+
+      <div style="color: red; margin-top: 10px;">
+        Skutečně chcete opustit skupinu?
+      </div>
+      <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
+        <Button
+          icon="pi pi-check"
+          label="Ano, opustit skupinu"
+          severity="danger"
+          @click="console.log('LEAVE GROUP')">
+        </Button>
+        <Button
+          icon="pi pi-times"
+          label="Ne, neopouštět"
+          @click="confirmLeaveGroup = false">
+        </Button>
+      </div>
+
+    </div>
 
     <div class="devider"></div>
 
