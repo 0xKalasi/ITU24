@@ -1,7 +1,9 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { readUser, readChat, sendChatMessage } from "../../utils/users_api.js";
-import { ref, onUnmounted, onBeforeMount, onMounted, onUpdated } from "vue";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+
+import { ref, onMounted, onUnmounted, onBeforeMount, nextTick } from "vue";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -11,22 +13,47 @@ const router = useRouter();
 const peerUserId = router.currentRoute.value.params.user_id;
 const peerUser = await readUser(peerUserId);
 
-// TODO maybe use subscribe?
-const messages = ref();
-const textMessage = ref("");
-
-const isLoading = ref(false);
-
 const scrollDown = () => {
   window.scrollTo(0, document.body.scrollHeight);
 };
 
-onMounted(() => {
-  scrollDown();
-});
-// TODO: go down when: // a message appears on the screen (user sent always, peer sent ONLY WHEN ALL THE WAY DOWN)
+// Handle retrieving messages
+const messages = ref([]);
 
-onBeforeMount (() => { // before messages.length is accessed in template, message is not yet defined
+let messageChanges;
+onMounted(async () => {
+  messages.value = await readChat(currentUser.id, peerUser.id);
+  scrollDown();
+
+  messageChanges = await createSubscription("INSERT", "Message", async () => {
+    messages.value = await readChat(currentUser.id, peerUser.id);
+    await nextTick(); // Needed to get the correct height
+    scrollDown();
+  });
+})
+onUnmounted(() => {
+  removeSubscription(messageChanges);
+});
+
+// Handle sending a text message
+const textMessage = ref("");
+
+const handleSending = async () => {
+  if (textMessage.value.length != 0) { // Do not send an empty message
+    sendChatMessage(currentUser.id, peerUserId, textMessage.value, null);
+    textMessage.value = "";
+  }
+}
+
+
+const isLoading = ref(false);
+
+// TODO: go down when:
+//// a message appears on the screen (user sent always, peer sent ONLY WHEN ALL THE WAY DOWN)
+//// (the rest is in git history)
+
+// Before messages.length is accessed in template, message is not yet defined
+onBeforeMount (() => {
   isLoading.value = true;
   readChat(currentUser.id, peerUserId)
   .then(async (result) => {
@@ -35,76 +62,67 @@ onBeforeMount (() => { // before messages.length is accessed in template, messag
   })
 });
 
-onUnmounted (() => {
-  if (intervalId != null) {
-    clearInterval(intervalId);
-  }
-});
-
-const intervalId = setInterval(async () => {
-  // TODO !!! potential solution for scrolling and messages - initially use readChat -> get latest timestamp ->
-    // -> in interval only retrieve messages with stored timestamp -> append to messages (rerender?) -> 
-    // check whether to scroll down again, do so if the message was sent from client, do so if it was sent
-    // from peer only if we're already at the bottom -> refresh latest timestamp -> do again in next
-    // interval iteration -> repeat forever until closed
-  messages.value = await readChat(currentUser.id, peerUserId);
-}, 1000);
-
-const handleSending = async () => {
-  if (textMessage.value.length == 0) { // Do not send an empty message
-    return;
-  }
-
-sendChatMessage(currentUser.id, peerUserId, textMessage.value, null);
-textMessage.value="";
-}
-
 </script>
-
-
 
 <template>  
   <LoadingScreen v-if="isLoading"></LoadingScreen>
 
-  <div v-else>
-    <h2>Chat s uživatelem
-      <Message severity="secondary" @click="router.push(`/profile/${peerUserId}`)"
-        style="display: inline-block"
-        size="large">
-        {{ peerUser.name }}
-      </Message>
-    </h2>
+  <div v-else style="display: flex; flex-direction: column;">
 
-    <div v-if="messages.length == 0">
-      Dosud jste uživateli neposlal/a žádné zprávy.
+    <!-- Header -->
+    <div style="position: fixed; ">
+      <div style="display: flex; align-items: center;">
+        <h2>Chat s</h2>
+        <Message severity="secondary" @click="router.push(`/profile/${peerUserId}`)" size="large">
+          {{ peerUser.name }}
+        </Message>
+      </div>
+      <div class="devider"></div>
     </div>
 
-    <div v-for="message in messages">
-      <a v-if="message.person_posted == currentUser.id">
-        {{ currentUser.name }}:
-      </a>
-      <a v-else>
-        {{ peerUser.name }}:
-      </a>
+    <!-- Messages -->
+    <div style="margin-top: 90px; margin-bottom: 60px">
+      <div v-if="messages.length == 0">
+        Dosud jste uživateli neposlal/a žádné zprávy.
+      </div>
 
-      {{ message.content }}
+      <div v-for="message in messages" >
+        <a v-if="message.person_posted == currentUser.id">
+          {{ currentUser.name }}:
+        </a>
+        <a v-else>
+          {{ peerUser.name }}:
+        </a>
 
-      <div v-if="message.recipe_id != null">
-        <Message severity="info" icon="pi pi-sort-alt" @click="router.push(`/recipe/public/${message.recipe_id}`)">
-          {{ message.Recipe.name }}
-        </Message>
-        <br/>
+        {{ message.content }}
+
+        <div v-if="message.recipe_id != null">
+          <Message severity="info" icon="pi pi-sort-alt" @click="router.push(`/recipe/public/${message.recipe_id}`)">
+            {{ message.Recipe.name }}
+          </Message>
+          <br/>
+        </div>
       </div>
     </div>
 
-    <div style="bottom: 70px; position: fixed; display: flex; justify-content: center;">
-      <InputText v-model="textMessage" size="large"/>
-      <Button icon="pi pi-send" style="margin-left: 10px;"
-        @click="handleSending">
-      </Button>
+    <!-- Entry field -->
+    <div style="position: fixed; bottom: 80px;">
+      <div class="devider"></div>
+      <br/>
+      <div style="display: flex; align-items: center;">
+        <InputText v-model="textMessage" size="large"/>
+        <Button icon="pi pi-send" @click="handleSending"></Button>
+      </div>
     </div>
 
-    <div style="height: 30px"></div>
   </div>
 
 </template>
+
+<style scoped>
+.devider {
+  background-color: aquamarine;
+  width: 100%;
+  height: 2px;
+}
+</style>
