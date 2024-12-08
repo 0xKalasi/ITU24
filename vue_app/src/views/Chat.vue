@@ -72,10 +72,12 @@ onBeforeMount (() => {
     <!-- Header -->
     <div style="position: fixed;">
       <div style="display: flex; align-items: center;">
-        <h2>Chat s</h2>
+        <BasicPageHeader :text="`Chat s ${peerUser.name}`">Chat s</BasicPageHeader>
+        <!--
         <Message severity="secondary" @click="router.push(`/profile/${peerUserId}`)" size="large">
           {{ peerUser.name }}
         </Message>
+        -->
       </div>
       <div class="devider"></div>
     </div>

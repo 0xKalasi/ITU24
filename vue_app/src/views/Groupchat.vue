@@ -58,12 +58,12 @@ const isLoading = ref(false);
     <!-- Header -->
     <div style="position: fixed;">
       <div style="display: flex; align-items: center;">
-        <h2>{{ currentGroup.name }}</h2>
+        <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
         <Button
           icon="pi pi-pencil"
-          label="Spravovat"
-          @click="console.log('CUSTOMISE')"></Button>
-      </div>
+          label=""
+          @click="router.push(`/groupchats/edit/${currentGroup.id}`)"></Button>
+      </div> <!-- TODO there should be a text description with the button -->
       <div class="devider"></div>
     </div>
 
