@@ -10,7 +10,6 @@ import { ref, onMounted, onUnmounted } from "vue";
 
 import { useUserStore } from '../stores/userStore';
 import BasicPageHeader from "../components/basicPageHeader.vue";
-import { supabase } from "../../utils/supabase.js";
 const currentUser = useUserStore();
 
 const router = useRouter();
@@ -18,7 +17,7 @@ const router = useRouter();
 const viewedUserId = router.currentRoute.value.params.user_id;
 const viewedUser = await readUser(viewedUserId);
 
-const usersRecipes = await readUsersPublicRecipe(viewedUserId);
+const usersRecipes = await readUsersPublicRecipe(viewedUser.id);
 const recipeCnt = usersRecipes.length;
 const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
 
@@ -49,9 +48,9 @@ onUnmounted(() => {
   <br/><br/>
   <div class="devider"></div>
 
-  <h3 v-if="recipeCnt >= 5">{{ usersRecipes.length }} veřejných receptů</h3>
-  <h3 v-else-if="recipeCnt >= 2">{{ usersRecipes.length }} veřejné recepty</h3>
-  <h3 v-else-if="recipeCnt == 1">{{ usersRecipes.length }} veřejný recept</h3>
+  <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+  <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+  <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
   <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
   <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
