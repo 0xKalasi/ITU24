@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUser, readChat, sendChatMessage } from "../../utils/users_api.js";
+import { readUser, readChat, sendChatMessage, deleteChatHistory } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
 import { ref, onMounted, onUnmounted, onBeforeMount, nextTick } from "vue";
@@ -25,7 +25,7 @@ onMounted(async () => {
   messages.value = await readChat(currentUser.id, peerUser.id);
   scrollDown();
 
-  messageChanges = await createSubscription("INSERT", "Message", async () => {
+  messageChanges = await createSubscription("*", "Message", async () => {
     messages.value = await readChat(currentUser.id, peerUser.id);
     await nextTick(); // Needed to get the correct height
     scrollDown();
@@ -71,19 +71,22 @@ onBeforeMount (() => {
 
     <!-- Header -->
     <div style="position: fixed;">
-      <div style="display: flex; align-items: center;">
+      <div>
         <BasicPageHeader :text="`Chat s ${peerUser.name}`">Chat s</BasicPageHeader>
-        <!--
-        <Message severity="secondary" @click="router.push(`/profile/${peerUserId}`)" size="large">
-          {{ peerUser.name }}
-        </Message>
-        -->
+        <Button
+          label="Smazat historii"
+          icon="pi pi-history"
+          size="small"
+          style="float: right"
+          @click="deleteChatHistory(currentUser.id, peerUser.id)">
+        </Button>
       </div>
+      <br/><br/>
       <div class="devider"></div>
     </div>
 
     <!-- Messages -->
-    <div style="margin-top: 90px; margin-bottom: 60px">
+    <div style="margin-top: 20px; margin-bottom: 60px;">
       <div v-if="messages.length == 0">
         Dosud jste uživateli neposlal/a žádné zprávy.
       </div>

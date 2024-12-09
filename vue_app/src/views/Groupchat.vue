@@ -69,7 +69,7 @@ const isLoading = ref(false);
     </div>
 
     <!-- Messages -->
-    <div style="margin-top: 90px; margin-bottom: 60px">
+    <div style="margin-top: 90px; margin-bottom: 60px; padding: 20px;">
       <div v-if="messages.length == 0">
         Skupina je dosud prázdná.
       </div>

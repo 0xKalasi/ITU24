@@ -300,6 +300,19 @@ const blockUser = async(user1, user2) => {
   return await setFriendState(user1, user2, 'blocked');
 }
 
+const deleteChatHistory = async (user1, user2) => {
+  const chatId = await getChatFromUserIds(user1, user2);
+
+  const { error } = await supabase
+  .from('Message')
+  .delete()
+  .eq('chat_id', chatId)
+
+  if (error) {
+    console.log(error);
+  }
+}
+
 export {
   readAllUsers,
   readUser,
@@ -314,5 +327,6 @@ export {
   getFriendshipState,
   sendFriendRequest,
   acceptFriendRequest,
-  blockUser
+  blockUser,
+  deleteChatHistory
 };
