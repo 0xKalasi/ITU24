@@ -146,6 +146,18 @@ const updateGroupName = async (groupId, newName) => {
   return data;
 }
 
+const removeUserFromGroup = async (userId, groupId) => {
+  const { error } = await supabase
+  .from('GroupchatMembers')
+  .delete()
+  .eq('user', userId)
+  .eq('groupchat', groupId)
+
+  if (error) {
+    console.log(error);
+  }
+}
+
 export {
   readGroupchat,
   readUsersGroupchats,
@@ -153,5 +165,6 @@ export {
   readGroupchatMessages,
   readGroupchatMembers,
   sendGroupchatMessage,
-  updateGroupName
+  updateGroupName,
+  removeUserFromGroup
 };

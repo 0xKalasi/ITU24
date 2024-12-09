@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 
-import { readGroupchat, updateGroupName, readGroupchatMembers } from "../../utils/groupchat_api";
+import { readGroupchat, updateGroupName, readGroupchatMembers, removeUserFromGroup } from "../../utils/groupchat_api";
 import { ref } from "vue";
 
 import { useUserStore } from '../stores/userStore';
@@ -36,6 +36,11 @@ const Rename = async () => {
     nameChangedKey.value++;
     updateGroupName(currentGroup.id, groupName.value)
   }
+}
+
+const LeaveGroup = async () => {
+  removeUserFromGroup(currentUser.id, currentGroup.id);
+  router.push("/groupchats");
 }
 
 </script>
@@ -181,7 +186,7 @@ const Rename = async () => {
           icon="pi pi-check"
           label="Ano, opustit skupinu"
           severity="danger"
-          @click="console.log('LEAVE GROUP')">
+          @click="LeaveGroup()">
         </Button>
         <Button
           icon="pi pi-times"

@@ -17,7 +17,7 @@ let groupsChanges;
 onMounted(async () => {
   groupchats.value = await readUsersGroupchats(currentUser.id);
 
-  groupsChanges = await createSubscription("INSERT", "Groupchat", async () => {
+  groupsChanges = await createSubscription("*", "Groupchat", async () => {
     groupchats.value = await readUsersGroupchats(currentUser.id);
   });
 });
