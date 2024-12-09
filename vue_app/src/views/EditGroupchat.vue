@@ -58,6 +58,10 @@ const LeaveGroup = async () => {
     });
 }
 
+const RemoveUser = async (id) => {
+  removeUserFromGroup(id, currentGroup.id);
+}
+
 </script>
 
 <template>
@@ -169,9 +173,16 @@ const LeaveGroup = async () => {
     <div v-for="member in members">
       <b>{{ member.name }}</b>
       <Button
+        v-if="member.id != currentUser.id"
         icon="pi pi-minus"
         style="margin-left: 10px;"
-        @click="console.log('ODEBRAT UŽIVATELE')">
+        @click="RemoveUser(member.id)">
+      </Button>
+      <Button
+        v-else
+        severity="secondary"
+        label="Tvůrce"
+        style="margin-left: 10px;">
       </Button>
     </div>
 
