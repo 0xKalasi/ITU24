@@ -2,7 +2,8 @@
 import { useRouter } from "vue-router";
 
 import { readGroupchat, updateGroupName, readGroupchatMembers, removeUserFromGroup } from "../../utils/groupchat_api";
-import { ref } from "vue";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+import { ref, onMounted, onUnmounted, nextTick } from "vue";
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
@@ -12,7 +13,19 @@ const router = useRouter();
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
 const currentGroup = await readGroupchat(currentGroupId);
 
-const members = await readGroupchatMembers(currentGroup.id);
+const members = ref([]);
+
+let memberChanges;
+onMounted(async () => {
+  members.value = await readGroupchatMembers(currentGroup.id);
+
+  memberChanges = await createSubscription("*", "GroupchatMembers", async () => {
+    members.value = await readGroupchatMembers(currentGroup.id);
+  });
+});
+onUnmounted(() => {
+  removeSubscription(memberChanges);
+});
 
 const isCreator = (currentUser.id == currentGroup.creator) ? true : false;
 
@@ -39,8 +52,10 @@ const Rename = async () => {
 }
 
 const LeaveGroup = async () => {
-  removeUserFromGroup(currentUser.id, currentGroup.id);
-  router.push("/groupchats");
+  removeUserFromGroup(currentUser.id, currentGroup.id)
+    .then(async () => {
+      router.push("/groupchats");
+    });
 }
 
 </script>
