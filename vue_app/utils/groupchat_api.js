@@ -175,6 +175,40 @@ const addUserToGroup = async (userId, groupId) => {
   return data;
 }
 
+const deleteGroupchatMessages = async (groupId) => {
+  const { error } = await supabase
+  .from('Message')
+  .delete()
+  .eq('groupchat_id', groupId)
+  
+  if (error) {
+    console.log(error);
+  }
+}
+
+const deleteGroupchat = async (groupId) => {
+  await deleteGroupchatMessages(groupId);
+
+  const { error: err1 } = await supabase
+  .from('GroupchatMembers')
+  .delete()
+  .eq('groupchat', groupId)
+  
+  if (err1) {
+    console.log(err1);
+  }
+
+  const { error: err2 } = await supabase
+  .from('Groupchat')
+  .delete()
+  .eq('id', groupId)
+  
+  if (err2) {
+    console.log(err2);
+  }
+
+}
+
 export {
   readGroupchat,
   readUsersGroupchats,
@@ -184,5 +218,7 @@ export {
   sendGroupchatMessage,
   updateGroupName,
   removeUserFromGroup,
-  addUserToGroup
+  addUserToGroup,
+  deleteGroupchatMessages,
+  deleteGroupchat
 };

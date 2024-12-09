@@ -1,7 +1,12 @@
 <script setup>
 import { useRouter } from "vue-router";
 
-import { readGroupchat, updateGroupName, readGroupchatMembers, removeUserFromGroup } from "../../utils/groupchat_api";
+import { readGroupchat,
+         updateGroupName,
+         readGroupchatMembers,
+         removeUserFromGroup,
+         deleteGroupchatMessages,
+         deleteGroupchat } from "../../utils/groupchat_api";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 import { ref, onMounted, onUnmounted, nextTick } from "vue";
 
@@ -47,12 +52,12 @@ const Rename = async () => {
   } else {
     nameChanged.value = true;
     nameChangedKey.value++;
-    updateGroupName(currentGroup.id, groupName.value)
+    await updateGroupName(currentGroup.id, groupName.value)
   }
 }
 
 const LeaveGroup = async () => {
-  removeUserFromGroup(currentUser.id, currentGroup.id)
+  await removeUserFromGroup(currentUser.id, currentGroup.id)
     .then(async () => {
       router.push("/groupchats");
     });
@@ -60,6 +65,19 @@ const LeaveGroup = async () => {
 
 const RemoveUser = async (id) => {
   removeUserFromGroup(id, currentGroup.id);
+}
+
+const DeleteHistory = async () => {
+  await deleteGroupchatMessages(currentGroup.id);
+  confirmDelHist.value = false;
+}
+
+const DeleteGroupchat = async () => {
+  console.log('DELETE GROUPCHAT');
+  await deleteGroupchat(currentGroup.id)
+    .then(async () => {
+      router.push("/groupchats");
+    });
 }
 
 </script>
@@ -125,7 +143,7 @@ const RemoveUser = async (id) => {
           icon="pi pi-check"
           label="Ano, smazat historii"
           severity="danger"
-          @click="console.log('DELETE GROUPCHAT HISTORY')">
+          @click="DeleteHistory()">
         </Button>
         <Button
           icon="pi pi-times"
@@ -145,7 +163,7 @@ const RemoveUser = async (id) => {
           icon="pi pi-check"
           label="Ano, smazat"
           severity="danger"
-          @click="console.log('DELETE GROUPCHAT')">
+          @click="DeleteGroupchat()">
         </Button>
         <Button
           icon="pi pi-times"
