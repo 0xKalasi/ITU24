@@ -73,7 +73,6 @@ const DeleteHistory = async () => {
 }
 
 const DeleteGroupchat = async () => {
-  console.log('DELETE GROUPCHAT');
   await deleteGroupchat(currentGroup.id)
     .then(async () => {
       router.push("/groupchats");
