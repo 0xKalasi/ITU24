@@ -41,6 +41,11 @@ const newGroupName = ref("");
 
     <div v-if="createGroup == true"> <!-- Just show the group button -->
       <Button
+        label="Přátelé"
+        icon="pi pi-comment"
+        @click="router.push(`/chats`)">
+      </Button>
+      <Button
         label="Vytvořit skupinu"
         icon="pi pi-plus"
         @click="createGroup = !createGroup"

@@ -26,10 +26,7 @@ onUnmounted(() => {
 </script>
 
 <template>  
-  <h2>Žádosti o přátelství</h2>
-
-  <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
-  <br/><br/>
+  <BasicPageHeader text="Žádosti o přátelství"></BasicPageHeader>
 
   <div v-if="friendRequests.length == 0">
     Nemáte žádné žádosti o přátelství.

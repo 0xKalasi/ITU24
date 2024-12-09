@@ -20,7 +20,8 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
 <template>
   <a style="color: aquamarine; display: flex; justify-content: center;">Takto Vás uvidí ostatní uživatelé</a>
   <div class="devider"></div>
-  <BasicPageHeader text="Profil uživatele" />
+  
+  <BasicPageHeader text="Profil uživatele" ></BasicPageHeader>
 
   <h2>{{ previewData.name }}</h2>
   {{ previewData.bio }}

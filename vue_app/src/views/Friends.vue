@@ -26,23 +26,36 @@ onUnmounted(() => {
 </script>
 
 <template> 
-  <div style="display: flex; align-items: center">
-    <h2>Přátelé</h2>
-
-    <Button label="Groupchaty" icon="pi pi-comments"
-      @click="router.push('/groupchats')"
-      style="margin-left: auto">
-    </Button>
-  </div>
+  <BasicPageHeader text="Přátelé"></BasicPageHeader>
 
   <div v-if="currentUser.id == 0">
     Pro zobrazení chatů se přihlaste.
   </div>
 
   <div v-else>
-    <Button label="Příchozí" icon="pi pi-clock" @click="router.push('/requests')"></Button> <!-- TODO badge with req. cnt. -->
-    <Button label="Zablokované" icon="pi pi-times" @click="router.push('/blocked')"></Button>
-    <br/><br/>
+    <Button
+      label="Groupchaty"
+      icon="pi pi-comments"
+      @click="router.push('/groupchats')">
+    </Button>
+
+    <div class="devider" style="margin-bottom: 20px; margin-top: 20px"></div>
+
+    <div>
+      <Button
+        label="Příchozí"
+        icon="pi pi-clock"
+        @click="router.push('/requests')">
+      </Button> <!-- TODO badge with req. cnt. -->
+      <Button
+        label="Zablokované"
+        icon="pi pi-times"
+        @click="router.push('/blocked')"
+        style="float: right;">
+      </Button>
+    </div>
+
+    <div class="devider" style="margin-bottom: 20px; margin-top: 20px"></div>
 
     <div v-if="friends.length == 0">
       Seznam přátel je prázdný.

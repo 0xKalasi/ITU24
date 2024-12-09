@@ -6,7 +6,6 @@ import Homepage from "../views/Homepage.vue";
 import NotFound from "../views/NotFound.vue";
 import Profile from "../views/Profile.vue";
 import ForeignUser from "../views/ForeignUser.vue";
-import EditProfile from "../views/EditProfile.vue";
 import CookMode from "../views/CookMode.vue";
 import CookModeStep from "../views/CookModeStep.vue";
 import PublicRecipe from "../views/PublicRecipe.vue";
@@ -33,28 +32,26 @@ const routes = [
   { path: "/chats/:user_id", component: Chat }, // chat with currently logged in and "user_id" user
   { path: "/filters", component: Filters},
   { path: "/filters/create", component: CreateFilter },
-  { path: "/recipe/public/:recipe_id", component: PublicRecipe},
-  { path: "/users", component: Users},
-  { path: "/profile", component: Profile },
-  { path: "/profile/:user_id", component: ForeignUser },
-  { path: "/profile/edit", component: EditProfile,
+  { path: "/recipe/public/:recipe_id", component: PublicRecipe },
+  { path: "/users", component: Users },
+  { path: "/profile", component: Profile,
     // The changes from editing need to persist after preview is closed, and only the preview
     beforeEnter: (to, from) => {
-      const currentUser = useUserStore();
       const previewData = profilePreviewStore();
-
-      if (from.name != "PREVIEW") {
-        previewData.name = currentUser.name;
-        previewData.bio = currentUser.bio;
+      if (from.name == "PREVIEW") {
+        previewData.editMode = true;
+      } else {
+        previewData.editMode = false;
       }
     }
   },
+  { path: "/profile/:user_id", component: ForeignUser },
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },
   { path: "/addnewrecipe", component: AddNewRecipe },
   { path: "/share/:recipe_id", component: Share },
-  { path: "/profile/edit/preview", component: ProfilePreview,
-    name: "PREVIEW" // Used to make clear the reation with edit page
+  { path: "/profile/preview", component: ProfilePreview,
+    name: "PREVIEW",
   },
   { path: "/groupchats", component: Groupchats },
   { path: "/groupchats/:groupchat_id", component: Groupchat },

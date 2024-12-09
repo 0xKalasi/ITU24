@@ -26,10 +26,7 @@ onUnmounted(() => {
 </script>
 
 <template>  
-  <h2>Zablokovaní uživatelé</h2>
-
-  <Button label="Zpět" icon="pi pi-arrow-left" @click="router.push('/chats')"></Button>
-  <br/><br/>
+  <BasicPageHeader text="Zablokovaní uživatelé"></BasicPageHeader>
 
   <div v-if="blockedUsers.length == 0">
     Seznam zablokovaných uživatelů je prázdný.
