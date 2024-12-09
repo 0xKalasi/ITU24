@@ -158,6 +158,23 @@ const removeUserFromGroup = async (userId, groupId) => {
   }
 }
 
+const addUserToGroup = async (userId, groupId) => {
+  const { data, error } = await supabase
+  .from('GroupchatMembers')
+  .insert([{
+    user: userId,
+    groupchat: groupId
+  }])
+  .select()
+  
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
+}
+
 export {
   readGroupchat,
   readUsersGroupchats,
@@ -166,5 +183,6 @@ export {
   readGroupchatMembers,
   sendGroupchatMessage,
   updateGroupName,
-  removeUserFromGroup
+  removeUserFromGroup,
+  addUserToGroup
 };

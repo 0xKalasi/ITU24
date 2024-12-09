@@ -155,7 +155,16 @@ const LeaveGroup = async () => {
     <div class="devider"></div>
 
     <!-- Member managment -->
-    <h3>Členové</h3>
+    <div style="display: flex; align-items: center;">
+      <h3>Členové</h3>
+
+      <Button
+        label="Přidat členy"
+        icon="pi pi-plus"
+        @click="router.push(`/groupchats/add/${currentGroup.id}`)"
+        style="margin-left: 20px;">
+      </Button>
+    </div>
 
     <div v-for="member in members">
       <b>{{ member.name }}</b>
@@ -165,14 +174,6 @@ const LeaveGroup = async () => {
         @click="console.log('ODEBRAT UŽIVATELE')">
       </Button>
     </div>
-
-    <br/>
-
-    <Button
-      label="Přidat člena"
-      icon="pi pi-plus"
-      @click="console.log('ADD MEMBER')">
-    </Button>
 
   </div>
 
@@ -215,19 +216,20 @@ const LeaveGroup = async () => {
     <div class="devider"></div>
 
     <!-- Member view and adding -->
-    <h3>Členové</h3>
+    <div style="display: flex; align-items: center;">
+      <h3>Členové</h3>
+
+      <Button
+        label="Přidat členy"
+        icon="pi pi-plus"
+        @click="router.push(`/groupchats/add/${currentGroup.id}`)"
+        style="margin-left: 20px;">
+      </Button>
+    </div>
 
     <div v-for="member in members">
       <b>{{ member.name }}</b>
     </div>
-
-    <br/>
-
-    <Button
-      label="Přidat člena"
-      icon="pi pi-plus"
-      @click="console.log('ADD MEMBER')">
-    </Button>
 
   </div>
 
