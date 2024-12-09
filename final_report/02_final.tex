@@ -1,0 +1,116 @@
+%      _                                     _          _             
+%     | | __ _   _   _ ____  _ __   ___  ___| |__   ___(_)            
+%  _  | |/ _` | | | | |_  / | '_ \ / _ \/ __| '_ \ / __| |            
+% | |_| | (_| | | |_| |/ /  | | | |  __/ (__| | | | (__| |_ _ _ _ _ _ 
+%  \___/ \__,_|  \__,_/___| |_| |_|\___|\___|_| |_|\___|_(_|_|_|_|_|_)
+
+\documentclass[a4paper, 11pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage[czech]{babel}
+    \usepackage[text={17.2cm, 24.7cm}, left=2cm, top=2cm]{geometry}
+    \usepackage{times}
+    \usepackage[hidelinks]{hyperref}
+    %\usepackage{indentfirst}
+    \usepackage{graphicx}
+        \graphicspath{{./images/}}
+    \usepackage{float}
+    \usepackage[dvipsnames]{xcolor}
+    \usepackage{enumitem}
+    \usepackage{multirow}
+    \usepackage{multicol}
+
+\newcommand{\image}[3]{ % args: size [factor of text width], path to image, caption
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=#1\textwidth]{#2}\caption{#3}
+        \label{fig:\thefigure}
+    \end{figure}
+}
+
+\renewcommand{\t}[1]{\texttt{#1}} % shortcut for tt text
+
+\newcommand{\sss}[1]{\subsubsection{#1}} % shortcut for s.s.sec.
+
+\newcommand{\plus}{\textbf{\color{ForestGreen}+}}
+\renewcommand{\minus}{\textbf{\color{Red}-}}
+
+\title {
+    {\Huge \emph{\textbf{resipi.}}{\huge}} \\[0.25em] %, Kuchařka nové generace
+    {\Large \emph{Závěrečná zpráva k projektu do předmětu ITU}}
+}
+\author {
+    \textbf{{\Large Tomáš Bordák,}
+    \emph{\large xborda01 (vedoucí týmu)}} \\[0.5em]
+    {\Large Martin Jabůrek,} 
+    \emph{\large xjabur02} \\[0.3em]
+    {\Large Ondřej Šatinský,} 
+    \emph{\large xsatin03} \\[0.5em]
+    {\Large Tomáš Tomcsányi,} 
+    \emph{\large xtomcs00}
+}
+\date{\today}
+
+\setlist[itemize]{itemsep=0em, topsep=1em}
+
+\hyphenation{Supabase}
+
+\begin{document}    
+    
+    \clearpage
+    \vspace*{\fill}
+    \begin{center}
+    \begin{minipage}{1\textwidth}
+    \maketitle
+    \end{minipage}
+    \end{center}
+    \vfill % equivalent to \vspace{\fill}
+    \clearpage
+
+    \tableofcontents
+    \listoffigures
+    \newpage
+
+\section{Cíl projektu}
+
+% Co bylo účelem
+
+\subsection{Zadání}
+
+% Co jsme chtěli tvořit
+
+\subsection{Odchylky od zadání ve výsledné implementaci}
+
+% Co jsme nakonec vytvořili
+
+\section{Rozdělení práce v týmu}
+
+% Co kdo dělal obecně JENOM NA FE
+
+\subsection{Část Tomáše B.}
+\subsection{Část Martina}
+\subsection{Část Ondřeje}
+\subsection{Část Tomáše T.}
+% PRO KAŽDÉHO odkazy do adresářové struktury, co sám implementoval, na své zdrojové soubory
+
+\section{Zpracování připomínek z kontrolní prezentace}
+
+% heslovitě, odrážkově
+
+\section{Testování}
+
+% Obecné postupy
+
+\subsection{Testování Tomáše B.}
+\subsection{Testování Martina}
+\subsection{Testování Ondřeje}
+\subsection{Testování Tomáše T.}
+% popis uživatele (věkpvá skupina, pohlaví, technická zdatnost, pracovní zaměření)
+% průběh testu/ů
+% 2 vybrané klíčové výsledky - ponaučení
+%% (Jak přesně na to je v zadání, str. 12)
+
+\subsection{Shrnutí testování a ponaučení}
+
+\end{document}
+
+% TODO vlna !!!
