@@ -4,7 +4,7 @@ import { useUserStore } from '../stores/userStore';
 
 import { readGroupchat, readGroupchatMessages, sendGroupchatMessage } from "../../utils/groupchat_api";
 
-import { ref, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, onMounted, onUnmounted, nextTick, onUpdated } from "vue";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api";
 
 const currentUser = useUserStore();
@@ -14,14 +14,21 @@ const router = useRouter();
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
 const currentGroup = await readGroupchat(currentGroupId);
 
+const container = ref(null);
+
 const scrollDown = () => {
-  window.scrollTo(0, document.body.scrollHeight);
+  //window.scrollTo(0, document.body.scrollHeight);
+
+  if(container.value){
+    container.value.scrollTop = container.value.scrollHeight;
+  }
 };
 
 // Retrieve messages
 const messages = ref([]);
 
 let groupMessageChanges;
+
 onMounted(async () => {
   messages.value = await readGroupchatMessages(currentGroup.id);
   scrollDown();
@@ -29,9 +36,14 @@ onMounted(async () => {
   groupMessageChanges = await createSubscription("INSERT", "Message", async () => {
     messages.value = await readGroupchatMessages(currentGroup.id);
     await nextTick();
-    scrollDown();
+    //scrollDown();
   });
 });
+
+onUpdated(() => {
+  scrollDown();
+})
+
 onUnmounted(() => {
   removeSubscription(groupMessageChanges);
 });
@@ -55,43 +67,53 @@ const isLoading = ref(false);
 <template>
   <LoadingScreen v-if="isLoading"></LoadingScreen>
 
-  <div v-else style="display: flex; flex-direction: column;">
+  <div v-else>
 
     <!-- Header -->
-    <div style="position: fixed;">
+     <!-- TODO there should be a text description with the button -->
+   <!--  <div style="position: fixed;">
       <div style="display: flex; align-items: center;">
         <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
         <Button
           :icon="isCreator ? `pi pi-pencil` : `pi pi-plus`"
           @click="router.push(`/groupchats/edit/${currentGroup.id}`)"></Button>
-      </div> <!-- TODO there should be a text description with the button -->
+      </div> 
       <div class="devider"></div>
-    </div>
+    </div> -->
+    
+    <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
+        <Button @click="router.back" icon="pi pi-chevron-left"
+                style="height: 35px; width: 35px; background-color: transparent; 
+                color: white; border: 0px;"/>
+          
+        <h2 style="max-width: 240px;">{{ currentGroup.name }}</h2>
+
+        <Button style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);"
+                :icon="isCreator ? `pi pi-pencil` : `pi pi-plus`"
+                @click="router.push(`/groupchats/edit/${currentGroup.id}`)"/>
+    </div> 
 
     <!-- Messages -->
-    <div style="margin-top: 90px; margin-bottom: 60px; padding: 20px;">
+    <!-- TODO: fix height  -->
+    <div ref="container" style="margin: 10px 20px; overflow-y: auto; height: calc(100vh - 250px);">
       <div v-if="messages.length == 0">
         Skupina je dosud prázdná.
       </div>
 
       <div v-for="message in messages" :key="message.id">
-        <a>{{ message.User.name }}:</a>
-        {{ message.content }}
+        <a>{{ message.User.name }}:</a> {{ message.content }}
 
         <div v-if="message.recipe_id != null">
           <Message severity="info" icon="pi pi-sort-alt" @click="router.push(`/recipe/public/${message.recipe_id}`)">
             {{ message.Recipe.name }}
           </Message>
-          <br/>
         </div>
       </div>
     </div>
 
     <!-- Entry field -->
-    <div style="position: fixed; bottom: 80px;">
-      <div class="devider"></div>
-      <br/>
-      <div style="display: flex; align-items: center;">
+    <div style="display: flex; justify-content: center; margin-top: 10px;">
+      <div style="position: fixed; bottom: 80px;">
         <InputText v-model="textMessage" size="large"/>
         <Button icon="pi pi-send" @click="handleSending"></Button>
       </div>
