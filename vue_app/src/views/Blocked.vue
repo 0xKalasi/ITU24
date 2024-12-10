@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { acceptFriendRequest, readUsersBlocked } from "../../utils/users_api.js";
+import { readUsersBlocked, unblockUser } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
 import { ref, onMounted, onUnmounted } from "vue";
@@ -39,7 +39,7 @@ onUnmounted(() => {
     <Button
       label="Odblokovat"
       icon="pi pi-lock-open"
-      @click="acceptFriendRequest(currentUser.id, blocked.id)"
+      @click="unblockUser(currentUser.id, blocked.id)"
       style="float: right">
     </Button>
     <br/><br/>

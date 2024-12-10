@@ -70,7 +70,7 @@ const updateUser = async (id, name, bio) => {
   return data;
 }
 
-const readUsersByRelation = async (id, state) => {
+const readUsersFriends = async (id) => {
   // A logged out user has no friends
   if (id == 0) {
     return [];
@@ -84,15 +84,13 @@ const readUsersByRelation = async (id, state) => {
     friend2
   `)
   .or(`friend1.eq.${id},friend2.eq.${id}`)
-  .eq('state', state)
+  .eq('state', 'accepted')
 
   if (error) {
     console.log(error);
     return null;
   }
 
-  // Get a list of users friend ids
-  // Flatten the array of objects and remove the user themselfs
   const friendIds = usersFriendships
                     .flatMap(friendship => Object.values(friendship))
                     .filter(friendId => (friendId != id));
@@ -107,32 +105,81 @@ const readUsersByRelation = async (id, state) => {
   return friends;
 }
 
-// Specific functions to get different kinds of user relations:
-const readUsersFriends = async (id) => {
-  return await readUsersByRelation(id, 'accepted');
-}
 const readUsersRequests = async (id) => {
-  return await readUsersByRelation(id, 'pending');
+  if (id == 0) {
+    return [];
+  }
+
+  const { data: usersFriendships, error } = await supabase
+  .from('FriendStatus')
+  .select(`
+    friend1,
+    friend2
+  `)
+  .or(`friend1.eq.${id},friend2.eq.${id}`)
+  .eq('state', 'pending')
+  .neq('sender', id)
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  const friendIds = usersFriendships
+                    .flatMap(friendship => Object.values(friendship))
+                    .filter(friendId => (friendId != id));
+
+  let friends = [];
+  for (const friendId of friendIds) {
+    let friend = await readUser(friendId);
+    friends.push(friend);
+  }
+
+  return friends;
 }
+
 const readUsersBlocked = async (id) => {
-  return await readUsersByRelation(id, 'blocked');
+  if (id == 0) {
+    return [];
+  }
+
+  const { data: usersFriendships, error } = await supabase
+  .from('FriendStatus')
+  .select(`
+    friend1,
+    friend2
+  `)
+  .or(`friend1.eq.${id},friend2.eq.${id}`)
+  .eq('state', 'blocked')
+  .eq('blocker', id) // Only give users I blocked
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  const friendIds = usersFriendships
+                    .flatMap(friendship => Object.values(friendship))
+                    .filter(friendId => (friendId != id));
+
+  let friends = [];
+  for (const friendId of friendIds) {
+    let friend = await readUser(friendId);
+    friends.push(friend);
+  }
+
+  return friends;
 }
 
 // We get which chat belongs to given users by their ids
 // In db, the first id is always lower, so this works generally in both orders
 const getChatFromUserIds = async (sender, receiver) => {
-  if (sender > receiver) {
-    let aux = sender;
-    sender = receiver;
-    receiver = aux;
-  }
-
-  // Find chat id
+  // Find chat id, the ids are always in ascending order
   const { data: Chat, error } = await supabase
   .from('Chat')
   .select('id')
-  .eq('user_1', sender)
-  .eq('user_2', receiver)
+  .eq('user_1', Math.min(sender, receiver))
+  .eq('user_2', Math.max(sender, receiver))
 
   if (error) {
     console.log(error);
@@ -187,9 +234,11 @@ const ForeignUserRelation = {
   loggedOut: "loggedOut",
   self: "self",
   noRelation: "noRelation",
-  pending: "pending",
+  sent: "sent", // I sent the request
+  pending: "pending", // I received the request
   accepted: "accepted",
-  blocked: "blocked"
+  blockedByThem: "blockedByThem",
+  blockedByMe: "blockedByMe"
 }
 const getFriendshipState = async (user, peer) => {
   if (user == 0) {
@@ -200,49 +249,48 @@ const getFriendshipState = async (user, peer) => {
     return ForeignUserRelation.self;
   }
 
-  if (user > peer) { // friend1 is is always lower
-    let aux = user;
-    user = peer;
-    peer = aux;
-  }
-
   const { data: state, error } = await supabase
   .from('FriendStatus')
-  .select('state')
-  .eq('friend1', user)
-  .eq('friend2', peer)
+  .select(`state, sender, blocker`)
+  .eq('friend1', Math.min(user, peer))
+  .eq('friend2', Math.max(user, peer))
 
   if (error) {
     console.log(error);
     return null;
   }
 
+  console.log(state);
+
   if (state.length == 0) { // Assign state according to return
     return ForeignUserRelation.noRelation;
   } else if (state[0].state == "pending") {
-    return ForeignUserRelation.pending;
+    if (state[0].sender == user) {
+      return ForeignUserRelation.sent;
+    } else {
+      return ForeignUserRelation.pending;
+    }
   } else if (state[0].state == "accepted") {
     return ForeignUserRelation.accepted;
   } else if (state[0].state == "blocked") {
-    return ForeignUserRelation.blocked;
+    if (state[0].blocker == user) {
+      return ForeignUserRelation.blockedByMe;  
+    } else {
+      return ForeignUserRelation.blockedByThem;
+    }
   }
 }
 
 // The chats starts existing here and can be accessed when state is "accepted"
 // It is never removed when two people are friends
 const sendFriendRequest = async (sender, receiver) => {
-  if (sender > receiver) {
-    let aux = sender;
-    sender = receiver;
-    receiver = aux;
-  }
-
   const { statusData, statusError } = await supabase
   .from('FriendStatus')
   .insert([{ 
-    friend1: sender,
-    friend2: receiver,
-    state: "pending"
+    friend1: Math.min(sender, receiver),
+    friend2: Math.max(sender, receiver),
+    state: "pending",
+    sender: sender
   }])
   .select()
 
@@ -255,8 +303,8 @@ const sendFriendRequest = async (sender, receiver) => {
   const { chatData, chatError } = await supabase
   .from('Chat')
   .insert([{
-    user_1: sender,
-    user_2: receiver 
+    user_1: Math.min(sender, receiver),
+    user_2: Math.max(sender, receiver) 
   }])
   .select()
 
@@ -268,20 +316,14 @@ const sendFriendRequest = async (sender, receiver) => {
   return statusData;
 }
 
-const setFriendState = async(user1, user2, newState) => {
-  if (user1 > user2) {
-    let aux = user1;
-    user1 = user2;
-    user2 = aux;
-  }
-
+const acceptFriendRequest = async(user1, user2) => {
   const { data, error } = await supabase
   .from('FriendStatus')
   .update({
-    state: newState
+    state: 'accepted'
   })
-  .eq('friend1', user1)
-  .eq('friend2', user2)
+  .eq('friend1', Math.min(user1, user2))
+  .eq('friend2', Math.max(user1, user2))
   .select()
 
   if (error) {
@@ -292,12 +334,42 @@ const setFriendState = async(user1, user2, newState) => {
   return data;
 }
 
-// Exported encapsulating API functions
-const acceptFriendRequest = async(user1, user2) => { // This also works universaly as unblocking
-  return await setFriendState(user1, user2, 'accepted');
+const blockUser = async(user, peer) => {
+  const { data, error } = await supabase
+  .from('FriendStatus')
+  .update({
+    state: 'blocked',
+    blocker: user
+  })
+  .eq('friend1', Math.min(user, peer))
+  .eq('friend2', Math.max(user, peer))
+  .select()
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
 }
-const blockUser = async(user1, user2) => {
-  return await setFriendState(user1, user2, 'blocked');
+
+const unblockUser = async (user, peer) => {
+  const { data, error } = await supabase
+  .from('FriendStatus')
+  .update({
+    state: 'accepted',
+    blocker: null
+  })
+  .eq('friend1', Math.min(user, peer))
+  .eq('friend2', Math.max(user, peer))
+  .select()
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return data;
 }
 
 const deleteChatHistory = async (user1, user2) => {
@@ -328,5 +400,6 @@ export {
   sendFriendRequest,
   acceptFriendRequest,
   blockUser,
+  unblockUser,
   deleteChatHistory
 };

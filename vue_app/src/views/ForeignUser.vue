@@ -1,9 +1,9 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { readUser } from "../../utils/users_api.js";
+import { acceptFriendRequest, readUser } from "../../utils/users_api.js";
 
 import { readUsersPublicRecipe } from "../../utils/api.js";
-import { sendFriendRequest, ForeignUserRelation, getFriendshipState } from "../../utils/users_api.js";
+import { sendFriendRequest, ForeignUserRelation, getFriendshipState, unblockUser } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
 import { ref, onMounted, onUnmounted } from "vue";
@@ -30,7 +30,7 @@ onMounted(async () => {
   currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
 
   // ... then listen to insertions
-  stateChanges = await createSubscription("INSERT", "FriendStatus", async () => {
+  stateChanges = await createSubscription("*", "FriendStatus", async () => {
     currentFriendshipState.value = await getFriendshipState(currentUser.id, viewedUserId);
   });
 });
@@ -80,12 +80,24 @@ onUnmounted(() => {
       @click="sendFriendRequest(currentUser.id, viewedUserId)">
     </Button>
   </div>
-  <div v-else-if="currentFriendshipState == ForeignUserRelation.pending">
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.sent">
     <br/>
     <div class="devider"></div>
 
     <h3>Poslat žádost o přátelství</h3>
     <a>Žádost byla odeslána a čeká na potvrzení.</a>
+  </div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.pending">
+    <br/>
+    <div class="devider"></div>
+
+    <h3>Od tohoto uživatele máte příchozí žádost o přátelství</h3>
+    <Button
+      label="Potvrdit"
+      icon="pi pi-check"
+      style="float: right;"
+      @click="acceptFriendRequest(currentUser.id, viewedUserId)">
+    </Button>
   </div>
   <div v-else-if="currentFriendshipState == ForeignUserRelation.accepted">
     <br/>
@@ -101,12 +113,26 @@ onUnmounted(() => {
       </Button>
     </div>
   </div>
-  <div v-else-if="currentFriendshipState == ForeignUserRelation.blocked">
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.blockedByMe">
     <br/>
     <div class="devider"></div>
 
     <br/>
-    <a style="color: red">S tímto uživatelem nelze komunikovat, je zablokován.</a>
+    <a style="color: orange">S tímto uživatelem nelze komunikovat, je zablokován.</a>
+    <br/>
+    <Button
+      label="Odblokovat"
+      icon="pi pi-lock-open"
+      @click="unblockUser(currentUser.id, viewedUser.id)"
+      style="float: right">
+    </Button>
+  </div>
+  <div v-else-if="currentFriendshipState == ForeignUserRelation.blockedByThem">
+    <br/>
+    <div class="devider"></div>
+
+    <br/>
+    <a style="color: red">Tento uživatel Vás zablokoval.</a>
   </div>
 
 </template>
