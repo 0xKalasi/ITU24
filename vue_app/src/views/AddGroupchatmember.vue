@@ -1,15 +1,17 @@
+<!-- Martin Jabůrek, xjabur02 -->
+
 <script setup>
-import { useRouter } from "vue-router";
-
-import { readGroupchat, readGroupchatMembers, addUserToGroup } from "../../utils/groupchat_api";
-import { readUsersFriends } from "../../utils/users_api";
-
 import { ref } from "vue";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-const router = useRouter();
+import { readGroupchat, readGroupchatMembers, addUserToGroup } from "../../utils/groupchat_api";
+import { readUsersFriends } from "../../utils/users_api";
+
 
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
 const currentGroup = await readGroupchat(currentGroupId);
@@ -24,6 +26,7 @@ const isInGroup = ref(
         return arr;
       }
     }
+
     arr[friend.id] = true;
     return arr;
   }, {})
@@ -43,43 +46,39 @@ const AddToGroup = async (id) => {
 </script>
 
 <template>
-  <Alert v-if="addedMember"
+  <Alert
+    v-if="addedMember"
     type="success" 
-    text="Nový člen přidán do skupiny"
-    :key="addedMemberKey"
-  />
+    text="Nový člen přidán do skupiny."
+    :key="addedMemberKey">
+  </Alert>
 
   <BasicPageHeader text=""></BasicPageHeader>
-  <h2>Přídat členy do skupiny {{ currentGroup.name }}</h2>
-  <div class="devider" style="margin-bottom: 20px;"></div>
+  <h2>
+    Přídat členy do skupiny {{ currentGroup.name }}
+  </h2>
+  
+  <Divider></Divider>
 
-  <div v-for="friend in friends">
+  <div
+    v-for="friend in friends"
+    style="margin-top: 20px;">
+
     {{ friend.name }}
 
-      <Button
-        v-if="isInGroup[friend.id]"
-        label="Přidat"
-        icon="pi pi-plus"
-        @click="AddToGroup(friend.id)"
-        style="margin-bottom: 10px;">
-      </Button>
+    <Button
+      v-if="isInGroup[friend.id]"
+      label="Přidat"
+      icon="pi pi-plus"
+      @click="AddToGroup(friend.id)">
+    </Button>
 
-      <Button
-        v-else
-        label="Už je člen skupiny"
-        severity="secondary"
-        size="small"
-        style="margin-bottom: 10px;">
-      </Button>
-
+    <Button
+      v-else
+      label="Už je členem skupiny"
+      severity="secondary"
+      size="small">
+    </Button>
   </div>
 
 </template>
-
-<style scoped>
-.devider {
-  background-color: aquamarine;
-  width: 100%;
-  height: 2px;
-}
-</style>

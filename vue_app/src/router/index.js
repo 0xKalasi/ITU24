@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-import { useUserStore, profilePreviewStore } from "../stores/userStore";
+import { profilePreviewStore } from "../stores/userStore";
 
 import Users from "../views/Users.vue";
 import Homepage from "../views/Homepage.vue";
@@ -30,13 +30,13 @@ const routes = [
   { path: "/chats", component: Friends},
   { path: "/requests", component: Requests },
   { path: "/blocked", component: Blocked},
-  { path: "/chats/:user_id", component: Chat }, // chat with currently logged in and "user_id" user
+  { path: "/chats/:user_id", component: Chat }, // Chat with currently logged in and "user_id" user
   { path: "/filters", component: Filters},
   { path: "/filters/create", component: CreateFilter },
   { path: "/recipe/public/:recipe_id", component: PublicRecipe },
   { path: "/users", component: Users },
   { path: "/profile", component: Profile,
-    // The changes from editing need to persist after preview is closed, and only the preview
+    // The changes from editing need to persist after preview, and only the preview, is closed
     beforeEnter: (to, from) => {
       const previewData = profilePreviewStore();
       if (from.name == "PREVIEW") {

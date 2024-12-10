@@ -29,6 +29,7 @@ app.use(PrimeVue, {
 import Alert from "../src/components/alert.vue";
 import LoadingScreen from "../src/components/loadingScreen.vue";
 import BasicPageHeader from "../src/components/basicPageHeader.vue";
+import Divider from "./components/Divider.vue";
 
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
@@ -65,6 +66,7 @@ app.component("Alert", Alert);
 app.component("LoadingScreen", LoadingScreen);
 app.component("BasicPageHeader", BasicPageHeader);
 app.component("DatePicker", DatePicker);
+app.component("Divider", Divider);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */

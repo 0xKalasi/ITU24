@@ -17,4 +17,4 @@ $(OUT): $(SRC) clean
 # Two compilation runs to handle references
 
 clean:
-	rm -rf $(BUILD_DIR) 00_*.pdf
+	rm -rf $(BUILD_DIR) 02_*.pdf

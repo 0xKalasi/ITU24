@@ -1,13 +1,17 @@
-<script setup>
-import { useRouter } from "vue-router";
-import { readUsersBlocked, unblockUser } from "../../utils/users_api.js";
-import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+<!-- Martin Jabůrek, xjabur02 -->
 
+<script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-const router = useRouter();
+import { readUsersBlocked, unblockUser } from "../../utils/users_api.js";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+
 
 const blockedUsers = ref([]);
 
@@ -19,9 +23,17 @@ onMounted(async () => {
     blockedUsers.value = await readUsersBlocked(currentUser.id);
   });
 });
-onUnmounted(() => {
-  removeSubscription(blockedUsersChanges);
+onUnmounted(async () => {
+  await removeSubscription(blockedUsersChanges);
 });
+
+const GoToProfile = async (id) => {
+  router.push(`/profile/${id}`);
+}
+
+const UnBlock = async (id) => {
+  unblockUser(currentUser.id, id);
+}
 
 </script>
 
@@ -33,16 +45,19 @@ onUnmounted(() => {
   </div>
 
   <div v-for="blocked in blockedUsers">
-    <Message @click="router.push(`/profile/${blocked.id}`)" severity="secondary">
+    <Message
+      @click="GoToProfile(blocked.id)"
+      severity="secondary"
+      style="margin-bottom: 5px">
       {{ blocked.name }}
     </Message>
+
     <Button
       label="Odblokovat"
       icon="pi pi-lock-open"
-      @click="unblockUser(currentUser.id, blocked.id)"
-      style="float: right">
+      @click="UnBlock(blocked.id)"
+      style="margin-bottom: 20px; margin-left: 50vw;">
     </Button>
-    <br/><br/>
   </div>
 
 </template>
