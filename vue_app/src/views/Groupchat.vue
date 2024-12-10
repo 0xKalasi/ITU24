@@ -114,7 +114,7 @@ const isLoading = ref(false);
     <!-- Entry field -->
     <div style="display: flex; justify-content: center; margin-top: 10px;">
       <div style="position: fixed; bottom: 80px;">
-        <InputText v-model="textMessage" size="large"/>
+        <InputText v-model="textMessage" size="large" @keydown.enter="handleSending"/>
         <Button icon="pi pi-send" @click="handleSending"></Button>
       </div>
     </div>

@@ -139,10 +139,10 @@ const GoToPreview = async () => {
     <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
 
     <h2><i>
-      <input v-model="previewData.name"></input>
+      <InputText v-model="previewData.name" size="small"/>
     </i></h2>
 
-    <textarea v-model="previewData.bio" rows="5" cols="30"></textarea>
+    <Textarea v-model="previewData.bio" rows="5" cols="30" size="small"></Textarea>
     <br/>
 
     <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>

@@ -28,9 +28,31 @@ onUnmounted(() => {
 const createGroup = ref(true);
 const newGroupName = ref("");
 
+// Alert:
+const emptyName = ref(false);
+const emptyNameKey = ref(false);
+
+const CreateNewGroupchat = async () => {
+  if (newGroupName.value != "") {
+    await createGroupchat(newGroupName.value);
+
+    newGroupName.value = "";
+    createGroup.value = !createGroup.value;
+  } else {
+    emptyName.value = true;
+    emptyNameKey.value++;
+  }
+}
+
 </script>
 
 <template>
+  <Alert v-if="emptyName"
+    type="warn"
+    text="Není zadáno žádné jméno skupiny"
+    :key="emptyNameKey"
+  />
+
   <BasicPageHeader text="Skupiny"></BasicPageHeader>
 
   <div v-if="currentUser.id == 0">
@@ -39,53 +61,19 @@ const newGroupName = ref("");
 
   <div v-else>
 
-    <div v-if="createGroup == true"> <!-- Just show the group button -->
-      <Button
-        label="Přátelé"
-        icon="pi pi-comment"
-        @click="router.push(`/chats`)">
-      </Button>
-      <Button
-        label="Vytvořit skupinu"
-        icon="pi pi-plus"
-        @click="createGroup = !createGroup"
-        style="float: right">
-      </Button>
+    <Button
+      label="Přátelé"
+      icon="pi pi-comment"
+      @click="router.push(`/chats`)"
+      style="margin-bottom: 20px;">
+    </Button>
 
-      <br/><br/>
-    </div>
-    <div v-else>
-      <Button
-        label="Zrušit"
-        icon="pi pi-times"
-        @click="createGroup = !createGroup"
-        style="float:right">
-      </Button>
-      <br/><br/>
-
-      <div class="devider"></div>
-
-      <div style="display: flex; align-items: center;">
-        <input v-model="newGroupName" style="margin-top: 20px; margin-bottom: 20px;"/>
-
-        <Button
-          icon="pi pi-check"
-          @click="createGroupchat(newGroupName); newGroupName = ''; createGroup = !createGroup; "
-          style="margin-left: auto">
-        </Button>
-      </div>
-
-      <div v-if="groupchats.length == 0"> <!-- Only when there are no groupchats, to make prettier -->
-        <div class="devider"></div>
-        <br/>
-      </div>
-    </div>
+    <div class="devider"></div>
 
     <div v-if="groupchats.length == 0">
       Nejste členem žádné skupiny.
+      <div class="devider" style="margin-top: 20px"></div>
     </div>
-
-    <div v-else class="devider"></div>
 
     <div v-for="groupchat in groupchats">
       <div style="display: flex; align-items: center;">
@@ -103,8 +91,38 @@ const newGroupName = ref("");
       <div class="devider"></div>
     </div>
 
-  </div>
-  
+    <Button
+      v-if="createGroup == true"
+      label="Vytvořit skupinu"
+      icon="pi pi-plus"
+      @click="createGroup = !createGroup"
+      style="float: right; margin-top: 20px;">
+    </Button>
+
+    <div v-else>
+      <InputText
+        v-model="newGroupName"
+        style="margin-top: 20px; margin-bottom: 20px;" size="small"
+        @keydown.enter="CreateNewGroupchat"
+      />
+
+      <Button
+        icon="pi pi-check"
+        @click="CreateNewGroupchat"
+        style="transform: translate(50%, 0); align-items: center;">
+      </Button>
+
+      <div class="devider"></div>
+
+      <Button
+        label="Zrušit"
+        icon="pi pi-times"
+        @click="createGroup = !createGroup"
+        style="float: right; margin-top: 20px;">
+      </Button>
+    </div>
+
+  </div>  
 
 </template>
 

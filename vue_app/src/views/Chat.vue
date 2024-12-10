@@ -115,7 +115,7 @@ onBeforeMount (() => {
       <div class="devider"></div>
       <br/>
       <div style="display: flex; align-items: center;">
-        <InputText v-model="textMessage" size="large"/>
+        <InputText v-model="textMessage" size="large" @keydown.enter="handleSending"/>
         <Button icon="pi pi-send" @click="handleSending"></Button>
       </div>
     </div>
