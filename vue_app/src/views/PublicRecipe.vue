@@ -24,6 +24,13 @@ const alertKey = ref(0);
 const alertType = ref("");
 const alertText = ref("");
 
+function showAlertMessage(type, text) {
+    alertType.value = type;
+    alertText.value = text;
+    showAlert.value = true;
+    alertKey.value++;
+    }
+
 const path = await getRecipeImage(1);
 
 const actionButtons = ref([
@@ -72,14 +79,11 @@ const actionButtons = ref([
 var delete_recipe = false;
 async function deleteRecipeLocal(){
     if (!delete_recipe){
-        alertType.value = "warn";
-        alertText.value = "Naozaj chcete smazat recept?";
-        showAlert.value = true;
-        alertKey.value++;
+        showAlertMessage("warn","Naozaj chcete smazat recept?")
         delete_recipe = true;
     } else {
         await deleteRecipe(recipe);
-        router.push(`/profile/${user.id}`)
+        router.push(`/recipes`)
     }
 
 }
@@ -142,7 +146,7 @@ async function deleteRecipeLocal(){
         
         <div v-if="user.id == recipe.creator">
             <Button class="p-button-danger" @click="deleteRecipeLocal">Zmaž recept</Button>
-            <Button class="p-button-warn" @click="">Uprav recept</Button>
+            <Button class="p-button-warn" @click="router.push(`/edit-recipe/${recipe.id}`)">Uprav recept</Button>
         </div>
     </div>
 </template>

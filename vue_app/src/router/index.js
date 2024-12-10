@@ -23,6 +23,7 @@ import Groupchats from "../views/Groupchats.vue";
 import Groupchat from "../views/Groupchat.vue";
 import EditGroupchat from "../views/EditGroupchat.vue";
 import AddGroupchatmember from "../views/AddGroupchatmember.vue";
+import EditRecipe from "../views/EditRecipe.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -34,6 +35,7 @@ const routes = [
   { path: "/filters", component: Filters},
   { path: "/filters/create", component: CreateFilter },
   { path: "/recipe/public/:recipe_id", component: PublicRecipe },
+  { path: "/edit-recipe/:recipe_id", component: EditRecipe },
   { path: "/users", component: Users },
   { path: "/profile", component: Profile,
     // The changes from editing need to persist after preview, and only the preview, is closed

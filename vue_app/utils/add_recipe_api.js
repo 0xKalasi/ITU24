@@ -29,6 +29,8 @@ async function insertRecipe(recipeData) {
         }
       ])
       .select()
+      
+    console.log(recipeData.time_to_cook);
     console.log(data);
     console.log(data[0].id);
     if (error) {
@@ -155,17 +157,17 @@ async function insertRecipe(recipeData) {
       if(recipeData.categories){
         categoriesInserted = await insertRecipeCategories(recipeId, recipeData.categories);
       }
-      if(recipeData.steps){
-        stepsInserted = await insertSteps(recipeId, recipeData.steps);
+      if(recipeData.Step){
+        stepsInserted = await insertSteps(recipeId, recipeData.Step);
       }
       if(recipeData.timers){ 
         timersInserted = await insertTimers(recipeId, recipeData.timers);
       }
-      if(recipeData.utencils){
-        utencilsInserted = await insertUtencils(recipeId, recipeData.utencils);
+      if(recipeData.Utencils){
+        utencilsInserted = await insertUtencils(recipeId, recipeData.Utencils);
       }
-      if(recipeData.ingredients){
-        ingredientsInserted = await insertIngredients(recipeId, recipeData.ingredients);
+      if(recipeData.Ingredients){
+        ingredientsInserted = await insertIngredients(recipeId, recipeData.Ingredients);
       }
   
       if (
@@ -199,6 +201,20 @@ async function insertRecipe(recipeData) {
       console.log("Deleted everything aight");
     }
   }
+
+  async function updateRecipe(Recipe) {
+    console.log(Recipe.Ingredients);
+    const { data, error } = await supabase
+    .from("Recipe")
+    .update(Recipe)
+    .eq("id", Recipe.id);
+
+    if (error) {
+      console.error("Error updating recipe:", error);
+    } else {
+      console.log("Updated everything aight");
+    }
+  }
   
   export {
     insertRecipe,
@@ -210,4 +226,5 @@ async function insertRecipe(recipeData) {
     insertIngredients,
     insertCompleteRecipe,
     deleteRecipe,
+    updateRecipe,
   };

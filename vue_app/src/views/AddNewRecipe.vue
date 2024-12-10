@@ -19,6 +19,7 @@
   const alertKey = ref(0);
   const alertType = ref("");
   const alertText = ref("");
+  const timeInput = ref(0);
 
   const recipe = ref({
     name: "",
@@ -28,11 +29,11 @@
     private: true,
     portions: 4,
     time_to_cook: 0,
-    alergens: [],
+    RecipeAlergens: [],
     categories: [],
-    steps: [],
-    ingredients: [],
-    utencils: [],
+    Step: [],
+    Ingredients: [],
+    Utencils: [],
     timers: []
   });
 
@@ -49,7 +50,7 @@
    // Add new ingredient
    function PushIngredient() {
       if (newIngredient.value.name) {
-        recipe.value.ingredients.push({ ...newIngredient.value });
+        recipe.value.Ingredients.push({ ...newIngredient.value });
         newIngredient.value = { name: "", quantity: null, unit: "" };
       }
     }
@@ -61,12 +62,12 @@
     }
     // Delete ingredient
     function deleteIngredient(index) {
-      recipe.value.ingredients.splice(index, 1);
+      recipe.value.Ingredients.splice(index, 1);
     }
 
     // Save edited ingredient
     function saveIngredient(index) {
-      recipe.value.ingredients[index] = { ...editedIngredient.value };
+      recipe.value.Ingredients[index] = { ...editedIngredient.value };
       editingIngredientIndex.value = null;
       editedIngredient.value = { name: "", quantity: null, unit: "" };
     }
@@ -80,7 +81,7 @@
     // Add new step
     function PushStep() {
       newStep.value.number++; // Increment the step number
-      recipe.value.steps.push({ ...newStep.value }); // Push the step into the recipe
+      recipe.value.Step.push({ ...newStep.value }); // Push the step into the recipe
       newStep.value = { 
         number: newStep.value.number, // Retain the number for the next step
         text: "", 
@@ -97,12 +98,12 @@
 
     // Delete step
     function deleteStep(index) {
-      recipe.value.steps.splice(index, 1);
+      recipe.value.Step.splice(index, 1);
     }
 
     // Save edited step
     function saveStep(index) {
-      recipe.value.steps[index] = { ...editedStep.value };
+      recipe.value.Step[index] = { ...editedStep.value };
       editingStepIndex.value = null;
       editedStep.value = { number: 1, text: "", name: "", photo: "" };
     }
@@ -121,8 +122,8 @@
 
   // Add a new utensil
   function PushUtencil() {
-      if (recipe.value.utencils.length < 5 && newUtencil.value.trim() !== "") {
-        recipe.value.utencils.push({ name: newUtencil.value });
+      if (recipe.value.Utencils.length < 5 && newUtencil.value.trim() !== "") {
+        recipe.value.Utencils.push({ name: newUtencil.value });
         newUtencil.value = "";
       }
     }
@@ -135,12 +136,12 @@
 
     // Delete step
     function deleteUtencil(index) {
-      recipe.value.utencils.splice(index, 1);
+      recipe.value.Utencils.splice(index, 1);
     }
 
     // Save the edited utensil
     function saveUtencil(index) {
-      recipe.value.utencils[index].name = editedUtencil.value;
+      recipe.value.Utencils[index].name = editedUtencil.value;
       editingIndex.value = null; // Exit editing mode
       editedUtencil.value = ""; // Clear the edited utensil input
     }
@@ -166,6 +167,18 @@
 
     }
 
+    function createRecipe(){
+      if(recipe.value.name != "") {
+        insertCompleteRecipe(recipe.value)
+        .then(() => {
+            showAlertMessage("success", "Recept úspešne vytvořen!");
+            router.push("/profile/"+currentUser.id);
+        })
+        
+      } else {
+        showAlertMessage("error", "Není možné vytvořit recept bez jména");
+      }
+    }
   </script>
 
 <template>
@@ -175,21 +188,21 @@
     <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
   
      <!-- Title TextArea Input -->
-<div class="p-field p-d-flex p-ai-center p-mb-3 title-container">
-  <label for="title" class="title-label">Title</label>
-  <Textarea
-    id="title"
-    placeholder="Enter a name for your recipe!"
-    class="title-textarea"
-    rows="1"
-    autoResize
-    v-model="recipe.name"
-  />
-</div>
+    <div class="p-field p-d-flex p-ai-center p-mb-3 title-container">
+      <label for="title" class="title-label">Název</label>
+      <Textarea
+        id="title"
+        placeholder="Enter a name for your recipe!"
+        class="title-textarea"
+        rows="1"
+        autoResize
+        v-model="recipe.name"
+      />
+    </div>
       <h3>Ingredence</h3>
       <!-- Display each ingredient with edit options -->
-      <div v-if="recipe.ingredients.length > 0" class="p-d-flex p-ai-center p-mb-10">
-        <div v-for="(ingredient, index) in recipe.ingredients" :key="index" class="p-d-flex p-ai-center p-mb-2">
+      <div v-if="recipe.Ingredients.length > 0" class="p-d-flex p-ai-center p-mb-10">
+        <div v-for="(ingredient, index) in recipe.Ingredients" :key="index" class="p-d-flex p-ai-center p-mb-2">
           <template v-if="editingIngredientIndex === index">
             <!-- Editing Mode -->
             <MyOnFloatLabel label="Název Ingredence" v-model="editedIngredient.name" />
@@ -217,13 +230,13 @@
       <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushIngredient" />
 
   
-      <!-- Instructions (Steps) Section -->
+      <!-- Instructions (Step) Section -->
       <div class="p-mb-3">
         <h3>Instrukce</h3>
 
         <!-- Display each step with edit options -->
-        <div v-if="recipe.steps.length > 0" class="p-d-flex p-ai-center p-mb-10">
-          <div v-for="(step, index) in recipe.steps" :key="index" class="p-d-flex p-ai-center p-mb-2">
+        <div v-if="recipe.Step.length > 0" class="p-d-flex p-ai-center p-mb-10">
+          <div v-for="(step, index) in recipe.Step" :key="index" class="p-d-flex p-ai-center p-mb-2">
             <template v-if="editingStepIndex === index">
               <!-- Editing Mode -->
               <InputText v-model="editedStep.name" placeholder="Název kroku" />
@@ -262,8 +275,8 @@
         <h3>Speciální pomúcky</h3>
 
         <!-- List of utensils with edit and save options -->
-        <div v-if="recipe.utencils.length > 0" class="p-d-flex p-ai-center p-mb-10">
-          <div v-for="(utencil, index) in recipe.utencils" :key="index" class="p-d-flex p-ai-center p-mb-2">
+        <div v-if="recipe.Utencils.length > 0" class="p-d-flex p-ai-center p-mb-10">
+          <div v-for="(utencil, index) in recipe.Utencils" :key="index" class="p-d-flex p-ai-center p-mb-2">
             <template v-if="editingIndex === index">
               <!-- Editing Mode -->
               <InputText v-model="editedUtencil" class="p-inputtext-sm" />
@@ -301,8 +314,8 @@
         </div>
         <div class="p-d-flex p-ai-center p-mb-2">
           <label class="p-mr-2">Čas přípravy</label>
-          <TimePicker v-model="recipe.time_to_cook" showIcon fluid iconDisplay="input" timeOnly>
-            <template #inputicon="slotProps">
+          <TimePicker v-model="recipe.time_to_cook" showIcon fluid iconDisplay="input" timeOnly >
+            <template #inputicon="slotProps" @change="saveTime" >
                 <i class="pi pi-clock" @click="slotProps.clickCallback" />
             </template>
           </TimePicker>
@@ -313,7 +326,7 @@
       <!-- Create, Delete Button -->
       <div class="flex justify-between items-center px-4">
         <Button label="Cancel" class="p-button-danger" @click='cancelCreating();'></Button>
-        <Button label="Create" class="p-button-ok" @click='router.push("/profile/"+currentUser.id); insertCompleteRecipe(recipe);'></Button>
+        <Button label="Create" class="p-button-ok" @click='createRecipe();'></Button>
       </div>
 
     </div>
