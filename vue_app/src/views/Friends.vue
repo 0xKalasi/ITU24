@@ -82,23 +82,8 @@ const UnBlock = async (id) => {
   await unblockUser(currentUser.id, id);
 }
 
+
 const selected = ref("Chaty");
-
-const ChangeListed = (which) => {
-  selected.value = which;
-}
-
-const SetHighlight = computed(() => (which) => {
-  return (selected.value == which) ? "primary" : "secondary";
-});
-
-const PendingCount = computed(() => {
-  return (friendRequests.value.length == 0) ? "" : String(friendRequests.value.length);
-});
-
-const GetBadgeSeverity = computed(() => (which) => {
-  return (selected.value == which) ? "secondary" : "contrast";
-});
 
 </script>
 
@@ -111,25 +96,10 @@ const GetBadgeSeverity = computed(() => (which) => {
 
   <div v-else>
 
-    <ButtonGroup>
-      <Button
-        label="Příchozí"
-        :badge="PendingCount"
-        :badgeSeverity="GetBadgeSeverity('Příchozí')"
-        :severity="SetHighlight('Příchozí')"
-        @click="ChangeListed('Příchozí')">
-      </Button>
-      <Button
-        label="Chaty"
-        :severity="SetHighlight('Chaty')"
-        @click="ChangeListed('Chaty')">
-      </Button>
-      <Button
-        label="Zablokované"
-        :severity="SetHighlight('Zablokované')"
-        @click="ChangeListed('Zablokované')">
-      </Button>
-    </ButtonGroup>
+    <ConvSelect
+      v-model="selected"
+      :requestCount="friendRequests.length">
+    </ConvSelect>
 
     <Divider></Divider>
 

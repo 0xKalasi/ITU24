@@ -30,6 +30,7 @@ import Alert from "../src/components/alert.vue";
 import LoadingScreen from "../src/components/loadingScreen.vue";
 import BasicPageHeader from "../src/components/basicPageHeader.vue";
 import Divider from "./components/Divider.vue";
+import ConvSelect from "./components/ConvSelect.vue";
 
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
@@ -67,6 +68,7 @@ app.component("LoadingScreen", LoadingScreen);
 app.component("BasicPageHeader", BasicPageHeader);
 app.component("DatePicker", DatePicker);
 app.component("Divider", Divider);
+app.component("ConvSelect", ConvSelect);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */
