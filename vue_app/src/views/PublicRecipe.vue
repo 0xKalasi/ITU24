@@ -83,7 +83,7 @@ async function deleteRecipeLocal(){
         delete_recipe = true;
     } else {
         await deleteRecipe(recipe);
-        router.push(`/recipes`)
+        router.replace(`/recipes`)
     }
 
 }
@@ -146,7 +146,7 @@ async function deleteRecipeLocal(){
         
         <div v-if="user.id == recipe.creator">
             <Button class="p-button-danger" @click="deleteRecipeLocal">Zmaž recept</Button>
-            <Button class="p-button-warn" @click="router.push(`/edit-recipe/${recipe.id}`)">Uprav recept</Button>
+            <Button class="p-button-warn" @click="router.replace(`/edit-recipe/${recipe.id}`)">Uprav recept</Button>
         </div>
     </div>
 </template>

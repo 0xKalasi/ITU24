@@ -1,5 +1,5 @@
 <script setup>
-  import { onBeforeMount, ref } from 'vue';
+  import { onBeforeMount, ref, watch } from 'vue';
   import InputText from 'primevue/inputtext';
   import InputNumber from 'primevue/inputnumber';
   import Textarea from 'primevue/textarea';
@@ -13,6 +13,10 @@
   import { useRouter } from "vue-router";
   import { readPublicRecipe } from "../../utils/api";
 
+  import addUtencils from '../components/addUtencils.vue';
+  import addSteps from '../components/addSteps.vue';
+  import addIngredient from '../components/addIngredient.vue';
+
 
   const currentUser = useUserStore();
   const router = useRouter();
@@ -21,7 +25,6 @@
   const alertKey = ref(0);
   const alertType = ref("");
   const alertText = ref("");
-  const timeInput = ref(0);
   const recipeId = router.currentRoute.value.params.recipe_id;
   const isLoading = ref(true);
   const recipe = recipeId ? ref({}) : ref({
@@ -55,121 +58,6 @@
     }
   }) 
 
-  // Ingredient data
-  const newIngredient = ref({ name: "", quantity: null, unit: "" });
-  const editedIngredient = ref({ name: "", quantity: null, unit: "" });
-  const editingIngredientIndex = ref(null);
-
-  // Step data
-  const newStep = ref({ number: 1, text: "", name: "Krok 1", photo: "" });
-  const editedStep = ref({ number: 1, text: "", name: "", photo: "" });
-  const editingStepIndex = ref(null);
-
-   // Add new ingredient
-   function PushIngredient() {
-      if (newIngredient.value.name) {
-        recipe.value.Ingredients.push({ ...newIngredient.value });
-        newIngredient.value = { name: "", quantity: null, unit: "" };
-      }
-    }
-
-    // Edit ingredient
-    function editIngredient(index, ingredient) {
-      editingIngredientIndex.value = index;
-      editedIngredient.value = { ...ingredient };
-    }
-    // Delete ingredient
-    function deleteIngredient(index) {
-      recipe.value.Ingredients.splice(index, 1);
-    }
-
-    // Save edited ingredient
-    function saveIngredient(index) {
-      recipe.value.Ingredients[index] = { ...editedIngredient.value };
-      editingIngredientIndex.value = null;
-      editedIngredient.value = { name: "", quantity: null, unit: "" };
-    }
-
-    // Cancel ingredient edit
-    function cancelIngredientEdit() {
-      editingIngredientIndex.value = null;
-      editedIngredient.value = { name: "", quantity: null, unit: "" };
-    }
-
-    // Add new step
-    function PushStep() {
-      newStep.value.number++; // Increment the step number
-      recipe.value.Step.push({ ...newStep.value }); // Push the step into the recipe
-      newStep.value = { 
-        number: newStep.value.number, // Retain the number for the next step
-        text: "", 
-        name: "Krok " + newStep.value.number, 
-        photo: ""
-      }; // Reset newStep
-    }
-
-    // Edit step
-    function editStep(index, step) {
-      editingStepIndex.value = index;
-      editedStep.value = { ...step };
-    }
-
-    // Delete step
-    function deleteStep(index) {
-      recipe.value.Step.splice(index, 1);
-    }
-
-    // Save edited step
-    function saveStep(index) {
-      recipe.value.Step[index] = { ...editedStep.value };
-      editingStepIndex.value = null;
-      editedStep.value = { number: 1, text: "", name: "", photo: "" };
-    }
-
-    // Cancel step edit
-    function cancelStepEdit() {
-      editingStepIndex.value = null;
-      editedStep.value = { number: 1, text: "", name: "", photo: "" };
-    }
-
-
-  // References to data properties
-  const newUtencil = ref("");
-  const editedUtencil = ref("");
-  const editingIndex = ref(null);
-
-  // Add a new utensil
-  function PushUtencil() {
-      if (recipe.value.Utencils.length < 5 && newUtencil.value.trim() !== "") {
-        recipe.value.Utencils.push({ name: newUtencil.value });
-        newUtencil.value = "";
-      }
-    }
-
-    // Enable editing mode for a utensil
-    function editUtencil(index, name) {
-      editingIndex.value = index;
-      editedUtencil.value = name;
-    }
-
-    // Delete step
-    function deleteUtencil(index) {
-      recipe.value.Utencils.splice(index, 1);
-    }
-
-    // Save the edited utensil
-    function saveUtencil(index) {
-      recipe.value.Utencils[index].name = editedUtencil.value;
-      editingIndex.value = null; // Exit editing mode
-      editedUtencil.value = ""; // Clear the edited utensil input
-    }
-
-    // Cancel the edit
-    function cancelEdit() {
-      editingIndex.value = null;
-      editedUtencil.value = ""; // Clear the edited utensil input
-    }
-
     var delete_recipe = false;
     async function cancelEditing(){
         if (!delete_recipe){
@@ -180,7 +68,13 @@
             delete_recipe = true;
         } else {
             //await deleteRecipe(recipe);
-            router.push(`/recipe/public/${recipe.value.id}`)
+            if(recipeId){
+              router.replace(`/recipe/public/${recipe.value.id}`)
+            }
+            else {
+              router.replace(`/recipes`)
+            }
+
         }
 
     }
@@ -201,7 +95,7 @@
         updateCompleteRecipe(recipe.value)
         .then(() => {
             showAlertMessage("success", "Recept úspešne uložen!");
-            router.push(`/recipe/public/${recipe.value.id}`);
+            router.replace(`/recipe/public/${recipe.value.id}`);
         })
     } else {
         showAlertMessage("error", "Název receptu nesmí být prázdný.");
@@ -216,7 +110,7 @@
         insertCompleteRecipe(recipe.value)
         .then(() => {
             showAlertMessage("success", "Recept úspešne vytvořen!");
-            router.push("/recipes");
+            router.replace("/recipes");
         })
         
       } else {
@@ -248,103 +142,14 @@
         />
       </div>
         <h3>Ingredence</h3>
-        <!-- Display each ingredient with edit options -->
-        <div v-if="recipe.Ingredients.length > 0" class="p-d-flex p-ai-center p-mb-10">
-          <div v-for="(ingredient, index) in recipe.Ingredients" :key="index" class="p-d-flex p-ai-center p-mb-2">
-            <template v-if="editingIngredientIndex === index">
-              <!-- Editing Mode -->
-              <MyOnFloatLabel label="Název Ingredence" v-model="editedIngredient.name" />
-              <MyOnFloatLabel :number="true" label="Množství" v-model="editedIngredient.quantity" />
-              <MyOnFloatLabel label="Jednotka" v-model="editedIngredient.unit" />
-              <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveIngredient(index)" />
-              <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelIngredientEdit" /> -->
-            </template> 
-            <template v-else>
-              <!-- Display Mode -->
-              <li>{{ ingredient.name }}, {{ ingredient.quantity }} {{ ingredient.unit }}
-                <Button icon="pi pi-pencil" class="p-button-text p-button-rounded" @click="editIngredient(index, ingredient)" />
-                <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteIngredient(index)" />
-              </li>
-            </template>
-          </div>
-        </div>
-  
-        <!-- New ingredient input -->
-        <div class="in-one-row">
-          <MyOnFloatLabel label="Název Ingredence" v-model="newIngredient.name" />
-          <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" />
-          <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" />
-        </div>
-        <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushIngredient" />
-  
-    
-        <!-- Instructions (Step) Section -->
-        <div class="p-mb-3">
-          <h3>Instrukce</h3>
-  
-          <!-- Display each step with edit options -->
-          <div v-if="recipe.Step.length > 0" class="p-d-flex p-ai-center p-mb-10">
-            <div v-for="(step, index) in recipe.Step" :key="index" class="p-d-flex p-ai-center p-mb-2">
-              <template v-if="editingStepIndex === index">
-                <!-- Editing Mode -->
-                <InputText v-model="editedStep.name" placeholder="Název kroku" />
-                <div class="in-one-row">
-                  <Textarea v-model="editedStep.text" placeholder="Sem pište vaše kroky" rows="3" autoResize />
-                  <PhotoUploader v-model="editedStep.photo" />
-                </div>
-                <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveStep(index)" />
-                <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelStepEdit" /> -->
-              </template>
-              <template v-else>
-                <!-- Display Mode -->
-                <li>{{ step.number }} - {{ step.name }} - {{ step.text }} 
-                  <Button icon="pi pi-pencil" class="p-button-text p-button-rounded" @click="editStep(index, step)" />
-                  <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteStep(index)" />
-                </li>
-                
-                <div v-if="step.photo">
-                  <img :src="step.photo" alt="step-preview" class="image-preview" />
-                </div>
-              </template>
-            </div>
-          </div>
-  
-          <!-- New step input -->
-          <InputText v-model="newStep.name" placeholder="Krok 1" />
-           <div class="in-one-row">
-             <Textarea v-model="newStep.text" class="step-textarea" placeholder="Sem pište vaše kroky" rows="3" autoResize />
-             <PhotoUploader v-model="newStep.photo" />
-           </div>
-        </div>
-        <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushStep" />
-    
-        <!-- Special Utensils Section -->
-        <div class="p-field">
-          <h3>Speciální pomúcky</h3>
-  
-          <!-- List of utensils with edit and save options -->
-          <div v-if="recipe.Utencils.length > 0" class="p-d-flex p-ai-center p-mb-10">
-            <div v-for="(utencil, index) in recipe.Utencils" :key="index" class="p-d-flex p-ai-center p-mb-2">
-              <template v-if="editingIndex === index">
-                <!-- Editing Mode -->
-                <InputText v-model="editedUtencil" class="p-inputtext-sm" />
-                <Button icon="pi pi-check" class="p-button-text p-button-rounded p-ml-2" @click="saveUtencil(index)" />
-                <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded p-ml-2" @click="cancelEdit" /> -->
-              </template>
-              <template v-else>
-                <!-- Display Mode -->
-                <span>{{ utencil.name }} 
-                  <Button icon="pi pi-pencil" class="p-button-text p-button-rounded p-ml-2" @click="editUtencil(index, utencil.name)" />
-                  <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteUtencil(index)" />
-                </span>
-              </template>
-            </div>
-          </div>
-  
-          <!-- New utensil input -->
-          <InputText v-model="newUtencil" placeholder="Napiš jméno pomúcky" class="p-inputtext-sm p-d-block" />
-          <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushUtencil" />
-        </div>
+        <addIngredient v-model="recipe.Ingredients"/>
+        
+        <h3>Instrukce</h3>
+        <addSteps v-model="recipe.Step"/>
+        
+
+        <h3>Speciální pomúcky</h3>
+        <addUtencils v-model="recipe.Utencils"/>
     
         <!-- General Info Section -->
         <div class="p-mb-3">

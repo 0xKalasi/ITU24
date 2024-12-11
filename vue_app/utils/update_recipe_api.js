@@ -146,8 +146,8 @@ async function updateRecipe(recipeData) {
       if (recipeData.Categories) {
         categoriesUpdated = await updateRecipeCategories(recipeData.id, recipeData.Categories);
       }
-      if (recipeData.Steps) {
-        stepsUpdated = await updateSteps(recipeData.id, recipeData.Steps);
+      if (recipeData.Step) {
+        stepsUpdated = await updateSteps(recipeData.id, recipeData.Step);
       }
       if (recipeData.Timers) {
         timersUpdated = await updateTimers(recipeData.id, recipeData.Timers);
