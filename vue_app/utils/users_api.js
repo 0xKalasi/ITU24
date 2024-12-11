@@ -231,22 +231,22 @@ const sendChatMessage = async (sender, receiver, text, recipeId) => {
 }
 
 const ForeignUserRelation = {
-  loggedOut: "loggedOut",
-  self: "self",
-  noRelation: "noRelation",
-  sent: "sent", // I sent the request
-  pending: "pending", // I received the request
-  accepted: "accepted",
-  blockedByThem: "blockedByThem",
-  blockedByMe: "blockedByMe"
+  LOGGED_OUT: "loggedOut",
+  SELF: "self",
+  NO_RELATION: "noRelation",
+  SENT: "sent", // I sent the request
+  PENDING: "pending", // I received the request
+  ACCEPTED: "accepted",
+  BLOCKED_BY_THEM: "blockedByThem",
+  BLOCKED_BY_ME: "blockedByMe"
 }
 const getFriendshipState = async (user, peer) => {
   if (user == 0) {
-    return ForeignUserRelation.loggedOut;
+    return ForeignUserRelation.LOGGED_OUT;
   }
 
   if (user == peer) {
-    return ForeignUserRelation.self;
+    return ForeignUserRelation.SELF;
   }
 
   const { data: state, error } = await supabase
@@ -260,23 +260,21 @@ const getFriendshipState = async (user, peer) => {
     return null;
   }
 
-  console.log(state);
-
   if (state.length == 0) { // Assign state according to return
-    return ForeignUserRelation.noRelation;
+    return ForeignUserRelation.NO_RELATION;
   } else if (state[0].state == "pending") {
     if (state[0].sender == user) {
-      return ForeignUserRelation.sent;
+      return ForeignUserRelation.SENT;
     } else {
-      return ForeignUserRelation.pending;
+      return ForeignUserRelation.PENDING;
     }
   } else if (state[0].state == "accepted") {
-    return ForeignUserRelation.accepted;
+    return ForeignUserRelation.ACCEPTED;
   } else if (state[0].state == "blocked") {
     if (state[0].blocker == user) {
-      return ForeignUserRelation.blockedByMe;  
+      return ForeignUserRelation.BLOCKED_BY_ME;  
     } else {
-      return ForeignUserRelation.blockedByThem;
+      return ForeignUserRelation.BLOCKED_BY_THEM;
     }
   }
 }

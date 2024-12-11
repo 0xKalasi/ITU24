@@ -1,15 +1,16 @@
+<!-- Martin Jabůrek, xjabur02 -->
+
 <script setup>
+import { ref, computed, onMounted, onUnmounted } from "vue";
+
 import { useRouter } from "vue-router";
+const router = useRouter();
+
 import { useUserStore } from '../stores/userStore';
+const currentUser = useUserStore();
 
 import { readUsersGroupchats, createGroupchat } from "../../utils/groupchat_api";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
-
-import { ref, onMounted, onUnmounted } from "vue";
-
-const currentUser = useUserStore();
-
-const router = useRouter();
 
 const groupchats = ref([]);
 
@@ -21,16 +22,20 @@ onMounted(async () => {
     groupchats.value = await readUsersGroupchats(currentUser.id);
   });
 });
-onUnmounted(() => {
-  removeSubscription(groupsChanges);
+onUnmounted(async () => {
+  await removeSubscription(groupsChanges);
 });
 
-const createGroup = ref(true);
+const createGroup = ref(false);
 const newGroupName = ref("");
 
 // Alert:
 const emptyName = ref(false);
 const emptyNameKey = ref(false);
+
+const IsLoggedOut = computed (() => {
+  return currentUser.id == 0;
+});
 
 const CreateNewGroupchat = async () => {
   if (newGroupName.value != "") {
@@ -44,6 +49,18 @@ const CreateNewGroupchat = async () => {
   }
 }
 
+const GoToChats = async () => {
+  router.push("/chats");
+}
+
+const GoToGroupchat = async (id) => {
+  router.push(`/groupchats/${id}`);
+}
+
+const ToggleCreationOption = async () => {
+  createGroup.value = !createGroup.value;
+}
+
 </script>
 
 <template>
@@ -55,7 +72,7 @@ const CreateNewGroupchat = async () => {
 
   <BasicPageHeader text="Skupiny"></BasicPageHeader>
 
-  <div v-if="currentUser.id == 0">
+  <div v-if="IsLoggedOut">
     Pro zobrazení skupin se přihlaste.
   </div>
 
@@ -64,15 +81,17 @@ const CreateNewGroupchat = async () => {
     <Button
       label="Přátelé"
       icon="pi pi-comment"
-      @click="router.push(`/chats`)"
+      @click="GoToChats"
       style="margin-bottom: 20px;">
     </Button>
 
-    <div class="devider"></div>
+    <Divider></Divider>
 
     <div v-if="groupchats.length == 0">
-      Nejste členem žádné skupiny.
-      <div class="devider" style="margin-top: 20px"></div>
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        Nejste členem žádné skupiny.
+      </div>
+      <Divider></Divider>
     </div>
 
     <div v-for="groupchat in groupchats">
@@ -83,19 +102,19 @@ const CreateNewGroupchat = async () => {
         <Button
           label="Otevřít"
           icon="pi pi-comments"
-          @click="router.push(`/groupchats/${groupchat.id}`)"
+          @click="GoToGroupchat(groupchat.id)"
           style="margin-left: auto">
         </Button>
       </div>
 
-      <div class="devider"></div>
+      <Divider></Divider>
     </div>
 
     <Button
-      v-if="createGroup == true"
+      v-if=" ! createGroup"
       label="Vytvořit skupinu"
       icon="pi pi-plus"
-      @click="createGroup = !createGroup"
+      @click="ToggleCreationOption"
       style="float: right; margin-top: 20px;">
     </Button>
 
@@ -112,12 +131,12 @@ const CreateNewGroupchat = async () => {
         style="transform: translate(50%, 0); align-items: center;">
       </Button>
 
-      <div class="devider"></div>
+      <Divider></Divider>
 
       <Button
         label="Zrušit"
         icon="pi pi-times"
-        @click="createGroup = !createGroup"
+        @click="ToggleCreationOption"
         style="float: right; margin-top: 20px;">
       </Button>
     </div>
@@ -125,12 +144,3 @@ const CreateNewGroupchat = async () => {
   </div>  
 
 </template>
-
-<style scoped>
-.devider {
-  background-color: aquamarine;
-  width: 100%;
-  height: 2px;
-}
-</style>
-
