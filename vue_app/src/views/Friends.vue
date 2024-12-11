@@ -78,10 +78,6 @@ const ConstructChatList = async () => {
 }
 
 
-const IsLoggedOut = computed (() => {
-  return currentUser.id == 0;
-});
-
 const GoToGroupchats = async () => {
   router.push("/groupchats");
 }
@@ -96,14 +92,6 @@ const GoToBlocked = async () => {
 
 const GoToProfile = async (id) => {
   router.push(`/profile/${id}`);
-}
-
-const GoToChat = async (chat) => {
-  if (chat.is_groupchat) {
-    router.push(`/groupchats/${chat.id}`);
-  } else {
-    router.push(`/chats/${chat.id}`);
-  }
 }
 
 const AcceptRequest = async (id) => {
@@ -126,133 +114,94 @@ const selected = ref("Chaty");
 <template>
   <BasicPageHeader text="Konverzace"></BasicPageHeader>
 
-  <div v-if="IsLoggedOut">
-    Pro zobrazení chatů se přihlaste.
+  <ConvSelect
+    v-model="selected"
+    :requestCount="friendRequests.length">
+  </ConvSelect>
+
+  <Divider></Divider>
+
+  <!-- PENDING REQUEST -->
+
+  <div v-if="selected == 'Příchozí'">
+    
+    <div
+      v-if="friendRequests.length == 0"
+      style="margin-top: 20px;">
+      Nemáte žádné žádosti o přátelství.
+    </div>
+
+    <div v-else>
+      <div v-for="request in friendRequests">
+        <Message
+          severity="secondary"
+          @click="GoToProfile(request.id)">
+          {{ request.name }}
+        </Message>
+
+        <Button
+          label="Přijmout"
+          icon="pi pi-check"
+          @click="AcceptRequest(request.id)"
+          style="float: left; margin-top: 5px;">
+        </Button>
+
+        <Button 
+          label="Odmítnout"
+          icon="pi pi-times"
+          @click="Block(request.id)"
+          style="float: right; margin-top: 5px;">
+        </Button>
+        <br/><br/>
+      </div>
+    </div>
+
   </div>
 
-  <div v-else>
+  <!-- MY CHATS -->
 
-    <ConvSelect
-      v-model="selected"
-      :requestCount="friendRequests.length">
-    </ConvSelect>
-
-    <Divider></Divider>
-
-    <!-- PENDING REQUEST -->
-
-    <div v-if="selected == 'Příchozí'">
-      
-      <div
-        v-if="friendRequests.length == 0"
-        style="margin-top: 20px;">
-        Nemáte žádné žádosti o přátelství.
-      </div>
-
-      <div v-else>
-        <div v-for="request in friendRequests">
-          <Message
-            severity="secondary"
-            @click="GoToProfile(request.id)">
-            {{ request.name }}
-          </Message>
-
-          <Button
-            label="Přijmout"
-            icon="pi pi-check"
-            @click="AcceptRequest(request.id)"
-            style="float: left; margin-top: 5px;">
-          </Button>
-
-          <Button 
-            label="Odmítnout"
-            icon="pi pi-times"
-            @click="Block(request.id)"
-            style="float: right; margin-top: 5px;">
-          </Button>
-          <br/><br/>
-        </div>
-      </div>
-
+  <div v-if="selected == 'Chaty'">
+    
+    <div v-if="chats.length == 0">
+      Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
     </div>
 
-    <!-- MY CHATS -->
+    <div v-else>
 
-    <div v-if="selected == 'Chaty'">
-      
-      <div
-        v-if="chats.length == 0"
-        style="margin-top: 20px;">
-        Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
-      </div>
-
-      <div v-else>
-
-        <div v-for="chat in chats">
-          <!-- Groupchats  -->
-          <div v-if="chat.is_groupchat" style="display: flex; align-items: center;">
-            <h3>
-              {{ chat.name }}
-            </h3>
-
-            <Button
-              label="Chat"
-              icon="pi pi-comments"
-              @click="GoToChat(chat)"
-              style="margin-left: auto; margin-top: 5px;">
-            </Button>
-          </div>
-
-          <!-- Friend chats -->
-          <div v-else style="display: flex; align-items: center;">
-            <Message
-              severity="secondary"
-              @click="GoToProfile(chat.id)">
-              {{ chat.name }}
-            </Message>
-
-            <Button
-              label="Chat"
-              icon="pi pi-comment"
-              @click="GoToChat(chat)"
-              style="margin-left: auto; margin-top: 5px;">
-            </Button>
-            <br/><br/>
-          </div>
-
-        </div>
+      <div v-for="chat in chats">
+        <ChatLink :chat="chat"></ChatLink>
 
       </div>
 
     </div>
 
-    <!-- BLOCKED USERS -->
+  </div>
 
-    <div v-if="selected == 'Zablokované'">
-      
-      <div
-        v-if="blockedUsers.length == 0"
-        style="margin-top: 20px;">
-        Seznam zablokovaných uživatelů je prázdný.
+  <!-- BLOCKED USERS -->
+
+  <div v-if="selected == 'Zablokované'">
+    
+    <div
+      v-if="blockedUsers.length == 0"
+      style="margin-top: 20px;">
+      Seznam zablokovaných uživatelů je prázdný.
+    </div>
+
+    <div v-else>
+      <div v-for="blocked in blockedUsers">
+        <Message
+          severity="secondary"
+          @click="GoToProfile(blocked.id)">
+          {{ blocked.name }}
+        </Message>
+
+        <Button
+          label="Odblokovat"
+          icon="pi pi-lock-open"
+          @click="UnBlock(blocked.id)"
+          style="margin-bottom: 5px;">
+        </Button>
       </div>
-
-      <div v-else>
-        <div v-for="blocked in blockedUsers">
-          <Message
-            severity="secondary"
-            @click="GoToProfile(blocked.id)">
-            {{ blocked.name }}
-          </Message>
-
-          <Button
-            label="Odblokovat"
-            icon="pi pi-lock-open"
-            @click="UnBlock(blocked.id)"
-            style="margin-bottom: 5px;">
-          </Button>
-        </div>
-      </div>
-
     </div>
 
   </div>

@@ -29,8 +29,9 @@ app.use(PrimeVue, {
 import Alert from "../src/components/alert.vue";
 import LoadingScreen from "../src/components/loadingScreen.vue";
 import BasicPageHeader from "../src/components/basicPageHeader.vue";
-import Divider from "./components/Divider.vue";
-import ConvSelect from "./components/ConvSelect.vue";
+import Divider from "../src/components/Divider.vue";
+import ConvSelect from "../src/components/ConvSelect.vue";
+import ChatLink from "../src/components/ChatLink.vue";
 
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
@@ -69,6 +70,7 @@ app.component("BasicPageHeader", BasicPageHeader);
 app.component("DatePicker", DatePicker);
 app.component("Divider", Divider);
 app.component("ConvSelect", ConvSelect);
+app.component("ChatLink", ChatLink);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */
