@@ -1,5 +1,5 @@
 <script setup>
-  import { ref } from 'vue';
+  import { onBeforeMount, ref } from 'vue';
   import InputText from 'primevue/inputtext';
   import InputNumber from 'primevue/inputnumber';
   import Textarea from 'primevue/textarea';
@@ -24,15 +24,36 @@
   const timeInput = ref(0);
   const recipeId = router.currentRoute.value.params.recipe_id;
   const isLoading = ref(true);
-  const recipe = ref({});
+  const recipe = recipeId ? ref({}) : ref({
+    name: "",
+    like_count: 0,
+    times_cooked: 0,
+    creator: currentUser.id,
+    private: true,
+    portions: 4,
+    time_to_cook: 0,
+    RecipeAlergens: [],
+    categories: [],
+    Step: [],
+    Ingredients: [],
+    Utencils: [],
+    timers: []
+  });
 
-  readPublicRecipe(recipeId).then(async (result) => {
-    //recipe = result;
-    isLoading.value = false;
-    Object.assign(recipe.value, result);
-    console.log("recipe:");
-    console.log(recipe.value);
-})
+
+  onBeforeMount(async () => {
+    if(recipeId){
+      readPublicRecipe(recipeId).then(async (result) => {
+        //recipe = result;
+        isLoading.value = false;
+        Object.assign(recipe.value, result);
+        console.log("recipe:");
+        console.log(recipe.value);
+    })
+    } else {
+      isLoading.value = false;
+    }
+  }) 
 
   // Ingredient data
   const newIngredient = ref({ name: "", quantity: null, unit: "" });
@@ -189,11 +210,13 @@
 
     function createRecipe(){
       if(recipe.value.name != "") {
-        recipe.value.name = recipe.value.name + " (kopie)";
+        if(recipeId){
+          recipe.value.name = recipe.value.name + " (kopie)";
+        }
         insertCompleteRecipe(recipe.value)
         .then(() => {
             showAlertMessage("success", "Recept úspešne vytvořen!");
-            router.push("/profile/"+currentUser.id);
+            router.push("/recipes");
         })
         
       } else {
@@ -351,8 +374,14 @@
         <!-- Create, Delete Button -->
         <div class="flex justify-between items-center px-4">
           <Button label="Zrušit" class="p-button-danger" @click='cancelEditing();'></Button>
-          <Button label="Uložit úpravy" class="p-button-ok" @click='updateRecipeLocal();'></Button>
-          <Button label="Vytvořit jako kopii" class="p-button-ok" @click='createRecipe();'></Button>
+          <div v-if="recipeId">
+            <Button label="Uložit úpravy" class="p-button-ok" @click='updateRecipeLocal();'></Button>
+            <Button label="Vytvořit jako kopii" class="p-button-ok" @click='createRecipe();'></Button>
+          </div>
+          <div v-else>
+            <Button label="Vytvořit" class="p-button-ok" @click='createRecipe();'></Button>
+          </div>
+
         </div>
   
       </div>

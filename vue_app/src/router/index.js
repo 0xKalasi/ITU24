@@ -14,7 +14,6 @@ import Chat from "../views/Chat.vue";
 import Requests from "../views/Requests.vue";
 import Blocked from "../views/Blocked.vue";
 import Filters from "../views/Filters.vue";
-import AddNewRecipe from "../views/AddNewRecipe.vue";
 import Recipes from "../views/MyRecipes.vue";
 import CreateFilter from "../views/CreateFilter.vue"
 import Share from "../views/Share.vue";
@@ -23,7 +22,7 @@ import Groupchats from "../views/Groupchats.vue";
 import Groupchat from "../views/Groupchat.vue";
 import EditGroupchat from "../views/EditGroupchat.vue";
 import AddGroupchatmember from "../views/AddGroupchatmember.vue";
-import EditRecipe from "../views/EditRecipe.vue";
+import RecipeView from "../views/RecipeView.vue";
 
 const routes = [
   { path: "/", component: Homepage },
@@ -35,7 +34,7 @@ const routes = [
   { path: "/filters", component: Filters},
   { path: "/filters/create", component: CreateFilter },
   { path: "/recipe/public/:recipe_id", component: PublicRecipe },
-  { path: "/edit-recipe/:recipe_id", component: EditRecipe },
+  { path: "/edit-recipe/:recipe_id", component: RecipeView },   //, props:{editMode:true}
   { path: "/users", component: Users },
   { path: "/profile", component: Profile,
     // The changes from editing need to persist after preview, and only the preview, is closed
@@ -51,7 +50,7 @@ const routes = [
   { path: "/profile/:user_id", component: ForeignUser },
   { path: "/cookmode/:recipe_id", component: CookMode },
   { path: "/cookmode/:recipe_id/steps", component: CookModeStep },
-  { path: "/addnewrecipe", component: AddNewRecipe },
+  { path: "/addnewrecipe", component: RecipeView},    //, props:{editMode:false}
   { path: "/share/:recipe_id", component: Share },
   { path: "/profile/preview", component: ProfilePreview,
     name: "PREVIEW",
