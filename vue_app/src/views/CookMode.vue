@@ -4,7 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 
-import { readRecipe, getCookState } from "../../utils/api.js";
+import { readRecipe } from "../../utils/api.js";
+import { getCookState } from '../../utils/api_cookmode.js';
 
 const recipe_id = route.params.recipe_id;
 
@@ -44,15 +45,7 @@ readRecipe( recipe_id ).then(
 )
 
 function open_cook_step() {
-
-	getCookState( user_id, recipe_id, null )
-	.then(
-		( value ) => {
-			const step_number = value.step_number ? value.step_number : 1;
-			router.replace('/cookmode/' + recipe_id + '/' + step_number )
-		}
-	)
-
+	router.replace('/cookmode/' + recipe_id + '/steps' )
 }
 
 </script>

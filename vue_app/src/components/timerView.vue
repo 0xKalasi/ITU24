@@ -18,7 +18,10 @@ let open_timer_model = {};
 
 const cook_state_id = props.cook_state_id;
 
-import { getCookTimers, createCookTimer, deleteCookTimer, updateCookTimer } from "../../utils/api.js";
+import {
+	getCookTimers, createCookTimer,
+	deleteCookTimer, updateCookTimer
+} from "../../utils/api_cookmode.js";
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
@@ -76,11 +79,12 @@ const tm_new  = ref( false )
 const tm_open = ref( false )
 
 function new_timer() {
+	new_timer_model = createNewTimerModel();
+
 	tm_new.value = true
 }
 
 function open_timer( timer ) {
-	tm_open.value = true
 
 	open_timer_model = {
 		id: timer.id,
@@ -88,6 +92,8 @@ function open_timer( timer ) {
 		state: ref( timer.state ),
 		time: ref( timer.time )
 	}
+
+	tm_open.value = true
 }
 
 function create_timer( timer ) {
@@ -98,6 +104,15 @@ function create_timer( timer ) {
 	tm_new.value = false
 
 	new_timer_model = createNewTimerModel();
+}
+
+function new_step_timer( timer ) {
+	new_timer_model = {
+		name: timer.description,
+		time: timer.time
+	}
+
+	tm_new.value = true
 }
 
 function update_timer() {
@@ -149,11 +164,16 @@ function change_timer_time( delta ) {
 	.then( ( value ) => { load_timers() } )
 }
 
+defineExpose( {
+	new_step_timer
+} );
+
 </script>
 
 <template>
 
 	<Teleport to="body">
+		<!-- new timer -->
 		<div v-if="tm_new" class="modal_background" @click="tm_new = false" />
 		<div v-if="tm_new" class="modal">
 			<div><h2>Nový časovač</h2></div>
@@ -167,6 +187,7 @@ function change_timer_time( delta ) {
 				<Button @click="create_timer( new_timer_model )">Vytvořit</Button>
 			</form>
 		</div>
+		<!-- edit timer -->
 		<div v-if="tm_open" class="modal_background" @click="tm_open = false" />
 		<div v-if="tm_open" class="modal">
 			<div><h2>Upravit časovač</h2></div>

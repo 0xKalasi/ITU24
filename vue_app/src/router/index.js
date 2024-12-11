@@ -50,7 +50,7 @@ const routes = [
   },
   { path: "/profile/:user_id", component: ForeignUser },
   { path: "/cookmode/:recipe_id", component: CookMode },
-  { path: "/cookmode/:recipe_id/:step_number", component: CookModeStep },
+  { path: "/cookmode/:recipe_id/steps", component: CookModeStep },
   { path: "/addnewrecipe", component: AddNewRecipe },
   { path: "/share/:recipe_id", component: Share },
   { path: "/profile/preview", component: ProfilePreview,
