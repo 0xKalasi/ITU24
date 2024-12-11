@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { profilePreviewStore } from "../stores/userStore";
+import { useUserStore } from "../stores/userStore";
 
 import Users from "../views/Users.vue";
 import Homepage from "../views/Homepage.vue";
@@ -25,7 +26,7 @@ import AddGroupchatmember from "../views/AddGroupchatmember.vue";
 import RecipeView from "../views/RecipeView.vue";
 
 const routes = [
-  { path: "/", component: Homepage },
+  { path: "/", component: Homepage, meta: { public: true } },
   { path: "/recipes", component: Recipes},
   { path: "/chats", component: Friends},
   { path: "/requests", component: Requests },
@@ -33,9 +34,9 @@ const routes = [
   { path: "/chats/:user_id", component: Chat }, // Chat with currently logged in and "user_id" user
   { path: "/filters", component: Filters},
   { path: "/filters/create", component: CreateFilter },
-  { path: "/recipe/public/:recipe_id", component: PublicRecipe },
+  { path: "/recipe/public/:recipe_id", component: PublicRecipe, meta: { public: true }  },
   { path: "/edit-recipe/:recipe_id", component: RecipeView },   //, props:{editMode:true}
-  { path: "/users", component: Users },
+  { path: "/users", component: Users, meta: { public: true } },
   { path: "/profile", component: Profile,
     // The changes from editing need to persist after preview, and only the preview, is closed
     beforeEnter: (to, from) => {
@@ -69,14 +70,20 @@ const router = createRouter({
   routes,
 });
 
-///* NAVIGATION GUARDS */
-//router.beforeEach((to, from) => {
-//  const user = useUserStore();
-//
-//  /* if user is not signed in, go to /users to choose user */
-//  /* to.path !== '/users' is there to avoid infinite redirect */
-//  if(user.id == 0 && to.path !== '/users')
-//    return '/users'
-//}) 
+// NAVIGATION GUARDS 
+router.beforeEach(async (to, from) => {
+  const user = useUserStore();
+  if(user.id == null){
+    await user.tryLoginFromLocSt();
+  }
+
+  console.log(user.id);
+
+  // if user is not signed he can only go to public routes
+  // to.path !== '/users' is there to avoid infinite redirect 
+  if(!user.id && !to.meta.public && to.path !== '/users'){
+    return '/users'
+  }
+}) 
 
 export default router;

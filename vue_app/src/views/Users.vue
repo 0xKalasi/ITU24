@@ -4,19 +4,21 @@
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-import { readAllUsers, switchUser } from "../../utils/users_api.js";
+import { useUserStore } from '../stores/userStore';
+const user = useUserStore();
+
+import { readAllUsers } from "../../utils/users_api.js";
 
 const users = await readAllUsers();
 
 const SwitchUser = async (id) => {
-  await switchUser(id);
+  await user.login(id);
   router.push("/profile");
 }
 
 const GoToProfile = async (id) => {
   router.push(`/profile/${id}`);
 }
-
 </script>
 
 <template>
@@ -24,16 +26,16 @@ const GoToProfile = async (id) => {
 
   <table>
     <div
-      v-for="user in users"
+      v-for="u in users"
       style="display: flex">
       <Message
         severity="secondary"
-        @click="GoToProfile(user.id)"
+        @click="GoToProfile(u.id)"
         style="margin: auto">
-        {{ user.name }}
+        {{ u.name }}
       </Message>
 
-      <Button @click="SwitchUser(user.id)">
+      <Button @click="SwitchUser(u.id)">
         Přihlásit
       </Button>
     </div>
@@ -41,7 +43,7 @@ const GoToProfile = async (id) => {
 
   <br/>
 
-  <Button @click="SwitchUser(0)">
+  <Button v-if="user.id" @click="user.logout">
     Odhlásit
   </Button>
 

@@ -98,7 +98,7 @@ async function deleteRecipeLocal(){
         <div style="position: relative; display: flex; align-items: center; min-width: 320px">
             <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
             <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
-            <SpeedDial :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -8%);">
+            <SpeedDial v-if="user.id" :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -8%);">
             </SpeedDial>
         </div> 
         <!-- <div v-if="recipe.id == 1" style="margin-bottom: 8px;">
