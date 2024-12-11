@@ -12,6 +12,7 @@ const currentUser = useUserStore();
 import { readUsersGroupchats, createGroupchat } from "../../utils/groupchat_api";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
+
 const groupchats = ref([]);
 
 let groupsChanges;

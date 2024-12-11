@@ -32,7 +32,7 @@ const GoToProfile = async (id) => {
 }
 
 const UnBlock = async (id) => {
-  unblockUser(currentUser.id, id);
+  await unblockUser(currentUser.id, id);
 }
 
 </script>

@@ -1,16 +1,17 @@
-<script setup>
-import { useRouter } from "vue-router";
+<!-- Martin Jabůrek, xjabur02 -->
 
-import { ref, onMounted } from "vue";
-import { readUsersPublicRecipe } from "../../utils/api";
-import { updateUser } from "../../utils/users_api";
+<script setup>
+import { ref, computed } from "vue";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 import { useUserStore, profilePreviewStore } from '../stores/userStore';
-
 const currentUser = useUserStore();
 const previewData = profilePreviewStore();
 
-const router = useRouter();
+import { readUsersPublicRecipe } from "../../utils/api";
+import { updateUser } from "../../utils/users_api";
 
 const usersRecipes = await readUsersPublicRecipe(currentUser.id);
 const recipeCnt = usersRecipes.length;
@@ -22,11 +23,23 @@ const profileUpdatedKey = ref(0);
 const emptyName = ref(false);
 const emptyNameKey = ref(false);
 
-const PrepareToUpdate = async() => {
+const IsLoggedOut = computed (() => {
+  return currentUser.id == 0;
+});
+
+const PrepareToUpdate = async () => {
   previewData.name = currentUser.name;
   previewData.bio = currentUser.bio;
   
   previewData.editMode = !previewData.editMode;
+}
+
+const ToggleEditMode = async () => {
+  previewData.editMode = !previewData.editMode;
+}
+
+const GoToUserSelection = async () => {
+  router.push("/users");
 }
 
 const UpdateProfile = async () => {
@@ -36,7 +49,7 @@ const UpdateProfile = async () => {
   } else {
     profileUpdated.value = true;
     profileUpdatedKey.value++;
-    updateUser(currentUser.id, previewData.name, previewData.bio);
+    await updateUser(currentUser.id, previewData.name, previewData.bio);
     previewData.editMode = !previewData.editMode;
   }
 }
@@ -56,51 +69,53 @@ const GoToPreview = async () => {
   <Alert v-if="profileUpdated"
     type="success" 
     text="Profil úspěšně upraven"
-    :key="profileUpdatedKey"
-  />
+    :key="profileUpdatedKey">
+  </Alert>
   <Alert v-if="emptyName"
     type="warn"
     text="Není zadáno žádné jméno"
-    :key="emptyNameKey"
-  />
+    :key="emptyNameKey">
+  </Alert>
 
   <BasicPageHeader text="Profil"></BasicPageHeader>
 
-  <div v-if="currentUser.id == 0">
+  <div v-if="IsLoggedOut">
     Pro zobrazení profilu se přihlaste.
 
     <Button
       icon="pi pi-user"
       label="Přepnout uživatele"
-      @click="router.push('/users')"
+      @click="GoToUserSelection"
       style="margin-top: 20px;">
     </Button>
 
   </div>
 
-  <div v-else-if="previewData.editMode == false">
+  <div v-else-if=" ! previewData.editMode">
 
-    <div style="gap: 10px">
+    <div style="display: flex; margin-bottom: 20px;">
       <Button
         icon="pi pi-user"
         label="Přepnout uživatele"
-        @click="router.push('/users')">
+        @click="GoToUserSelection">
       </Button>
-      <Button v-if="currentUser.id != 0"
+      <Button
         icon="pi pi-pencil"
         label="Upravit profil"
-        @click="PrepareToUpdate()">
+        @click="PrepareToUpdate">
       </Button>
     </div>
 
-    <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
+    <Divider></Divider>
 
-    <h2><i>
+    <h2>
       {{ currentUser.name }}
-    </i></h2>
-    {{ currentUser.bio }}
+    </h2>
+    <i>
+      {{ currentUser.bio }}
+    </i>
 
-    <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
+    <Divider style="margin-top: 20px;"></Divider>
 
     <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
     <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
@@ -112,40 +127,48 @@ const GoToPreview = async () => {
     <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
     <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
 
-    <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
+    <Divider></Divider>
 
   </div>
-  <div v-else>
+  <div v-else> <!-- EDIT MODE -->
 
-    <div>
+    <div style="margin-bottom: 20px;">
       <Button
         icon="pi pi-check"
-        @click="UpdateProfile()">
+        @click="UpdateProfile">
       </Button>
       <Button
         icon="pi pi-times"
         severity="warn"
-        @click="previewData.editMode = !previewData.editMode"
+        @click="ToggleEditMode"
         style="margin-left: 10px;">
       </Button>
       <Button
         label="Zobrazit náhled" 
         icon="pi pi-question"
-        @click="GoToPreview()"
+        @click="GoToPreview"
         style="float: right">
       </Button>
     </div>
 
-    <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
+    <Divider></Divider>
 
-    <h2><i>
-      <InputText v-model="previewData.name" size="small"/>
-    </i></h2>
+    <div style="margin-bottom: 20px;">
+      <InputText
+        v-model="previewData.name"
+        size="small"
+        style="margin-top: 20px; margin-bottom: 20px;">
+      </InputText>
 
-    <Textarea v-model="previewData.bio" rows="5" cols="30" size="small"></Textarea>
-    <br/>
+      <Textarea
+        v-model="previewData.bio"
+        rows="5"
+        cols="30"
+        size="small">
+      </Textarea>
+    </div>
 
-    <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
+    <Divider></Divider>
 
     <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
     <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
@@ -157,17 +180,8 @@ const GoToPreview = async () => {
     <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
     <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
 
-    <div class="devider" style="margin-top: 20px; margin-bottom: 20px;"></div>
+    <Divider></Divider>
 
   </div>
 
 </template>
-
-<style scoped>
-.devider {
-  background-color: aquamarine;
-  width: 100%;
-  height: 2px;
-}
-</style>
-

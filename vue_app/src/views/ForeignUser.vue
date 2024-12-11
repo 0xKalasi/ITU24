@@ -14,6 +14,7 @@ import { readUsersPublicRecipe } from "../../utils/api.js";
 import { sendFriendRequest, ForeignUserRelation, getFriendshipState, unblockUser } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
+
 const viewedUserId = router.currentRoute.value.params.user_id;
 const viewedUser = await readUser(viewedUserId);
 
@@ -43,11 +44,11 @@ const GoToRecipe = async (id) => {
 }
 
 const SendRequest = async () => {
-  sendFriendRequest(currentUser.id, viewedUser.id);
+  await sendFriendRequest(currentUser.id, viewedUser.id);
 }
 
 const AcceptRequest = async () => {
-  acceptFriendRequest(currentUser.id, viewedUser.id);
+  await acceptFriendRequest(currentUser.id, viewedUser.id);
 }
 
 const GoToChat = async () => {
@@ -55,7 +56,7 @@ const GoToChat = async () => {
 }
 
 const Unblock = async () => {
-  unblockUser(currentUser.id, viewedUser.id);
+  await unblockUser(currentUser.id, viewedUser.id);
 }
 
 </script>
@@ -67,8 +68,9 @@ const Unblock = async () => {
     <h2>
       {{ viewedUser.name }}
     </h2>
-
-    {{ viewedUser.bio }}
+    <i>
+      {{ viewedUser.bio }}
+    </i>
   </div>
 
   <Divider></Divider>

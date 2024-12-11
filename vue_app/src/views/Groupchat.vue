@@ -12,6 +12,7 @@ const currentUser = useUserStore();
 import { readGroupchat, readGroupchatMessages, sendGroupchatMessage } from "../../utils/groupchat_api";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api";
 
+
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
 const currentGroup = await readGroupchat(currentGroupId);
 
@@ -52,7 +53,7 @@ const textMessage = ref("");
 
 const HandleSending = async () => {
   if (textMessage.value.length != 0) { // Do not send an empty message
-    sendGroupchatMessage(currentUser.id, currentGroup.id, textMessage.value, null);
+    await sendGroupchatMessage(currentUser.id, currentGroup.id, textMessage.value, null);
     textMessage.value = "";
   }
 }

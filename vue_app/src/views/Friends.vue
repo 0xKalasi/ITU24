@@ -12,6 +12,7 @@ const currentUser = useUserStore();
 import { readUsersFriends, blockUser } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
+
 const friends = ref([]);
 
 let friendListChanges;
@@ -52,7 +53,7 @@ const GoToChat = async (id) => {
 }
 
 const Block = async (id) => {
-  blockUser(currentUser.id, id);
+  await blockUser(currentUser.id, id);
 }
 
 </script>
