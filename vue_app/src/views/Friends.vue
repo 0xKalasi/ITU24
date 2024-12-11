@@ -83,7 +83,19 @@ const UnBlock = async (id) => {
 }
 
 const selected = ref("Přátelé"); // Friend list viewed by default
+const previouslySelected = ref("Přátelé")
 const options = ref(["Příchozí", "Přátelé", "Zablokované"]);
+
+const ChangeListed = (newValue) => {
+  if (selected.value != null) {
+    previouslySelected.value = selected.value;
+    selected.value = newValue;
+  
+  } else {
+    selected.value = previouslySelected.value;
+    
+  }
+}
 
 </script>
 
@@ -99,7 +111,8 @@ const options = ref(["Příchozí", "Přátelé", "Zablokované"]);
     <SelectButton
       v-model="selected"
       :options="options"
-      style="margin-bottom: 20px;">
+      style="margin-bottom: 20px;"
+      @update:modelValue="ChangeListed">
     </SelectButton>
 
     <Button
