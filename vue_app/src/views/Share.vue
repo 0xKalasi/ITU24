@@ -1,14 +1,17 @@
+<!-- Martin Jabůrek, xjabur02 -->
+
 <script setup>
+import { ref, computed } from "vue";
+
 import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { readPublicRecipe } from "../../utils/api.js";
-import { readUsersFriends, sendChatMessage } from "../../utils/users_api.js";
-import { readUsersGroupchats, sendGroupchatMessage } from "../../utils/groupchat_api.js";
+const router = useRouter();
 
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-const router = useRouter();
+import { readPublicRecipe } from "../../utils/api.js";
+import { readUsersFriends, sendChatMessage } from "../../utils/users_api.js";
+import { readUsersGroupchats, sendGroupchatMessage } from "../../utils/groupchat_api.js";
 
 const recipeId = router.currentRoute.value.params.recipe_id;
 const recipe = await readPublicRecipe(recipeId);
@@ -31,93 +34,129 @@ const groupsButtonsPressed = ref(
 
 const textMessage = ref("");
 const alertKey = ref(0);
-const errorFlag = ref(false);
+const alertFlag = ref(false);
 
-const friendSend = async (fid) => {
+const IsLoggedOut = computed (() => {
+  return currentUser.id == 0;
+});
+
+const GoToFriend = async (id) => {
+  router.push(`/profile/${id}`);
+}
+
+const FriendSend = async (fid) => {
   if ( ! friendsButtonsPressed.value[fid]) {
-    sendChatMessage(currentUser.id, fid, textMessage.value, recipe.id)
+    await sendChatMessage(currentUser.id, fid, textMessage.value, recipe.id)
       .then(async (result) => { // ensure database insert is successfull
         if (result) {
           friendsButtonsPressed.value[fid] = true;
         } else {
-          errorFlag.value = true;
+          alertFlag.value = true;
           alertKey.value++;
         }
       });
   }
 }
-const groupSend = async (gid) => {
+const GroupSend = async (gid) => {
   if ( ! groupsButtonsPressed.value[gid]) {
-    sendGroupchatMessage(currentUser.id, gid, textMessage.value, recipe.id)
+    await sendGroupchatMessage(currentUser.id, gid, textMessage.value, recipe.id)
       .then(async (result) => {
         if (result) {
           groupsButtonsPressed.value[gid] = true;
         } else {
-          errorFlag.value = true;
+          alertFlag.value = true;
           alertKey.value++;
         }
       });
   }
+}
+
+const ChatButtonType = (id) => {
+  return friendsButtonsPressed.value[id] ? 'p-button-secondary' : 'p-button-primary';
+}
+const GroupchatButtonType = (id) => {
+  return groupsButtonsPressed.value[id] ? 'p-button-secondary' : 'p-button-primary';
 }
 
 </script>
 
 <template>
   <!-- :key - make every alert unique using the given value -->
-  <Alert v-if="errorFlag" type="danger" :key="alertKey"
-    text="Nepodařilo se odeslat recept.">
+  <Alert
+    v-if="alertFlag"
+    type="danger" 
+    text="Nepodařilo se odeslat recept."
+    :key="alertKey">
   </Alert>
 
-  <BasicPageHeader text="Sdílej"></BasicPageHeader>
-  <h2><a>{{ recipe.name }}</a></h2>
+  <BasicPageHeader text="Sdílení"></BasicPageHeader>
 
-  <div v-if="currentUser.id == 0">
+  <h2 style="color: blueviolet">
+    <i>
+      {{ recipe.name }}
+    </i>
+  </h2>
+
+  <div v-if="IsLoggedOut">
     Pro sdílení receptu se přihlaste.
   </div>
 
   <div v-else>
-    <div class="devider"></div>
-    <br/>
+    <Divider></Divider>
 
-    <InputText v-model="textMessage" size="large" 
-        placeholder="Zde vložte textovou zprávu" style="margin-bottom: 20px"/>
+    <InputText
+      v-model="textMessage"
+      size="large" 
+      placeholder="Zde vložte textovou zprávu"
+      style="margin-top: 20px; margin-bottom: 20px">
+    </InputText>
 
-    <div class="devider"></div>
+    <Divider></Divider>
+
     <h3>Přátelé</h3>
 
     <div v-if="friends.length == 0">
       Váš seznam přátel je prázdný.
     </div>
+
     <div v-else>
-      <div v-for="friend in friends" style="display: flex">
+      <div
+        v-for="friend in friends"
+        style="display: flex; margin-bottom: 10px;">
         <Message 
-          @click="router.push(`/profile/${friend.id}`)"
-          severity="secondary">
+          severity="secondary"
+          @click="GoToFriend(friend.id)">
           {{ friend.name }}
         </Message>
 
-        <Button icon="pi pi-send" style="margin-left: 10px"
-          @click="friendSend(friend.id)"
-          :class="friendsButtonsPressed[friend.id] ? 'p-button-secondary' : 'p-button-primary'">
+        <Button
+          icon="pi pi-send"
+          @click="FriendSend(friend.id)"
+          :class="ChatButtonType(friend.id)"
+          style="margin-left: 10px">
         </Button>
       </div>
     </div>
 
-    <br/>
+    <Divider style="margin-top: 20px;"></Divider>
 
-    <div class="devider"></div>
     <h3>Skupiny</h3>
 
     <div v-if="groupchats.length == 0">
       Nejste členem žádné skupiny.
     </div>
+
     <div v-else>
-      <div v-for="groupchat in groupchats" style="display: flex">
+      <div
+        v-for="groupchat in groupchats"
+        style="display: flex; align-items: center; margin-bottom: 10px;">
         <b>{{ groupchat.name }}</b>
 
-        <Button icon="pi pi-send" style="margin-left: 10px"
-          @click="groupSend(groupchat.id);"
-          :class="groupsButtonsPressed[groupchat.id] ? 'p-button-secondary' : 'p-button-primary'">
+        <Button
+          icon="pi pi-send"
+          @click="GroupSend(groupchat.id);"
+          :class="GroupchatButtonType(groupchat.id)"
+          style="margin-left: 10px">
         </Button>
       </div>
     </div>
@@ -125,11 +164,3 @@ const groupSend = async (gid) => {
   </div>
 
 </template>
-
-<style scoped>
-.devider {
-  background-color: aquamarine;
-  width: 100%;
-  height: 2px;
-}
-</style>

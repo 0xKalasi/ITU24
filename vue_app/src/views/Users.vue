@@ -1,32 +1,48 @@
+<!-- Martin Jabůrek, xjabur02 -->
+
 <script setup>
-  import { readAllUsers, switchUser } from "../../utils/users_api.js";
-  import { useRouter } from "vue-router";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-  const router = useRouter();
+import { readAllUsers, switchUser } from "../../utils/users_api.js";
 
-  const users = await readAllUsers();
+const users = await readAllUsers();
 
-  const SwitchUser = async (id) => {
-    await switchUser(id);
-    router.push('/profile');
-  }
+const SwitchUser = async (id) => {
+  await switchUser(id);
+  router.push("/profile");
+}
+
+const GoToProfile = async (id) => {
+  router.push(`/profile/${id}`);
+}
 
 </script>
 
 <template>
-  <h2>Uživatelé</h2>
+  <BasicPageHeader text="Uživatelé"></BasicPageHeader>
 
   <table>
-    <div v-for="user in users" style="display: flex" >
-      <Message severity="secondary"
-        @click="router.push(`/profile/${user.id}`)"
+    <div
+      v-for="user in users"
+      style="display: flex">
+      <Message
+        severity="secondary"
+        @click="GoToProfile(user.id)"
         style="margin: auto">
         {{ user.name }}
       </Message>
-      <Button @click="SwitchUser(user.id)">Přihlásit</Button>
+
+      <Button @click="SwitchUser(user.id)">
+        Přihlásit
+      </Button>
     </div>
   </table>
+
   <br/>
-  <Button @click="switchUser(0); router.push('/profile')">Odhlásit</Button>
+
+  <Button @click="SwitchUser(0)">
+    Odhlásit
+  </Button>
 
 </template>
