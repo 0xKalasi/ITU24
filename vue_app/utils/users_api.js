@@ -172,9 +172,9 @@ const readUsersBlocked = async (id) => {
 }
 
 // We get which chat belongs to given users by their ids
-// In db, the first id is always lower, so this works generally in both orders
+// In DB, the first id is always lower, so this works generally in both orders
 const getChatFromUserIds = async (sender, receiver) => {
-  // Find chat id, the ids are always in ascending order
+  // Ids of users in chats are always such that user_1 is smaller than user_2
   const { data: Chat, error } = await supabase
   .from('Chat')
   .select('id')

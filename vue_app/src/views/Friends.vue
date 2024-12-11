@@ -56,9 +56,37 @@ const Block = async (id) => {
   await blockUser(currentUser.id, id);
 }
 
+const selected = ref("Přátelé"); // Initially the location is friend list
+const options = ref([
+  {
+    label: "Příchozí",
+    icon: "pi pi-clock"
+  },
+  {
+    label: "Přátelé",
+    icon: "pi pi-users"
+  },
+  {
+    label: "Zablokované",
+    icon: "pi pi-times"
+  }
+]);
+const Redirect = (option) => {
+  if (option == "Příchozí") {
+    console.log("Příchozí");
+
+  } else if (option == "Přátelé") {
+    console.log("Přátelé");
+
+  } else if (option == "Zablokované") {
+    console.log("Zablokované");
+
+  }
+}
+
 </script>
 
-<template> 
+<template>
   <BasicPageHeader text="Přátelé"></BasicPageHeader>
 
   <div v-if="IsLoggedOut">
@@ -66,6 +94,15 @@ const Block = async (id) => {
   </div>
 
   <div v-else>
+    <!--
+    <SelectButton
+      v-model="selected"
+      :options="options"
+      style="margin-bottom: 20px;"
+      @change="Redirect(selected)">
+    </SelectButton>
+    -->
+
     <Button
       label="Groupchaty"
       icon="pi pi-comments"
