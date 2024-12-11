@@ -1,4 +1,5 @@
 <!-- Martin Jabůrek, xjabur02 -->
+<!-- DEPRECATED - functionality in Friends.vue -->
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";

@@ -9,24 +9,42 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-import { readUsersFriends, blockUser } from "../../utils/users_api.js";
+import {
+  readUsersFriends,
+  readUsersRequests,
+  readUsersBlocked,
+  acceptFriendRequest,
+  blockUser,
+  unblockUser
+} from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 
 
 const friends = ref([]);
+const friendRequests = ref([]);
+const blockedUsers = ref([]);
 
 let friendListChanges;
+let friendRequestChanges;
+let blockedUsersChanges;
 onMounted(async () => {
   friends.value = await readUsersFriends(currentUser.id);
+  friendRequests.value = await readUsersRequests(currentUser.id);
+  blockedUsers.value = await readUsersBlocked(currentUser.id);
 
-  // Update => I blocked someone
+  // Update every time the relation changes
   friendListChanges = await createSubscription("UPDATE", "FriendStatus", async () => {
     friends.value = await readUsersFriends(currentUser.id);
+    friendRequests.value = await readUsersRequests(currentUser.id);
+    blockedUsers.value = await readUsersBlocked(currentUser.id);
   });
 });
 onUnmounted(async () => {
   await removeSubscription(friendListChanges);
+  await removeSubscription(friendRequestChanges);
+  await removeSubscription(blockedUsersChanges);
 });
+
 
 const IsLoggedOut = computed (() => {
   return currentUser.id == 0;
@@ -44,7 +62,7 @@ const GoToBlocked = async () => {
   router.push("/blocked");
 }
 
-const GoToFriendProfile = async (id) => {
+const GoToProfile = async (id) => {
   router.push(`/profile/${id}`);
 }
 
@@ -52,112 +70,149 @@ const GoToChat = async (id) => {
   router.push(`/chats/${id}`);
 }
 
+const AcceptRequest = async (id) => {
+  await acceptFriendRequest(currentUser.id, id);
+}
+
 const Block = async (id) => {
   await blockUser(currentUser.id, id);
 }
 
-const selected = ref("Přátelé"); // Initially the location is friend list
-const options = ref([
-  {
-    label: "Příchozí",
-    icon: "pi pi-clock"
-  },
-  {
-    label: "Přátelé",
-    icon: "pi pi-users"
-  },
-  {
-    label: "Zablokované",
-    icon: "pi pi-times"
-  }
-]);
-const Redirect = (option) => {
-  if (option == "Příchozí") {
-    console.log("Příchozí");
-
-  } else if (option == "Přátelé") {
-    console.log("Přátelé");
-
-  } else if (option == "Zablokované") {
-    console.log("Zablokované");
-
-  }
+const UnBlock = async (id) => {
+  await unblockUser(currentUser.id, id);
 }
+
+const selected = ref("Přátelé"); // Friend list viewed by default
+const options = ref(["Příchozí", "Přátelé", "Zablokované"]);
 
 </script>
 
 <template>
-  <BasicPageHeader text="Přátelé"></BasicPageHeader>
+  <BasicPageHeader text="Konverzace"></BasicPageHeader>
 
   <div v-if="IsLoggedOut">
     Pro zobrazení chatů se přihlaste.
   </div>
 
   <div v-else>
-    <!--
+
     <SelectButton
       v-model="selected"
       :options="options"
-      style="margin-bottom: 20px;"
-      @change="Redirect(selected)">
+      style="margin-bottom: 20px;">
     </SelectButton>
-    -->
 
     <Button
       label="Groupchaty"
       icon="pi pi-comments"
-      @click="GoToGroupchats"
-      style="margin-bottom: 20px;">
+      @click="GoToGroupchats">
     </Button>
 
     <Divider></Divider>
 
-    <div style="margin-top: 20px; margin-bottom: 20px;">
-      <Button
-        label="Příchozí"
-        icon="pi pi-clock"
-        @click="GoToRequests">
-      </Button> <!-- TODO badge with req. cnt. -->
-      <Button
-        label="Zablokované"
-        icon="pi pi-times"
-        @click="GoToBlocked"
-        style="float: right;">
-      </Button>
+    <!-- PENDING REQUEST -->
+
+    <div v-if="selected == 'Příchozí'">
+      
+      <div
+        v-if="friendRequests.length == 0"
+        style="margin-top: 20px;">
+        Nemáte žádné žádosti o přátelství.
+      </div>
+
+      <div v-else>
+        <div v-for="request in friendRequests">
+          <Message
+            severity="secondary"
+            @click="GoToProfile(request.id)">
+            {{ request.name }}
+          </Message>
+
+          <Button
+            label="Přijmout"
+            icon="pi pi-check"
+            @click="AcceptRequest(request.id)"
+            style="float: left; margin-top: 5px;">
+          </Button>
+
+          <Button 
+            label="Odmítnout"
+            icon="pi pi-times"
+            @click="Block(request.id)"
+            style="float: right; margin-top: 5px;">
+          </Button>
+          <br/><br/>
+        </div>
+      </div>
+
     </div>
 
-    <Divider></Divider>
+    <!-- MY FRIENDS -->
 
-    <div
-      v-if="friends.length == 0"
-      style="margin-top: 20px;">
-      Seznam přátel je prázdný.
+    <div v-if="selected == 'Přátelé'">
+      
+      <div
+        v-if="friends.length == 0"
+        style="margin-top: 20px;">
+        Seznam přátel je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
+      </div>
+
+      <div v-else>
+        <div v-for="friend in friends">
+          <Message
+            severity="secondary"
+            @click="GoToProfile(friend.id)">
+            {{ friend.name }}
+          </Message>
+
+          <Button
+            label="Zablokovat"
+            icon="pi pi-lock"
+            @click="Block(friend.id)"
+            style="float: left; margin-top: 5px;">
+          </Button>
+
+          <Button
+            label="Chat"
+            icon="pi pi-comment"
+            @click="GoToChat(friend.id)"
+            style="float: right; margin-top: 5px;">
+          </Button>
+          <br/><br/>
+        </div>
+      </div>
+
     </div>
 
-    <div
-      v-for="friend in friends"
-      style="margin-top: 20px;">
-      <Message
-        @click="GoToFriendProfile(friend.id)"
-        severity="secondary">
-        {{ friend.name }}
-      </Message>
+    <!-- BLOCKED USERS -->
 
-      <Button
-        label="Zablokovat"
-        icon="pi pi-lock"
-        @click="Block(friend.id)"
-        style="float: left; margin-top: 5px;">
-      </Button>
+    <div v-if="selected == 'Zablokované'">
+      
+      <div
+        v-if="blockedUsers.length == 0"
+        style="margin-top: 20px;">
+        Seznam zablokovaných uživatelů je prázdný.
+      </div>
 
-      <Button
-        label="Chat"
-        icon="pi pi-comment"
-        @click="GoToChat(friend.id)"
-        style="float: right; margin-top: 5px;">
-      </Button>
-      <br/><br/>
+      <div v-else>
+        <div v-for="blocked in blockedUsers">
+          <Message
+            severity="secondary"
+            @click="GoToProfile(blocked.id)">
+            {{ blocked.name }}
+          </Message>
+
+          <Button
+            label="Odblokovat"
+            icon="pi pi-lock-open"
+            @click="UnBlock(blocked.id)"
+            style="margin-bottom: 5px;">
+          </Button>
+        </div>
+      </div>
+
     </div>
+
   </div>
 
 </template>
