@@ -18,32 +18,64 @@ import {
   unblockUser
 } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
-
+import { readUsersGroupchats } from "../../utils/groupchat_api.js";
 
 const friends = ref([]);
 const friendRequests = ref([]);
 const blockedUsers = ref([]);
+const groupchats = ref([]);
 
 let friendListChanges;
 let friendRequestChanges;
 let blockedUsersChanges;
+let groupsChanges;
 onMounted(async () => {
   friends.value = await readUsersFriends(currentUser.id);
   friendRequests.value = await readUsersRequests(currentUser.id);
   blockedUsers.value = await readUsersBlocked(currentUser.id);
+  groupchats.value = await readUsersGroupchats(currentUser.id);
+
+  await ConstructChatList();
 
   // Update every time the relation changes
   friendListChanges = await createSubscription("UPDATE", "FriendStatus", async () => {
     friends.value = await readUsersFriends(currentUser.id);
     friendRequests.value = await readUsersRequests(currentUser.id);
     blockedUsers.value = await readUsersBlocked(currentUser.id);
+
+    await ConstructChatList();
+  });
+
+  // Update on group membership changes
+  groupsChanges = await createSubscription("*", "GroupchatMembers", async () => {
+    groupchats.value = await readUsersGroupchats(currentUser.id);
+
+    await ConstructChatList();
   });
 });
 onUnmounted(async () => {
   await removeSubscription(friendListChanges);
   await removeSubscription(friendRequestChanges);
   await removeSubscription(blockedUsersChanges);
+  await removeSubscription(groupsChanges);
 });
+
+
+const chats = ref([]);
+
+// Friend and group chats are shown together as is customary
+// Here they are put together, differentiated and sorted
+const ConstructChatList = async () => {
+  friends.value.forEach(friend => {
+    friend.is_groupchat = false;
+  });
+  groupchats.value.forEach(groupchat => {
+    groupchat.is_groupchat = true;
+  });
+
+  chats.value = [...friends.value, ...groupchats.value];
+  chats.value.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
+}
 
 
 const IsLoggedOut = computed (() => {
@@ -66,8 +98,12 @@ const GoToProfile = async (id) => {
   router.push(`/profile/${id}`);
 }
 
-const GoToChat = async (id) => {
-  router.push(`/chats/${id}`);
+const GoToChat = async (chat) => {
+  if (chat.is_groupchat) {
+    router.push(`/groupchats/${chat.id}`);
+  } else {
+    router.push(`/chats/${chat.id}`);
+  }
 }
 
 const AcceptRequest = async (id) => {
@@ -100,14 +136,6 @@ const selected = ref("Chaty");
       v-model="selected"
       :requestCount="friendRequests.length">
     </ConvSelect>
-
-    <Divider></Divider>
-
-    <Button
-      label="Groupchaty"
-      icon="pi pi-comments"
-      @click="GoToGroupchats">
-    </Button>
 
     <Divider></Divider>
 
@@ -148,39 +176,52 @@ const selected = ref("Chaty");
 
     </div>
 
-    <!-- MY FRIENDS -->
+    <!-- MY CHATS -->
 
     <div v-if="selected == 'Chaty'">
       
       <div
-        v-if="friends.length == 0"
+        v-if="chats.length == 0"
         style="margin-top: 20px;">
-        Seznam přátel je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
+        Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
       </div>
 
       <div v-else>
-        <div v-for="friend in friends">
-          <Message
-            severity="secondary"
-            @click="GoToProfile(friend.id)">
-            {{ friend.name }}
-          </Message>
 
-          <Button
-            label="Zablokovat"
-            icon="pi pi-lock"
-            @click="Block(friend.id)"
-            style="float: left; margin-top: 5px;">
-          </Button>
+        <div v-for="chat in chats">
+          <!-- Groupchats  -->
+          <div v-if="chat.is_groupchat" style="display: flex; align-items: center;">
+            <h3>
+              {{ chat.name }}
+            </h3>
 
-          <Button
-            label="Chat"
-            icon="pi pi-comment"
-            @click="GoToChat(friend.id)"
-            style="float: right; margin-top: 5px;">
-          </Button>
-          <br/><br/>
+            <Button
+              label="Chat"
+              icon="pi pi-comments"
+              @click="GoToChat(chat)"
+              style="margin-left: auto; margin-top: 5px;">
+            </Button>
+          </div>
+
+          <!-- Friend chats -->
+          <div v-else style="display: flex; align-items: center;">
+            <Message
+              severity="secondary"
+              @click="GoToProfile(chat.id)">
+              {{ chat.name }}
+            </Message>
+
+            <Button
+              label="Chat"
+              icon="pi pi-comment"
+              @click="GoToChat(chat)"
+              style="margin-left: auto; margin-top: 5px;">
+            </Button>
+            <br/><br/>
+          </div>
+
         </div>
+
       </div>
 
     </div>
