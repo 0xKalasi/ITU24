@@ -82,20 +82,23 @@ const UnBlock = async (id) => {
   await unblockUser(currentUser.id, id);
 }
 
-const selected = ref("Přátelé"); // Friend list viewed by default
-const previouslySelected = ref("Přátelé")
-const options = ref(["Příchozí", "Přátelé", "Zablokované"]);
+const selected = ref("Chaty");
 
-const ChangeListed = (newValue) => {
-  if (selected.value != null) {
-    previouslySelected.value = selected.value;
-    selected.value = newValue;
-  
-  } else {
-    selected.value = previouslySelected.value;
-    
-  }
+const ChangeListed = (which) => {
+  selected.value = which;
 }
+
+const SetHighlight = computed(() => (which) => {
+  return (selected.value == which) ? "primary" : "secondary";
+});
+
+const PendingCount = computed(() => {
+  return (friendRequests.value.length == 0) ? "" : String(friendRequests.value.length);
+});
+
+const GetBadgeSeverity = computed(() => (which) => {
+  return (selected.value == which) ? "secondary" : "contrast";
+});
 
 </script>
 
@@ -108,12 +111,27 @@ const ChangeListed = (newValue) => {
 
   <div v-else>
 
-    <SelectButton
-      v-model="selected"
-      :options="options"
-      style="margin-bottom: 20px;"
-      @update:modelValue="ChangeListed">
-    </SelectButton>
+    <ButtonGroup>
+      <Button
+        label="Příchozí"
+        :badge="PendingCount"
+        :badgeSeverity="GetBadgeSeverity('Příchozí')"
+        :severity="SetHighlight('Příchozí')"
+        @click="ChangeListed('Příchozí')">
+      </Button>
+      <Button
+        label="Chaty"
+        :severity="SetHighlight('Chaty')"
+        @click="ChangeListed('Chaty')">
+      </Button>
+      <Button
+        label="Zablokované"
+        :severity="SetHighlight('Zablokované')"
+        @click="ChangeListed('Zablokované')">
+      </Button>
+    </ButtonGroup>
+
+    <Divider></Divider>
 
     <Button
       label="Groupchaty"
@@ -162,7 +180,7 @@ const ChangeListed = (newValue) => {
 
     <!-- MY FRIENDS -->
 
-    <div v-if="selected == 'Přátelé'">
+    <div v-if="selected == 'Chaty'">
       
       <div
         v-if="friends.length == 0"

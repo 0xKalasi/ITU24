@@ -45,7 +45,6 @@ import FloatLabel from "primevue/floatlabel";
 import Listbox from "primevue/listbox";
 import Image from "primevue/image";
 import DatePicker from "primevue/datepicker";
-import SelectButton from "primevue/selectbutton";
 
 
 /* HERE REGISTER COMPONENTS AS A GLOBAL COMPONENTS */
@@ -68,7 +67,6 @@ app.component("LoadingScreen", LoadingScreen);
 app.component("BasicPageHeader", BasicPageHeader);
 app.component("DatePicker", DatePicker);
 app.component("Divider", Divider);
-app.component("SelectButton", SelectButton);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */
