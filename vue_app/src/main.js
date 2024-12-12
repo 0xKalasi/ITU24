@@ -34,8 +34,9 @@ import ConvSelect from "../src/components/ConvSelect.vue";
 import ChatLink from "../src/components/ChatLink.vue";
 import FriendRequest from "./components/FriendRequest.vue";
 import UnblockEntry from "./components/UnblockEntry.vue";
-import ChatComp from "./components/ChatComp.vue";
 import MessageComp from "./components/MessageComp.vue";
+import ChatComp from "./components/ChatComp.vue";
+import GroupchatComp from "./components/GroupchatComp.vue";
 
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
@@ -81,6 +82,7 @@ app.component("UnblockEntry", UnblockEntry);
 app.component("ChatComp", ChatComp);
 app.component("MessageComp", MessageComp);
 app.component("Card", Card);
+app.component("GroupchatComp", GroupchatComp);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */

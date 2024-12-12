@@ -37,16 +37,16 @@ const isLoading = ref(false);
       <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
 
       <Button
-        style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);"
         :icon="IsCreator"
-        @click="GoToEdit">
+        @click="GoToEdit"
+        style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);">
       </Button>
     </div> 
 
     <Divider style="margin-bottom: 0px; margin-top: 10px;"></Divider>
 
-    <ChatComp></ChatComp>
+    <GroupchatComp></GroupchatComp>
 
-</div>
+  </div>
 
 </template>

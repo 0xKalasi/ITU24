@@ -37,7 +37,8 @@ const WhoPosted = computed(() => {
     </template>
 
     <template #subtitle>
-      <div v-if="message.person_posted != currentUser.id">
+      <!-- Show name only for others massages and do so only in groupchats -->
+      <div v-if="(message.person_posted != currentUser.id) && (message.groupchat_id != null)">
         {{ message.User.name }}
       </div>
     </template>

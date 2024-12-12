@@ -6,22 +6,19 @@ import { ref, onMounted, onUnmounted, onUpdated, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
-import { useUserStore } from '../stores/userStore';
-const currentUser = useUserStore();
-
-import { readUser, sendChatMessage, readChat } from '../../utils/users_api';
+import { readGroupchatMessages, readGroupchat, sendGroupchatMessage } from '../../utils/groupchat_api';
 import { createSubscription, removeSubscription } from '../../utils/subscription_api';
 
 
-const peerUserId = router.currentRoute.value.params.user_id;
-const peerUser = await readUser(peerUserId);
+const currentGroupId = router.currentRoute.value.params.groupchat_id;
+const currentGroup = await readGroupchat(currentGroupId);
 
 
 // Sending messages
 const textMessage = ref("");
 const HandleSending = async () => {
   if (textMessage.value.length != 0) { // Do not send an empty message
-    await sendChatMessage(currentUser.id, peerUser.id, textMessage.value, null);
+    await sendGroupchatMessage(currentUser.id, currentGroup.id, textMessage.value, null);
     textMessage.value = "";
   }
 }
@@ -29,7 +26,7 @@ const HandleSending = async () => {
 const container = ref(null);
 
 const scrollDown = () => {
-  if (container.value) {
+  if(container.value){
     container.value.scrollTop = container.value.scrollHeight;
   }
 };
@@ -38,19 +35,19 @@ const scrollDown = () => {
 
 const messages = ref([]);
 
-let messageChanges;
+let groupMessageChanges;
 onMounted(async () => {
-  messages.value = await readChat(currentUser.id, peerUser.id);
+  messages.value = await readGroupchatMessages(currentGroup.id);
   scrollDown();
 
-  messageChanges = await createSubscription("*", "Message", async () => {
-    messages.value = await readChat(currentUser.id, peerUser.id);
+  groupMessageChanges = await createSubscription("INSERT", "Message", async () => {
+    messages.value = await readGroupchatMessages(currentGroup.id);
     //await nextTick();
     //scrollDown();
   });
 });
 onUnmounted(async () => {
-  await removeSubscription(messageChanges);
+  await removeSubscription(groupMessageChanges);
 });
 
 onUpdated(() => {
@@ -64,7 +61,7 @@ onUpdated(() => {
     ref="container"
     style="overflow-y: auto; height: calc(100vh - 266px);">
     <div v-if="messages.length == 0">
-      Chat je dosud prázdný.
+      Skupina je dosud prázdná.
     </div>
 
     <div v-for="message in messages">
