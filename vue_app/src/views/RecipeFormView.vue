@@ -12,10 +12,12 @@
   import TimePicker from '../components/timePicker.vue';
   import { useRouter } from "vue-router";
   import { readPublicRecipe } from "../../utils/api";
+  import ToggleSwitch from 'primevue/toggleswitch';
 
   import addUtencils from '../components/addUtencils.vue';
   import addSteps from '../components/addSteps.vue';
   import addIngredient from '../components/addIngredient.vue';
+  
 
 
   const currentUser = useUserStore();
@@ -40,7 +42,8 @@
     Step: [],
     Ingredients: [],
     Utencils: [],
-    timers: []
+    timers: [],
+    photo: ""
   });
 
 
@@ -128,7 +131,14 @@
   <div v-else>
     <BasicPageHeader text="Uprav recept"/>
       <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
-    
+        <div style="display: flex; align-items: center;">
+        <label style="margin-right: 8px;">Is public</label>
+        <ToggleSwitch v-model="checked">
+          <template #handle="{ checked }">
+            <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
+          </template>
+        </ToggleSwitch>
+      </div>
        <!-- Title TextArea Input -->
       <div class="p-field p-d-flex p-ai-center p-mb-3 title-container">
         <label for="title" class="title-label">Název</label>
@@ -141,6 +151,8 @@
           v-model="recipe.name"
         />
       </div>
+      <PhotoUploader v-model="recipe.photo" />
+
         <h3>Ingredence</h3>
         <addIngredient v-model="recipe.Ingredients"/>
         
@@ -156,7 +168,7 @@
           <h3>Všeobecné informace</h3>
           <div class="p-d-flex p-ai-center p-mb-2">
             <label class="p-mr-2">Počet porcí</label>
-            <InputNumber v-model="recipe.portions" mode="decimal" showButtons :min="0" :max="100" buttonLayout="horizontal" fluid class="p-inputnumber-sm centered-input">
+            <InputNumber v-model="recipe.portions" mode="decimal" showButtons :min="1" :max="100" buttonLayout="horizontal" fluid class="p-inputnumber-sm centered-input">
                 <template #incrementicon>
                     <span class="pi pi-plus" />
                 </template>

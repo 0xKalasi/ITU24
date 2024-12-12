@@ -21,7 +21,7 @@ import Groupchats from "../views/Groupchats.vue";
 import Groupchat from "../views/Groupchat.vue";
 import EditGroupchat from "../views/EditGroupchat.vue";
 import AddGroupchatmember from "../views/AddGroupchatmember.vue";
-import RecipeView from "../views/RecipeFromView.vue";
+import RecipeView from "../views/RecipeFormView.vue";
 
 const routes = [
   { path: "/", component: Homepage, meta: { public: true } },

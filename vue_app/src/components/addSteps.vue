@@ -134,6 +134,10 @@ function handleDragEnd() {
     draggingIndex.value = null; // Reset after drag ends
 }
 
+// Function to delete the photo in editing mode
+function deletePhoto() {
+    editedStep.value.photo = ""; // Clear the photo field
+}
 </script>
 
 <template>
@@ -161,6 +165,15 @@ function handleDragEnd() {
                       />
                       <PhotoUploader v-model="editedStep.photo" />
                   </div>
+
+                  <!-- Delete Photo Button -->
+                  <Button 
+                      v-if="editedStep.photo" 
+                      label="Smazat foto" 
+                      class="p-button-danger p-button-outlined p-my-2" 
+                      @click="deletePhoto" 
+                  />
+
                   <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveStep(index)" />
               </template>
               <template v-else>
@@ -217,6 +230,7 @@ function handleDragEnd() {
   </div>
   <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushStep" />
 </template>
+
 
 <style scoped>
   .dragging {

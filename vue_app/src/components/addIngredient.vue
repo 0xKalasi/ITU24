@@ -5,8 +5,8 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
   // Ingredient data
     const ingredients = defineModel();
 
-  const newIngredient = ref({ name: "", quantity: null, unit: "" });
-  const editedIngredient = ref({ name: "", quantity: null, unit: "" });
+  const newIngredient = ref({ name: "", quantity: null, unit: "", notes: "" });
+  const editedIngredient = ref({ name: "", quantity: null, unit: "", notes: "" });
   const editingIngredientIndex = ref(null);
 
    // Add new ingredient
@@ -31,13 +31,13 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
     function saveIngredient(index) {
       ingredients.value[index] = { ...editedIngredient.value };
       editingIngredientIndex.value = null;
-      editedIngredient.value = { name: "", quantity: null, unit: "" };
+      editedIngredient.value = { name: "", quantity: null, unit: "", notes: "" };
     }
 
     // Cancel ingredient edit
     function cancelIngredientEdit() {
       editingIngredientIndex.value = null;
-      editedIngredient.value = { name: "", quantity: null, unit: "" };
+      editedIngredient.value = { name: "", quantity: null, unit: "", notes: "" };
     }
 </script>
 
@@ -50,6 +50,7 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
               <MyOnFloatLabel label="Název Ingredence" v-model="editedIngredient.name" />
               <MyOnFloatLabel :number="true" label="Množství" v-model="editedIngredient.quantity" />
               <MyOnFloatLabel label="Jednotka" v-model="editedIngredient.unit" />
+              <MyOnFloatLabel label="Poznámka" v-model="editedIngredient.notes" />
               <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveIngredient(index)" />
               <!-- <Button icon="pi pi-times" class="p-button-text p-button-rounded" @click="cancelIngredientEdit" /> -->
             </template> 
@@ -68,6 +69,7 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
           <MyOnFloatLabel label="Název Ingredence" v-model="newIngredient.name" />
           <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" />
           <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" />
+          <MyOnFloatLabel label="Poznámka" v-model="newIngredient.notes" />
         </div>
         <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushIngredient" />
 </template>
