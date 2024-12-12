@@ -53,6 +53,7 @@ import Listbox from "primevue/listbox";
 import Image from "primevue/image";
 import DatePicker from "primevue/datepicker";
 import Card from "primevue/card";
+import Menu from "primevue/menu";
 
 
 /* HERE REGISTER COMPONENTS AS A GLOBAL COMPONENTS */
@@ -83,6 +84,7 @@ app.component("ChatComp", ChatComp);
 app.component("MessageComp", MessageComp);
 app.component("Card", Card);
 app.component("GroupchatComp", GroupchatComp);
+app.component("Menu", Menu);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */
