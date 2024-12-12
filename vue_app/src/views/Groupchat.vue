@@ -9,7 +9,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-import { readGroupchat } from "../../utils/groupchat_api";
+import { readGroupchat, removeUserFromGroup } from "../../utils/groupchat_api";
 
 
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
@@ -17,12 +17,61 @@ const currentGroup = await readGroupchat(currentGroupId);
 
 
 const IsCreator = computed(() => {
-  return (currentUser.id == currentGroup.creator) ? "pi pi-pencil" : "pi pi-plus";
+  return (currentUser.id == currentGroup.creator) ? "pi pi-pencil" : "pi pi-ellipsis-h";
 });
 
 const GoToEdit = async () => {
   router.push(`/groupchats/edit/${currentGroup.id}`);
 }
+
+const LeaveGroup = async () => {
+  await removeUserFromGroup(currentUser.id, currentGroup.id);
+  router.push("/groupchats");
+}
+
+const GoToAddMembers = async () => {
+  router.push(`/groupchats/add/${currentGroup.id}`)
+}
+
+const menu = ref();
+const items_creator = ref([
+  {
+    label: "Možnosti skupiny",
+    items: [
+      {
+        label: "Spravovat skupinu",
+        icon: "pi pi-hammer",
+        command: GoToEdit
+      }
+    ]
+  }
+]);
+const items_member = ref([
+  {
+    label: `${currentGroup.name}`,
+    items: [
+      {
+        label: "Přidat členy",
+        icon: "pi pi-users",
+        command: GoToAddMembers
+      },
+      {
+        label: "Opustit skupinu",
+        icon: "pi pi-arrow-left",
+        command: LeaveGroup
+      }
+    ]
+  }
+]);
+
+const ToggleMenu = (event) => {
+  menu.value.toggle(event);
+}
+
+const ChooseModel = computed(() => {
+  return (currentUser.id == currentGroup.creator) ? items_creator.value : items_member.value;
+});
+
 
 
 const isLoading = ref(false);
@@ -36,11 +85,23 @@ const isLoading = ref(false);
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
       <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
 
-      <Button
-        :icon="IsCreator"
-        @click="GoToEdit"
-        style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);">
-      </Button>
+      <div>
+        <Button 
+          type="button"
+          :icon="IsCreator"
+          rounded
+          @click="ToggleMenu"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);">
+        </Button>
+        <Menu
+          ref="menu"
+          id="overlay_menu"
+          :model="ChooseModel"
+          :popup="true">
+        </Menu>
+      </div>
     </div> 
 
     <Divider style="margin-bottom: 0px; margin-top: 10px;"></Divider>
