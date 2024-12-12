@@ -14,8 +14,7 @@
 </script>
 
 <template>
-  <h2>Kniha receptů</h2>
-  <NavigationButton :showOnlyBackBtn="false"></NavigationButton>
+  <BasicPageHeader text="Kniha receptů"></BasicPageHeader>
   <div v-if="currentUser.id == 0">
     Pro zobrazení vašich receptů se přihlaste
   </div>
