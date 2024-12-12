@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -9,14 +9,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-import {
-  readUsersFriends,
-  readUsersRequests,
-  readUsersBlocked,
-  acceptFriendRequest,
-  blockUser,
-  unblockUser
-} from "../../utils/users_api.js";
+import { readUsersFriends, readUsersRequests, readUsersBlocked } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 import { readUsersGroupchats } from "../../utils/groupchat_api.js";
 
@@ -77,82 +70,34 @@ const ConstructChatList = async () => {
   chats.value.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
 }
 
-
-const GoToGroupchats = async () => {
-  router.push("/groupchats");
-}
-
-const GoToRequests = async () => {
-  router.push("/requests");
-}
-
-const GoToBlocked = async () => {
-  router.push("/blocked");
-}
-
-const GoToProfile = async (id) => {
-  router.push(`/profile/${id}`);
-}
-
-const AcceptRequest = async (id) => {
-  await acceptFriendRequest(currentUser.id, id);
-}
-
-const Block = async (id) => {
-  await blockUser(currentUser.id, id);
-}
-
-const UnBlock = async (id) => {
-  await unblockUser(currentUser.id, id);
-}
-
-
 const selected = ref("Chaty");
 
 </script>
 
 <template>
-  <BasicPageHeader text="Konverzace"></BasicPageHeader>
+  <!-- Header -->
+  <div>
+    <BasicPageHeader text="Konverzace"></BasicPageHeader>
 
-  <ConvSelect
-    v-model="selected"
-    :requestCount="friendRequests.length">
-  </ConvSelect>
+    <ConvSelect
+      v-model="selected"
+      :requestCount="friendRequests.length">
+    </ConvSelect>
 
-  <Divider></Divider>
+    <Divider></Divider>
+  </div>
 
   <!-- PENDING REQUEST -->
 
-  <div v-if="selected == 'Příchozí'">
+  <div v-if="selected == 'Žádosti'">
     
-    <div
-      v-if="friendRequests.length == 0"
-      style="margin-top: 20px;">
+    <div v-if="friendRequests.length == 0">
       Nemáte žádné žádosti o přátelství.
     </div>
 
     <div v-else>
       <div v-for="request in friendRequests">
-        <Message
-          severity="secondary"
-          @click="GoToProfile(request.id)">
-          {{ request.name }}
-        </Message>
-
-        <Button
-          label="Přijmout"
-          icon="pi pi-check"
-          @click="AcceptRequest(request.id)"
-          style="float: left; margin-top: 5px;">
-        </Button>
-
-        <Button 
-          label="Odmítnout"
-          icon="pi pi-times"
-          @click="Block(request.id)"
-          style="float: right; margin-top: 5px;">
-        </Button>
-        <br/><br/>
+        <FriendRequest :friend="request"></FriendRequest>
       </div>
     </div>
 
@@ -160,19 +105,17 @@ const selected = ref("Chaty");
 
   <!-- MY CHATS -->
 
-  <div v-if="selected == 'Chaty'">
+  <div 
+    v-if="selected == 'Chaty'">
     
     <div v-if="chats.length == 0">
       Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
     </div>
 
     <div v-else>
-
       <div v-for="chat in chats">
         <ChatLink :chat="chat"></ChatLink>
-
       </div>
-
     </div>
 
   </div>
@@ -180,7 +123,6 @@ const selected = ref("Chaty");
   <!-- BLOCKED USERS -->
 
   <div v-if="selected == 'Zablokované'">
-    
     <div
       v-if="blockedUsers.length == 0"
       style="margin-top: 20px;">
@@ -189,18 +131,7 @@ const selected = ref("Chaty");
 
     <div v-else>
       <div v-for="blocked in blockedUsers">
-        <Message
-          severity="secondary"
-          @click="GoToProfile(blocked.id)">
-          {{ blocked.name }}
-        </Message>
-
-        <Button
-          label="Odblokovat"
-          icon="pi pi-lock-open"
-          @click="UnBlock(blocked.id)"
-          style="margin-bottom: 5px;">
-        </Button>
+        <UnblockEntry :blocked="blocked"></UnblockEntry>
       </div>
     </div>
 

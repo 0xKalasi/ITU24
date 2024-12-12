@@ -77,7 +77,7 @@ router.beforeEach(async (to, from) => {
     await user.tryLoginFromLocSt();
   }
 
-  console.log(user.id);
+  //console.log(user.id);
 
   // if user is not signed he can only go to public routes
   // to.path !== '/users' is there to avoid infinite redirect 

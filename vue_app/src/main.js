@@ -32,6 +32,8 @@ import BasicPageHeader from "../src/components/basicPageHeader.vue";
 import Divider from "../src/components/Divider.vue";
 import ConvSelect from "../src/components/ConvSelect.vue";
 import ChatLink from "../src/components/ChatLink.vue";
+import FriendRequest from "./components/FriendRequest.vue";
+import UnblockEntry from "./components/UnblockEntry.vue";
 
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
@@ -71,6 +73,8 @@ app.component("DatePicker", DatePicker);
 app.component("Divider", Divider);
 app.component("ConvSelect", ConvSelect);
 app.component("ChatLink", ChatLink);
+app.component("FriendRequest", FriendRequest);
+app.component("UnblockEntry", UnblockEntry);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */

@@ -19,7 +19,7 @@ const GoToChat = async () => {
 }
 
 const GoToProfile = async () => {
-  if ( ! chat.is_groupchat) {
+  if ( ! props.chat.is_groupchat) {
     router.push(`/profile/${props.chat.id}`);
   }
 }
@@ -72,11 +72,11 @@ const TextClass = computed(() => {
   flex-grow: 1;
 }
 
-::v-deep .name-button-chat .p-button-label {
+:deep(.name-button-chat) .p-button-label {
   font-weight: normal;
 }
 
-::v-deep .name-button-groupchat .p-button-label {
+:deep(.name-button-groupchat) .p-button-label {
   font-weight: bold;
   color: aquamarine;
 }

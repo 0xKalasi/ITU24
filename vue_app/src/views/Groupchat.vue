@@ -11,6 +11,7 @@ const currentUser = useUserStore();
 
 import { readGroupchat, readGroupchatMessages, sendGroupchatMessage } from "../../utils/groupchat_api";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api";
+import BasicPageHeader from "../components/basicPageHeader.vue";
 
 
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
@@ -82,14 +83,7 @@ const isLoading = ref(false);
     <!-- Header -->
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
       <!-- TODO there should be a text description with the button -->
-      <Button
-        @click="router.back" icon="pi pi-chevron-left"
-        style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;">
-      </Button>
-        
-      <h2 style="max-width: 240px;">
-        {{ currentGroup.name }}
-      </h2>
+      <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
 
       <Button
         style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);"

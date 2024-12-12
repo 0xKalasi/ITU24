@@ -15,7 +15,7 @@ const props = defineProps({
 const selected = defineModel(); // Two way binding with v-model
 
 const ChangeListed = (which) => {
-  selected.value = which
+  selected.value = which;
 }
 
 
@@ -36,11 +36,11 @@ const GetBadgeSeverity = computed(() => (which) => {
 <template>
   <ButtonGroup style="display: flex; justify-content: center;">
     <Button
-      label="Příchozí"
+      label="Žádosti"
       :badge="PendingCount"
-      :badgeSeverity="GetBadgeSeverity('Příchozí')"
-      :severity="SetHighlight('Příchozí')"
-      @click="ChangeListed('Příchozí')">
+      :badgeSeverity="GetBadgeSeverity('Žádosti')"
+      :severity="SetHighlight('Žádosti')"
+      @click="ChangeListed('Žádosti')">
     </Button>
     <Button
       label="Chaty"
