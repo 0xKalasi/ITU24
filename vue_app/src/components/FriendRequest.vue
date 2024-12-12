@@ -14,15 +14,15 @@ const props = defineProps({
 });
 
 const GoToProfile = async () => {
-  router.push(`/profile/${friend.id}`);
+  router.push(`/profile/${props.friend.id}`);
 }
 
 const AcceptRequest = async () => {
-  await acceptFriendRequest(currentUser.id, friend.id);
+  await acceptFriendRequest(currentUser.id, props.friend.id);
 }
 
 const Block = async () => {
-  await blockUser(currentUser.id, friend.id);
+  await blockUser(currentUser.id, props.friend.id);
 }
 
 </script>
