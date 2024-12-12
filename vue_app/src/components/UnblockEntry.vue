@@ -14,12 +14,12 @@ const props = defineProps({
 });
 
 
-const GoToProfile = async (id) => {
-  router.push(`/profile/${id}`);
+const GoToProfile = async () => {
+  router.push(`/profile/${props.blocked.id}`);
 }
 
-const UnBlock = async (id) => {
-  await unblockUser(currentUser.id, id);
+const UnBlock = async () => {
+  await unblockUser(currentUser.id, props.blocked.id);
 }
 
 </script>
@@ -28,7 +28,7 @@ const UnBlock = async (id) => {
 <ButtonGroup class="blocked">
   <Button
     severity="secondary"
-    @click="GoToProfile(blocked.id)"
+    @click="GoToProfile"
     raised
     class="name-button">
     {{ blocked.name }}
@@ -36,7 +36,7 @@ const UnBlock = async (id) => {
 
   <Button
     icon="pi pi-lock-open"
-    @click="UnBlock(blocked.id)"
+    @click="UnBlock"
     raised
     size="large"
     style="width: 100px">

@@ -34,6 +34,8 @@ import ConvSelect from "../src/components/ConvSelect.vue";
 import ChatLink from "../src/components/ChatLink.vue";
 import FriendRequest from "./components/FriendRequest.vue";
 import UnblockEntry from "./components/UnblockEntry.vue";
+import ChatComp from "./components/ChatComp.vue";
+import MessageComp from "./components/MessageComp.vue";
 
 /* HERE IMPORT PRIMEVUE COMPONENTS */
 import Button from "primevue/button";
@@ -49,6 +51,7 @@ import FloatLabel from "primevue/floatlabel";
 import Listbox from "primevue/listbox";
 import Image from "primevue/image";
 import DatePicker from "primevue/datepicker";
+import Card from "primevue/card";
 
 
 /* HERE REGISTER COMPONENTS AS A GLOBAL COMPONENTS */
@@ -75,6 +78,9 @@ app.component("ConvSelect", ConvSelect);
 app.component("ChatLink", ChatLink);
 app.component("FriendRequest", FriendRequest);
 app.component("UnblockEntry", UnblockEntry);
+app.component("ChatComp", ChatComp);
+app.component("MessageComp", MessageComp);
+app.component("Card", Card);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */

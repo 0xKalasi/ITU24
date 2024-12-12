@@ -196,7 +196,8 @@ const readChat = async (sender, receiver) => {
   .from('Message')
   .select(`
     *,
-    Recipe (name)
+    Recipe (name),
+    User (*)
   `)
   .eq('chat_id', chatId)
   .order('created_at', { ascending: true })

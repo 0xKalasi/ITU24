@@ -106,24 +106,7 @@ const isLoading = ref(false);
       </div>
 
       <div v-for="message in messages" >
-        <a v-if="message.person_posted == currentUser.id">
-          {{ currentUser.name }}:
-        </a>
-        <a v-else>
-          {{ peerUser.name }}:
-        </a>
-
-        {{ message.content }}
-
-        <div v-if="message.recipe_id != null">
-          <Message
-            severity="info"
-            icon="pi pi-sort-alt"
-            @click="GoToRecipe(message.recipe_id)">
-            {{ message.Recipe.name }}
-          </Message>
-          <br/>
-        </div>
+        <MessageComp :message="message"></MessageComp>
       </div>
     </div>
 

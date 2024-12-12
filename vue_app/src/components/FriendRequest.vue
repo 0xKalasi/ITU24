@@ -13,16 +13,16 @@ const props = defineProps({
   friend: Object
 });
 
-const GoToProfile = async (id) => {
-  router.push(`/profile/${id}`);
+const GoToProfile = async () => {
+  router.push(`/profile/${friend.id}`);
 }
 
-const AcceptRequest = async (id) => {
-  await acceptFriendRequest(currentUser.id, id);
+const AcceptRequest = async () => {
+  await acceptFriendRequest(currentUser.id, friend.id);
 }
 
-const Block = async (id) => {
-  await blockUser(currentUser.id, id);
+const Block = async () => {
+  await blockUser(currentUser.id, friend.id);
 }
 
 </script>
@@ -33,7 +33,7 @@ const Block = async (id) => {
       :label="friend.name"
       severity="secondary"
       raised
-      @click="GoToProfile(friend.id)"
+      @click="GoToProfile"
       class="name-button">
     </Button>
 
@@ -41,7 +41,7 @@ const Block = async (id) => {
       icon="pi pi-check"
       raised
       size="large"
-      @click="AcceptRequest(friend.id)"
+      @click="AcceptRequest"
       style="width: 50px">
     </Button>
 
@@ -49,7 +49,7 @@ const Block = async (id) => {
       icon="pi pi-times"
       severity="warn"
       raised
-      @click="Block(friend.id)"
+      @click="Block"
       style="width: 50px">
     </Button>
 

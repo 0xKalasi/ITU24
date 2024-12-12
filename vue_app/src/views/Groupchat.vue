@@ -67,9 +67,6 @@ const GoToEdit = async () => {
   router.push(`/groupchats/edit/${currentGroup.id}`);
 }
 
-const GoToRecipe = async(id) => {
-  router.push(`/recipe/public/${id}`)
-}
 
 const isLoading = ref(false);
 
@@ -92,32 +89,27 @@ const isLoading = ref(false);
       </Button>
     </div> 
 
+    <Divider style="margin-bottom: 0px; margin-top: 10px;"></Divider>
+
     <!-- Messages -->
     <!-- TODO: fix height  -->
     <div
       ref="container"
-      style="margin: 10px 20px; overflow-y: auto; height: calc(100vh - 250px);">
+      style="overflow-y: auto; height: calc(100vh - 266px);">
       <div v-if="messages.length == 0">
         Skupina je dosud prázdná.
       </div>
 
       <div v-for="message in messages">
-        <a>{{ message.User.name }}:</a> {{ message.content }}
-
-        <div v-if="message.recipe_id != null">
-          <Message
-            severity="info"
-            icon="pi pi-sort-alt"
-            @click="GoToRecipe(message.recipe_id)">
-            {{ message.Recipe.name }}
-          </Message>
-        </div>
+        <MessageComp :message="message"></MessageComp>
       </div>
     </div>
 
     <!-- Entry field -->
-    <div style="display: flex; justify-content: center; margin-top: 10px;">
+    <div style="display: flex; justify-content: center;">
       <div style="position: fixed; bottom: 80px;">
+        <Divider></Divider>
+
         <InputText
           v-model="textMessage"
           size="large"
