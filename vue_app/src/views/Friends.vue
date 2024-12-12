@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -11,7 +11,7 @@ const currentUser = useUserStore();
 
 import { readUsersFriends, readUsersRequests, readUsersBlocked } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
-import { readUsersGroupchats } from "../../utils/groupchat_api.js";
+import { readUsersGroupchats, createGroupchat } from "../../utils/groupchat_api.js";
 
 const friends = ref([]);
 const friendRequests = ref([]);
@@ -70,6 +70,41 @@ const ConstructChatList = async () => {
   chats.value.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
 }
 
+
+const CreateGroupchat = ref(false);
+const newGroupName = ref("");
+
+
+const ToggleGroupCreation = () => {
+  CreateGroupchat.value = true;
+}
+
+const CreateNewGroupchat = async () => {
+  await createGroupchat(newGroupName.value);
+  CreateGroupchat.value = false;
+  newGroupName.value = "";
+}
+
+
+const menu = ref();
+const items = ref([
+  {
+    label: "Konverzace",
+    items: [
+      {
+        label: "Vytvořit skupinu",
+        icon: "pi pi-plus",
+        command: ToggleGroupCreation
+      }
+    ]
+  }
+]);
+
+const ToggleMenu = (event) => {
+  menu.value.toggle(event);
+}
+
+
 const selected = ref("Chaty");
 
 </script>
@@ -77,7 +112,27 @@ const selected = ref("Chaty");
 <template>
   <!-- Header -->
   <div>
-    <BasicPageHeader text="Konverzace"></BasicPageHeader>
+    <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
+      <BasicPageHeader text="Konverzace"></BasicPageHeader>
+
+      <div>
+        <Button 
+          type="button"
+          icon="pi pi-plus"
+          rounded
+          @click="ToggleMenu"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);">
+        </Button>
+        <Menu
+          ref="menu"
+          id="overlay_menu"
+          :model="items"
+          :popup="true">
+        </Menu>
+      </div>
+    </div>
 
     <ConvSelect
       v-model="selected"
@@ -116,6 +171,33 @@ const selected = ref("Chaty");
       <div v-for="chat in chats">
         <ChatLink :chat="chat"></ChatLink>
       </div>
+    </div>
+
+    <div
+      v-if="CreateGroupchat"
+      style="display: flex; width: 100%; align-items: center; gap: 10px;">
+
+      <InputText
+        v-model="newGroupName"
+        style="width: 220px">
+      </InputText> <!-- TODO ENTER PRESS -->
+
+      <ButtonGroup style="display: flex;">
+        <Button
+          icon="pi pi-times"
+          severity="warn"
+          raised
+          @click="CreateGroupchat = false"
+          class="name-button">
+        </Button>
+
+        <Button
+          icon="pi pi-check"
+          raised
+          @click="CreateNewGroupchat">
+        </Button>
+
+      </ButtonGroup>
     </div>
 
   </div>

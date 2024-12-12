@@ -27,24 +27,27 @@ const GoToProfile = async (id) => {
   <table>
     <div
       v-for="u in users"
-      style="display: flex">
+      style="display: flex; width: 100%; gap: 10px; margin-bottom: 5px">
       <Message
         severity="secondary"
         @click="GoToProfile(u.id)"
-        style="margin: auto">
+        style="flex-grow: 1;">
         {{ u.name }}
       </Message>
 
-      <Button @click="SwitchUser(u.id)">
-        Přihlásit
+      <Button 
+        label="Přihlásit"
+        @click="SwitchUser(u.id)">
       </Button>
     </div>
   </table>
 
   <br/>
 
-  <Button v-if="user.id" @click="user.logout">
-    Odhlásit
+  <Button 
+    v-if="user.id" 
+    label="Odhlásit"
+    @click="user.logout">
   </Button>
 
 </template>

@@ -26,7 +26,7 @@ const GoToEdit = async () => {
 
 const LeaveGroup = async () => {
   await removeUserFromGroup(currentUser.id, currentGroup.id);
-  router.push("/groupchats");
+  router.push("/chats");
 }
 
 const GoToAddMembers = async () => {

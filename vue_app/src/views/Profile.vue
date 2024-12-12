@@ -93,7 +93,7 @@ const GoToPreview = async () => {
 
   <div v-else-if=" ! previewData.editMode">
 
-    <div style="display: flex; margin-bottom: 20px;">
+    <div style="display: flex; margin-bottom: 20px; gap: 10px">
       <Button
         icon="pi pi-user"
         label="Přepnout uživatele"

@@ -65,7 +65,7 @@ const AskLeaveGroup = async () => { confirmLeaveGroup.value = true; }
 const CancelLeaveGroup = async () => { confirmLeaveGroup.value = false; }
 const LeaveGroup = async () => {
   await removeUserFromGroup(currentUser.id, currentGroup.id);
-  router.push("/groupchats");
+  router.push("/chats");
 }
 
 const GoToAddMembers = async () => {
@@ -87,7 +87,7 @@ const CancelDeleteGroup = async () => { confirmDelGroup.value = false; }
 const AskDeleteGroup = async () => { confirmDelGroup.value = true; }
 const DeleteGroupchat = async () => {
   await deleteGroupchat(currentGroup.id);
-  router.push("/groupchats");
+  router.push("/chats");
 }
 
 </script>

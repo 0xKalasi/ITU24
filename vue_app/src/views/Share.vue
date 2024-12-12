@@ -107,8 +107,7 @@ const GroupchatButtonType = (id) => {
     <InputText
       v-model="textMessage"
       size="large" 
-      placeholder="Zde vložte textovou zprávu"
-      style="margin-top: 20px; margin-bottom: 20px">
+      placeholder="Zde vložte textovou zprávu">
     </InputText>
 
     <Divider></Divider>
