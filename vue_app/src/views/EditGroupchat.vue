@@ -147,8 +147,8 @@ const DeleteGroupchat = async () => {
       <Button
         label="Odstranit skupinu"
         icon="pi pi-exclamation-circle"
-        severity="danger"
-        @click="AskDeleteGroup">
+        @click="AskDeleteGroup"
+        style="background: crimson; border: 1px solid crimson;">
       </Button>
     </div>
 
@@ -161,8 +161,8 @@ const DeleteGroupchat = async () => {
         <Button
           icon="pi pi-check"
           label="Ano, smazat historii"
-          severity="danger"
-          @click="DeleteHistory">
+          @click="DeleteHistory"
+          style="background: crimson; border: 1px solid crimson;">
         </Button>
         <Button
           icon="pi pi-times"
@@ -181,8 +181,8 @@ const DeleteGroupchat = async () => {
         <Button
           icon="pi pi-check"
           label="Ano, smazat"
-          severity="danger"
-          @click="DeleteGroupchat">
+          @click="DeleteGroupchat"
+          style="background: crimson; border: 1px solid crimson;">
         </Button>
         <Button
           icon="pi pi-times"
@@ -199,28 +199,34 @@ const DeleteGroupchat = async () => {
     <div style="display: flex; align-items: center; gap: 20px;">
       <h3>Členové</h3>
 
-      <Button
-        label="Přidat členy"
-        icon="pi pi-plus"
-        @click="GoToAddMembers">
-      </Button>
+      <div style="display: flex; flex: 1; justify-content: end;">
+        <Button
+          label="Přidat členy"
+          icon="pi pi-plus"
+          @click="GoToAddMembers">
+        </Button>
+      </div>
     </div>
 
     <div v-for="member in members">
-      -> {{ member.name }}
+      <div style="margin-bottom: 10px; display: flex; align-items: center;">
+        -> {{ member.name }}
 
-      <Button
-        v-if="member.id != currentUser.id"
-        icon="pi pi-minus"
-        style="margin-left: 10px;"
-        @click="RemoveUser(member.id)">
-      </Button>
-      <Button
-        v-else
-        severity="secondary"
-        label="Tvůrce"
-        style="margin-left: 10px;">
-      </Button>
+        <div style="display: flex; flex: 1; justify-content: end;">
+          <Button
+            v-if="member.id != currentUser.id"
+            icon="pi pi-minus"
+            style="background: crimson; border: 1px solid crimson;"
+            @click="RemoveUser(member.id)">
+          </Button>
+          <Button
+            v-else
+            severity="secondary"
+            label="Tvůrce"
+            style="pointer-events: none;">
+          </Button>
+        </div>
+      </div>
     </div>
 
   </div>

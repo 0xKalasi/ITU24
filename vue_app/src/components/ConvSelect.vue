@@ -34,23 +34,29 @@ const GetBadgeSeverity = computed(() => (which) => {
 </script>
 
 <template>
-  <ButtonGroup style="display: flex; justify-content: center;">
+  <ButtonGroup style="display: flex; justify-content: center; border: 1px solid aquamarine; border-radius: 7px;">
     <Button
       label="Žádosti"
       :badge="PendingCount"
       :badgeSeverity="GetBadgeSeverity('Žádosti')"
       :severity="SetHighlight('Žádosti')"
-      @click="ChangeListed('Žádosti')">
+      @click="ChangeListed('Žádosti')"
+      raised
+      style="flex: 1">
     </Button>
     <Button
       label="Chaty"
       :severity="SetHighlight('Chaty')"
-      @click="ChangeListed('Chaty')">
+      @click="ChangeListed('Chaty')"
+      raised
+      style="flex: 1">
     </Button>
     <Button
       label="Zablokované"
       :severity="SetHighlight('Zablokované')"
-      @click="ChangeListed('Zablokované')">
+      @click="ChangeListed('Zablokované')"
+      raised
+      style="flex: 1">
     </Button>
   </ButtonGroup>
 

@@ -30,9 +30,9 @@ const WhoPosted = computed(() => {
   <Card :class="WhoPosted" @click="GoToRecipe">
     <template #title>
       <div v-if="message.recipe_id != null">
-        <Divider></Divider>
+        <Divider style="margin-bottom: 10px;"></Divider>
         {{ message.Recipe.name }}
-        <Divider></Divider>
+        <Divider style="margin-top: 10px;"></Divider>
       </div>
     </template>
 

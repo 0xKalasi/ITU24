@@ -139,9 +139,8 @@ const GoToPreview = async () => {
       </Button>
       <Button
         icon="pi pi-times"
-        severity="warn"
         @click="ToggleEditMode"
-        style="margin-left: 10px;">
+        style="margin-left: 10px; background: crimson; border: 1px solid crimson;">
       </Button>
       <Button
         label="Zobrazit náhled" 

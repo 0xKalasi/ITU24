@@ -47,10 +47,9 @@ const Block = async () => {
 
     <Button
       icon="pi pi-times"
-      severity="warn"
       raised
       @click="Block"
-      style="width: 50px">
+      style="width: 50px; background: crimson; border: 1px solid crimson;">
     </Button>
 
   </ButtonGroup>

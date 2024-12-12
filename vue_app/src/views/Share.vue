@@ -72,10 +72,10 @@ const GroupSend = async (gid) => {
 }
 
 const ChatButtonType = (id) => {
-  return friendsButtonsPressed.value[id] ? 'p-button-secondary' : 'p-button-primary';
+  return friendsButtonsPressed.value[id] ? 'p-button-secondary not-clickable' : 'p-button-primary';
 }
 const GroupchatButtonType = (id) => {
-  return groupsButtonsPressed.value[id] ? 'p-button-secondary' : 'p-button-primary';
+  return groupsButtonsPressed.value[id] ? 'p-button-secondary not-clickable' : 'p-button-primary';
 }
 
 </script>
@@ -91,7 +91,7 @@ const GroupchatButtonType = (id) => {
 
   <BasicPageHeader text="Sdílení"></BasicPageHeader>
 
-  <h2 style="color: blueviolet">
+  <h2>
     <i>
       {{ recipe.name }}
     </i>
@@ -104,11 +104,15 @@ const GroupchatButtonType = (id) => {
   <div v-else>
     <Divider></Divider>
 
-    <InputText
-      v-model="textMessage"
-      size="large" 
-      placeholder="Zde vložte textovou zprávu">
-    </InputText>
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+      <label for="input_field">Zpráva</label>
+      <InputText
+        id="input_field"
+        v-model="textMessage"
+        size="large"
+        style="margin-top: 10px; width: 100%;">
+      </InputText>
+    </div>
 
     <Divider></Divider>
 
@@ -121,18 +125,18 @@ const GroupchatButtonType = (id) => {
     <div v-else>
       <div
         v-for="friend in friends"
-        style="display: flex; margin-bottom: 10px;">
+        style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px">
         <Message 
           severity="secondary"
-          @click="GoToFriend(friend.id)">
+          @click="GoToFriend(friend.id)"
+          style="flex-grow: 1;">
           {{ friend.name }}
         </Message>
 
         <Button
           icon="pi pi-send"
           @click="FriendSend(friend.id)"
-          :class="ChatButtonType(friend.id)"
-          style="margin-left: 10px">
+          :class="ChatButtonType(friend.id)">
         </Button>
       </div>
     </div>
@@ -148,14 +152,15 @@ const GroupchatButtonType = (id) => {
     <div v-else>
       <div
         v-for="groupchat in groupchats"
-        style="display: flex; align-items: center; margin-bottom: 10px;">
-        <b>{{ groupchat.name }}</b>
+        style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px; align-items: center;">
+        <b style="flex-grow: 1;">
+          {{ groupchat.name }}
+        </b>
 
         <Button
           icon="pi pi-send"
           @click="GroupSend(groupchat.id);"
-          :class="GroupchatButtonType(groupchat.id)"
-          style="margin-left: 10px">
+          :class="GroupchatButtonType(groupchat.id)">
         </Button>
       </div>
     </div>
@@ -163,3 +168,10 @@ const GroupchatButtonType = (id) => {
   </div>
 
 </template>
+
+<style scoped>
+.not-clickable {
+  pointer-events: none;
+}
+
+</style>

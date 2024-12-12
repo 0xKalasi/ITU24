@@ -6,6 +6,9 @@ import { ref, onMounted, onUnmounted, onUpdated, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
+import { useUserStore } from '../stores/userStore';
+const currentUser = useUserStore();
+
 import { readGroupchatMessages, readGroupchat, sendGroupchatMessage } from '../../utils/groupchat_api';
 import { createSubscription, removeSubscription } from '../../utils/subscription_api';
 
@@ -70,19 +73,21 @@ onUpdated(() => {
   </div>
 
   <!-- Entry field -->
-  <div style="display: flex; justify-content: center;">
-    <div style="position: fixed; bottom: 80px;">
-      <Divider></Divider>
+  <Divider></Divider>
 
-      <InputText
-        v-model="textMessage"
-        size="large"
-        @keydown.enter="HandleSending"/>
-      <Button
-        icon="pi pi-send"
-        @click="HandleSending">
-      </Button>
-    </div>
+  <div style="display: flex; position: fixed; bottom: 80px; width: 320px; padding-top: 100px; gap: 5px;">
+    <InputText
+      v-model="textMessage"
+      size="large"
+      @keydown.enter="HandleSending"
+      style="width: 90%">
+    </InputText>
+
+    <Button
+      icon="pi pi-send"
+      @click="HandleSending"
+      style="min-width: 43px;">
+    </Button>
   </div>
 
 </template>

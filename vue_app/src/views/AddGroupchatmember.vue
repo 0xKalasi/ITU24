@@ -58,27 +58,30 @@ const AddToGroup = async (id) => {
     Přídat členy do skupiny {{ currentGroup.name }}
   </h2>
   
-  <Divider></Divider>
+  <Divider style="margin-bottom: 20px;"></Divider>
 
   <div
     v-for="friend in friends"
-    style="margin-top: 20px;">
+    style="margin-bottom: 20px; display: flex; align-items: center;">
 
-    {{ friend.name }}
+    -> <b style="margin-left:10px;">{{ friend.name }}</b>
 
-    <Button
-      v-if="isInGroup[friend.id]"
-      label="Přidat"
-      icon="pi pi-plus"
-      @click="AddToGroup(friend.id)">
-    </Button>
+    <div style="display:flex; flex: 1; justify-content: end;">
+      <Button
+        v-if="isInGroup[friend.id]"
+        label="Přidat"
+        icon="pi pi-plus"
+        @click="AddToGroup(friend.id)">
+      </Button>
 
-    <Button
-      v-else
-      label="Už je členem skupiny"
-      severity="secondary"
-      size="small">
-    </Button>
+      <Button
+        v-else
+        label="Už je členem skupiny"
+        severity="secondary"
+        size="small"
+        style="pointer-events: none;">
+      </Button>
+    </div>
   </div>
 
 </template>

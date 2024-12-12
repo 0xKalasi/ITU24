@@ -67,16 +67,21 @@ const ConstructChatList = async () => {
   });
 
   chats.value = [...friends.value, ...groupchats.value];
-  chats.value.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
+  chats.value.sort((y, x) => new Date(x.created_at) - new Date(y.created_at));
 }
 
 
 const CreateGroupchat = ref(false);
 const newGroupName = ref("");
 
+const createGroupText = ref(null);
 
 const ToggleGroupCreation = () => {
   CreateGroupchat.value = true;
+  nextTick(() => {
+    // createGroupText.value?.$el?.querySelector('input')?.focus();
+    // TODO FIND OUT HOW TO FOCUS
+  });
 }
 
 const CreateNewGroupchat = async () => {
@@ -139,7 +144,7 @@ const selected = ref("Chaty");
       :requestCount="friendRequests.length">
     </ConvSelect>
 
-    <Divider></Divider>
+    <Divider style="margin-top: 20px; margin-bottom: 20px;"></Divider>
   </div>
 
   <!-- PENDING REQUEST -->
@@ -168,36 +173,38 @@ const selected = ref("Chaty");
     </div>
 
     <div v-else>
+      <div
+        v-if="CreateGroupchat"
+        style="display: flex; width: 100%; align-items: center; gap: 10px; margin-bottom: 20px;">
+
+        <InputText
+          ref="createGroupText"
+          v-model="newGroupName"
+          style="width: 80%"
+          @keydown.enter="CreateNewGroupchat">
+        </InputText>
+
+        <ButtonGroup style="display: flex;">
+          <Button
+            icon="pi pi-check"
+            raised
+            @click="CreateNewGroupchat"
+            style="width: 50px">
+          </Button>
+
+          <Button
+            icon="pi pi-times"
+            raised
+            @click="CreateGroupchat = false"
+            style="width: 50px; background: crimson; border: 1px solid crimson;">
+          </Button>
+
+        </ButtonGroup>
+      </div>
+
       <div v-for="chat in chats">
         <ChatLink :chat="chat"></ChatLink>
       </div>
-    </div>
-
-    <div
-      v-if="CreateGroupchat"
-      style="display: flex; width: 100%; align-items: center; gap: 10px;">
-
-      <InputText
-        v-model="newGroupName"
-        style="width: 220px">
-      </InputText> <!-- TODO ENTER PRESS -->
-
-      <ButtonGroup style="display: flex;">
-        <Button
-          icon="pi pi-times"
-          severity="warn"
-          raised
-          @click="CreateGroupchat = false"
-          class="name-button">
-        </Button>
-
-        <Button
-          icon="pi pi-check"
-          raised
-          @click="CreateNewGroupchat">
-        </Button>
-
-      </ButtonGroup>
     </div>
 
   </div>

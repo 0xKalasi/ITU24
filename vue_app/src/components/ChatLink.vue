@@ -29,8 +29,9 @@ const GetIcon = computed(() => {
 });
 
 const TextClass = computed(() => {
-  return props.chat.is_groupchat ? "name-button-groupchat" : "name-button-chat";
+  return props.chat.is_groupchat ? "name-button-groupchat not-clickable" : "name-button-chat";
 });
+
 
 </script>
 
@@ -40,7 +41,6 @@ const TextClass = computed(() => {
       :label="chat.name"
       severity="secondary"
       raised
-      :disabled="chat.is_groupchat"
       @click="GoToProfile"
       :class="TextClass">
     </Button>
@@ -83,6 +83,10 @@ const TextClass = computed(() => {
 
 .conversation-button {
   width: 100px;
+}
+
+.not-clickable {
+  pointer-events: none;
 }
 
 </style>
