@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { readPublicRecipe, saveRecipe, getRecipeImage } from '../../utils/api';
 import { useUserStore } from '../stores/userStore'
 import { deleteRecipe } from '../../utils/add_recipe_api'
+import { likeRecipe, unLikeRecipe, getRecipeLikeCount } from '../../utils/likes_api';
 
 const router = useRouter();
 const recipeId = router.currentRoute.value.params.recipe_id;
