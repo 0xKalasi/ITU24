@@ -1,13 +1,11 @@
 <script setup>
-  import { onBeforeMount, ref, watch } from 'vue';
-  import InputText from 'primevue/inputtext';
+  import { onBeforeMount, ref } from 'vue';
   import InputNumber from 'primevue/inputnumber';
   import Textarea from 'primevue/textarea';
   import Button from 'primevue/button';
-  import { insertCompleteRecipe, deleteRecipe } from '../../utils/add_recipe_api'
+  import { insertCompleteRecipe } from '../../utils/add_recipe_api'
   import { updateCompleteRecipe } from '../../utils/update_recipe_api'
   import { useUserStore } from '../stores/userStore';
-  import MyOnFloatLabel from '../components/myOnFloatLabel.vue';
   import PhotoUploader from '../components/photoUploader.vue';
   import TimePicker from '../components/timePicker.vue';
   import { useRouter } from "vue-router";
@@ -18,8 +16,6 @@
   import addSteps from '../components/addSteps.vue';
   import addIngredient from '../components/addIngredient.vue';
   
-
-
   const currentUser = useUserStore();
   const router = useRouter();
 
@@ -29,6 +25,7 @@
   const alertText = ref("");
   const recipeId = router.currentRoute.value.params.recipe_id;
   const isLoading = ref(true);
+  
   const recipe = recipeId ? ref({}) : ref({
     name: "",
     like_count: 0,
@@ -43,22 +40,23 @@
     Ingredients: [],
     Utencils: [],
     timers: [],
-    photo: ""
+    photo: "",
   });
-
+  
+  const checked= ref();
 
   onBeforeMount(async () => {
     if(recipeId){
       readPublicRecipe(recipeId).then(async (result) => {
-        //recipe = result;
-        isLoading.value = false;
-        Object.assign(recipe.value, result);
-        console.log("recipe:");
-        console.log(recipe.value);
+      //recipe = result;
+      isLoading.value = false;
+      Object.assign(recipe.value, result); 
+      console.log("recipe:",recipe.value);
     })
     } else {
       isLoading.value = false;
     }
+    checked.value = !recipe.value.private; 
   }) 
 
     var delete_recipe = false;
@@ -102,7 +100,7 @@
         })
     } else {
         showAlertMessage("error", "Název receptu nesmí být prázdný.");
-    }
+      }
     }
 
     function createRecipe(){
@@ -121,7 +119,16 @@
       }
     }
 
+    function setPublic() {
+      recipe.value.private = !recipe.value.private;
+      checked.value = recipe.value.private; // Ensure the switch reflects the change
+      console.log("Recipe private status:", recipe.value.private ? "Private" : "Public");
+    }
 
+    // Function to delete the photo in editing mode
+  function deleteRecipePhoto() {
+    recipe.value.photo = ""; // Clear the photo field
+  }
   </script>
 
 <template>
@@ -133,7 +140,7 @@
       <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
         <div style="display: flex; align-items: center;">
         <label style="margin-right: 8px;">Is public</label>
-        <ToggleSwitch v-model="checked">
+        <ToggleSwitch v-model="checked" @click="setPublic">
           <template #handle="{ checked }">
             <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
           </template>
@@ -152,6 +159,12 @@
         />
       </div>
       <PhotoUploader v-model="recipe.photo" />
+      <Button 
+          v-if="recipe.photo" 
+          label="Smazat foto" 
+          class="p-button-danger p-button-outlined p-my-2" 
+          @click="deleteRecipePhoto" 
+      />
 
         <h3>Ingredence</h3>
         <addIngredient v-model="recipe.Ingredients"/>
@@ -204,7 +217,6 @@
       </div>
   </div>
   </template>
-  
   
   <style scoped>
 

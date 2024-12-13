@@ -3,7 +3,7 @@
 import { ref, defineModel} from "vue"
 import MyOnFloatLabel from "./myOnFloatLabel.vue"
   // Ingredient data
-    const ingredients = defineModel();
+  const ingredients = defineModel();
 
   const newIngredient = ref({ name: "", quantity: null, unit: "", notes: "" });
   const editedIngredient = ref({ name: "", quantity: null, unit: "", notes: "" });
@@ -11,9 +11,9 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
 
    // Add new ingredient
    function PushIngredient() {
-      if (newIngredient.value.name) {
+    if (newIngredient.value.name) {
         ingredients.value.push({ ...newIngredient.value });
-        newIngredient.value = { name: "", quantity: null, unit: "" };
+        newIngredient.value = { name: "", quantity: null, unit: "", notes: "" };
       }
     }
 
@@ -56,7 +56,7 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
             </template> 
             <template v-else>
               <!-- Display Mode -->
-              <li>{{ ingredient.name }}, {{ ingredient.quantity }} {{ ingredient.unit }}
+              <li>{{ ingredient.name }}, {{ ingredient.quantity }} {{ ingredient.unit }} - {{ ingredient.notes }}
                 <Button icon="pi pi-pencil" class="p-button-text p-button-rounded" @click="editIngredient(index, ingredient)" />
                 <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteIngredient(index)" />
               </li>

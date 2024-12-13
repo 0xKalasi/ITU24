@@ -10,35 +10,21 @@ const props = defineProps({
   number: Boolean,
 });
 
-// Define emit to allow v-model to work
-const emit = defineEmits(['update:modelValue']);
-
-// Function to handle input change for InputText
-const updateValue = (event) => {
-  emit('update:modelValue', event.target.value);
-};
-
-// Function to handle input change for InputNumber
-const updateNumberValue = (value) => {
-  emit('update:modelValue', value);
-};
+const value = defineModel();
 </script>
 
 <template>
   <FloatLabel variant="on">
-
     <InputNumber 
       v-if="number"
-      class="p-inputtext-sm"
-      :value="modelValue"
-      @update:modelValue="updateNumberValue"
+      class="p-inputtext-sm" 
+      v-model="value"
     />
     
     <InputText
       v-else
       class="p-inputtext-sm"
-      :value="modelValue"
-      @input="updateValue"
+      v-model="value"
     />
     <label>{{ label }}</label>
   </FloatLabel>
