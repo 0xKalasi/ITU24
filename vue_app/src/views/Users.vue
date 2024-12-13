@@ -24,30 +24,33 @@ const GoToProfile = async (id) => {
 <template>
   <BasicPageHeader text="Uživatelé"></BasicPageHeader>
 
-  <table>
-    <div
-      v-for="u in users"
-      style="display: flex; width: 100%; gap: 10px; margin-bottom: 5px">
-      <Message
-        severity="secondary"
-        @click="GoToProfile(u.id)"
-        style="flex-grow: 1;">
-        {{ u.name }}
-      </Message>
+  <div style="position: relative; overflow-y: auto; height: calc(100vh - 210px);">
+    <table>
+      <div
+        v-for="u in users"
+        style="display: flex; width: 100%; gap: 10px; margin-bottom: 5px">
+        <Message
+          severity="secondary"
+          @click="GoToProfile(u.id)"
+          style="flex-grow: 1;">
+          {{ u.name }}
+        </Message>
 
-      <Button 
-        label="Přihlásit"
-        @click="SwitchUser(u.id)">
-      </Button>
-    </div>
-  </table>
+        <Button 
+          label="Přihlásit"
+          @click="SwitchUser(u.id)">
+        </Button>
+      </div>
+    </table>
 
-  <br/>
+    <br/>
 
-  <Button 
-    v-if="user.id" 
-    label="Odhlásit"
-    @click="user.logout">
-  </Button>
+    <Button 
+      v-if="user.id" 
+      label="Odhlásit"
+      @click="user.logout">
+    </Button>
+
+  </div>
 
 </template>

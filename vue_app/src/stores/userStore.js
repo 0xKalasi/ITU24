@@ -64,3 +64,10 @@ export const profilePreviewStore = defineStore("preview", () => {
 
   return { name, bio, editMode };
 });
+
+// we need ot remeber where we were last time we accessed chats
+export const chatsSelectedStore = defineStore("selected", () => {
+  const option = ref("Chaty");
+
+  return { option };
+});

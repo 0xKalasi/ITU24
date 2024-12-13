@@ -106,7 +106,9 @@ const DeleteGroupchat = async () => {
     :key="emptyNameKey">
   </Alert>
 
-  <BasicPageHeader text="Spravovat skupinu"></BasicPageHeader>
+  <BasicPageHeader text="Spravovat skupinu">
+  </BasicPageHeader>
+  
   <Divider></Divider>
 
   <div
@@ -131,12 +133,10 @@ const DeleteGroupchat = async () => {
       </Button>
     </div>
 
-    <Divider></Divider>
-
     <!-- Delete features -->
     <div
       v-if="( ! confirmDelHist) && ( ! confirmDelGroup)"
-      style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
+      style="margin-bottom: 10px; display: flex; gap: 10px">
 
       <Button
         label="Smazat historii zpráv"
@@ -162,11 +162,12 @@ const DeleteGroupchat = async () => {
           icon="pi pi-check"
           label="Ano, smazat historii"
           @click="DeleteHistory"
-          style="background: crimson; border: 1px solid crimson;">
+          style="background: crimson; border: 1px solid crimson; flex: 1;">
         </Button>
         <Button
           icon="pi pi-times"
           label="Ne, ponechat historii"
+          style="flex: 1;"
           @click="CancelDeleteHistory">
         </Button>
       </div>
@@ -177,23 +178,22 @@ const DeleteGroupchat = async () => {
         Skutečně chcete smazat skupinu? Tato akce je nevratná.
       </div>
 
-      <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
+      <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px;">
         <Button
           icon="pi pi-check"
           label="Ano, smazat"
           @click="DeleteGroupchat"
-          style="background: crimson; border: 1px solid crimson;">
+          style="background: crimson; border: 1px solid crimson; flex: 1;">
         </Button>
         <Button
           icon="pi pi-times"
           label="Ne, nemazat"
-          @click="CancelDeleteGroup">
+          @click="CancelDeleteGroup"
+          style="flex: 1;">
         </Button>
       </div>
 
     </div>
-
-    <Divider></Divider>
 
     <!-- Member managment -->
     <div style="display: flex; align-items: center; gap: 20px;">
@@ -208,26 +208,36 @@ const DeleteGroupchat = async () => {
       </div>
     </div>
 
-    <div v-for="member in members">
-      <div style="margin-bottom: 10px; display: flex; align-items: center;">
-        -> {{ member.name }}
+    <Divider></Divider>
 
-        <div style="display: flex; flex: 1; justify-content: end;">
-          <Button
-            v-if="member.id != currentUser.id"
-            icon="pi pi-minus"
-            style="background: crimson; border: 1px solid crimson;"
-            @click="RemoveUser(member.id)">
-          </Button>
-          <Button
-            v-else
-            severity="secondary"
-            label="Tvůrce"
-            style="pointer-events: none;">
-          </Button>
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 450px);">
+      <div
+        v-for="member in members"
+        style="margin-top: 10px">
+
+        <div style="margin-bottom: 10px; display: flex; align-items: center;">
+          -> {{ member.name }}
+
+          <div style="display: flex; flex: 1; justify-content: end;">
+            <Button
+              v-if="member.id != currentUser.id"
+              icon="pi pi-minus"
+              style="background: crimson; border: 1px solid crimson;"
+              @click="RemoveUser(member.id)">
+            </Button>
+            <Button
+              v-else
+              severity="secondary"
+              label="Tvůrce"
+              style="pointer-events: none;">
+            </Button>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <Divider></Divider>
 
   </div>
 

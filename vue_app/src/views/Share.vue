@@ -97,74 +97,86 @@ const GroupchatButtonType = (id) => {
     </i>
   </h2>
 
-  <div v-if="IsLoggedOut">
-    Pro sdílení receptu se přihlaste.
-  </div>
-
-  <div v-else>
-    <Divider></Divider>
-
-    <div style="margin-top: 10px; margin-bottom: 20px;">
-      <label for="input_field">Zpráva</label>
-      <InputText
-        id="input_field"
-        v-model="textMessage"
-        size="large"
-        style="margin-top: 10px; width: 100%;">
-      </InputText>
-    </div>
-
-    <Divider></Divider>
-
-    <h3>Přátelé</h3>
-
-    <div v-if="friends.length == 0">
-      Váš seznam přátel je prázdný.
+  <div style="position: relative; overflow-y: auto; height: calc(100vh - 290px);">
+    <div v-if="IsLoggedOut">
+      Pro sdílení receptu se přihlaste.
     </div>
 
     <div v-else>
-      <div
-        v-for="friend in friends"
-        style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px">
-        <Message 
-          severity="secondary"
-          @click="GoToFriend(friend.id)"
-          style="flex-grow: 1;">
-          {{ friend.name }}
-        </Message>
+      <Divider></Divider>
 
-        <Button
-          icon="pi pi-send"
-          @click="FriendSend(friend.id)"
-          :class="ChatButtonType(friend.id)">
-        </Button>
+      <!-- Entry field -->
+      <div style="margin-top: 10px; margin-bottom: 20px;">
+        <label for="input_field">Zpráva</label>
+        <InputText
+          id="input_field"
+          v-model="textMessage"
+          size="large"
+          style="margin-top: 10px; width: 100%;">
+        </InputText>
       </div>
-    </div>
 
-    <Divider style="margin-top: 20px;"></Divider>
+      <Divider></Divider>
 
-    <h3>Skupiny</h3>
+      <!-- Friends -->
+      <div style="margin-bottom: 20px;">
+        <h3>Přátelé</h3>
 
-    <div v-if="groupchats.length == 0">
-      Nejste členem žádné skupiny.
-    </div>
+        <div v-if="friends.length == 0">
+          Váš seznam přátel je prázdný.
+        </div>
 
-    <div v-else>
-      <div
-        v-for="groupchat in groupchats"
-        style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px; align-items: center;">
-        <b style="flex-grow: 1;">
-          {{ groupchat.name }}
-        </b>
+        <div v-else>
+          <div
+            v-for="friend in friends"
+            style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px">
+            <Message 
+              severity="secondary"
+              @click="GoToFriend(friend.id)"
+              style="flex-grow: 1;">
+              {{ friend.name }}
+            </Message>
 
-        <Button
-          icon="pi pi-send"
-          @click="GroupSend(groupchat.id);"
-          :class="GroupchatButtonType(groupchat.id)">
-        </Button>
+            <Button
+              icon="pi pi-send"
+              @click="FriendSend(friend.id)"
+              :class="ChatButtonType(friend.id)">
+            </Button>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <Divider></Divider>
+
+      <!-- Groups -->
+      <div style="margin-bottom: 20px;">
+        <h3>Skupiny</h3>
+
+        <div v-if="groupchats.length == 0">
+          Nejste členem žádné skupiny.
+        </div>
+
+        <div v-else>
+          <div
+            v-for="groupchat in groupchats"
+            style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px; align-items: center;">
+            <b style="flex-grow: 1;">
+              {{ groupchat.name }}
+            </b>
+
+            <Button
+              icon="pi pi-send"
+              @click="GroupSend(groupchat.id);"
+              :class="GroupchatButtonType(groupchat.id)">
+            </Button>
+          </div>
+        </div>
+      </div>
     
+    </div>
+
+    <Divider></Divider>
+
   </div>
 
 </template>

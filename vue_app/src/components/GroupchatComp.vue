@@ -63,7 +63,7 @@ onUpdated(() => {
   <div
     ref="container"
     style="overflow-y: auto; height: calc(100vh - 266px);">
-    <div v-if="messages.length == 0">
+    <div v-if="messages.length == 0" style="margin-top: 20px;">
       Skupina je dosud prázdná.
     </div>
 
@@ -79,6 +79,7 @@ onUpdated(() => {
     <InputText
       v-model="textMessage"
       size="large"
+      placeholder="Vaše zpráva"
       @keydown.enter="HandleSending"
       style="width: 90%">
     </InputText>

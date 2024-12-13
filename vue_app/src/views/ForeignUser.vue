@@ -64,116 +64,133 @@ const Unblock = async () => {
 <template>  
   <BasicPageHeader text="Profil uživatele"></BasicPageHeader>
 
-  <div style="margin-bottom: 20px;">
-    <h2>
-      {{ viewedUser.name }}
-    </h2>
-    <i>
-      {{ viewedUser.bio }}
-    </i>
-  </div>
+  <div style="position: relative; overflow-y: auto; height: calc(100vh - 220px);">
 
-  <Divider></Divider>
+    <!-- User info -->
 
-  <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-  <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-  <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-  <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
-
-  <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-  <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-  <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
-  <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
-
-  <Divider></Divider>
-
-  <h2>Recepty</h2>
-
-  <div v-for="recipe in usersRecipes">
-    <Message
-      severity="success"
-      icon="pi pi-play-circle"
-      @click="GoToRecipe(recipe.id)">
-      {{ recipe.name }}
-    </Message>
-  </div>
-
-  <!-- Just for completeness; nothing should be output when logged out or looking at own profile -->
-  <div v-if="currentFriendshipState == ForeignUserRelation.LOGGED_OUT"></div>
-  <div v-else-if="currentFriendshipState == ForeignUserRelation.SELF"></div>
-  <!-- -->
-  <div
-    v-else-if="currentFriendshipState == ForeignUserRelation.NO_RELATION"
-    style="margin-top: 20px;">
-    <Divider></Divider>
-
-    <h3>Poslat žádost o přátelství</h3>
-    <Button
-      label="Poslat žádost o přátelství"
-      icon="pi pi-users"
-      @click="SendRequest">
-    </Button>
-  </div>
-  <div 
-    v-else-if="currentFriendshipState == ForeignUserRelation.SENT" 
-    style="margin-top: 20px;">
-    <Divider></Divider>
-
-    <h3>Poslat žádost o přátelství</h3>
-    <a>Žádost byla odeslána a čeká na potvrzení</a>
-  </div>
-  <div
-    v-else-if="currentFriendshipState == ForeignUserRelation.PENDING"
-    style="margin-top: 20px;">
-    <Divider></Divider>
-
-    <h3>Od tohoto uživatele máte příchozí žádost o přátelství</h3>
-    <Button
-      label="Potvrdit"
-      icon="pi pi-check"
-      style="float: right;"
-      @click="AcceptRequest">
-    </Button>
-  </div>
-  <div
-    v-else-if="currentFriendshipState == ForeignUserRelation.ACCEPTED"
-    style="margin-top: 20px;">
-    <Divider></Divider>
-
-    <div style="display: flex; align-items: center">
-      <h3>Přátelé</h3>
-      <Button
-          label="Přejít na chat"
-          icon="pi pi-comment"
-          @click="GoToChat"
-          style="margin-left: auto">
-      </Button>
-    </div>
-  </div>
-  <div
-    v-else-if="currentFriendshipState == ForeignUserRelation.BLOCKED_BY_ME"
-    style="margin-top: 20px;">
-    <Divider></Divider>
-
-    <div style="color: orange; margin-top: 20px;">
-      S tímto uživatelem nelze komunikovat, je zablokován
+    <div style="margin-bottom: 20px;">
+      <h2>
+        {{ viewedUser.name }}
+      </h2>
+      <i>
+        {{ viewedUser.bio }}
+      </i>
     </div>
 
-    <Button
-      label="Odblokovat"
-      icon="pi pi-lock-open"
-      @click="Unblock"
-      style="float: right">
-    </Button>
-  </div>
-  <div
-    v-else-if="currentFriendshipState == ForeignUserRelation.BLOCKED_BY_THEM"
-    style="margin-top: 20px;">
     <Divider></Divider>
 
-    <div style="color: red; margin-top: 20px;">
-      Tento uživatel Vás zablokoval
+    <!-- FRIEND RELATION LOGIC -->
+
+    <div style="margin-bottom: 20px">
+
+      <!-- Just for completeness; nothing should be output when logged out or looking at own profile -->
+      <div v-if="currentFriendshipState == ForeignUserRelation.LOGGED_OUT"></div>
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.SELF"></div>
+
+      <!-- NO RELATION -->
+
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.NO_RELATION">
+
+        <h3>Poslat žádost o přátelství</h3>
+        <Button
+          label="Poslat žádost o přátelství"
+          icon="pi pi-users"
+          @click="SendRequest">
+        </Button>
+      </div>
+
+      <!-- SENT -->
+
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.SENT" >
+
+        <h3>Poslat žádost o přátelství</h3>
+        <i>Žádost byla odeslána a čeká na potvrzení</i>
+      </div>
+
+      <!-- PENDING -->
+
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.PENDING">
+
+        <h3>Od tohoto uživatele máte příchozí žádost o přátelství</h3>
+
+        <Button
+          label="Potvrdit"
+          icon="pi pi-check"
+          @click="AcceptRequest">
+        </Button>
+
+      </div>
+
+      <!-- ACCEPTED -->
+
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.ACCEPTED">
+
+        <div style="display: flex; align-items: center; margin-top: 20px;">
+          <h3>Přátelé</h3>
+          <Button
+              label="Přejít na chat"
+              icon="pi pi-comment"
+              @click="GoToChat"
+              style="margin-left: auto">
+          </Button>
+
+        </div>
+      </div>
+
+      <!-- BLOCKED BY CURRENT USER -->
+
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.BLOCKED_BY_ME">
+
+        <div style="color: orange; margin-top: 10px; margin-bottom: 10px;">
+          S tímto uživatelem nelze komunikovat, je zablokován
+        </div>
+
+        <Button
+          label="Odblokovat"
+          icon="pi pi-lock-open"
+          @click="Unblock">
+        </Button>
+      </div>
+
+      <!-- BLOCKED BY PEER -->
+
+      <div v-else-if="currentFriendshipState == ForeignUserRelation.BLOCKED_BY_THEM">
+        <div style="color: red; margin-top: 20px;">
+          Tento uživatel Vás zablokoval
+        </div>
+      </div>
+
     </div>
+
+    <Divider></Divider>
+
+    <!-- Statistics -->
+
+    <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+    <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+    <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
+    <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+
+    <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
+    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
+    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+    <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
+
+    <Divider></Divider>
+
+    <!-- Recipe list -->
+
+    <h2>Recepty</h2>
+
+    <div v-for="recipe in usersRecipes">
+      <Message
+        severity="success"
+        icon="pi pi-play-circle"
+        @click="GoToRecipe(recipe.id)">
+        {{ recipe.name }}
+      </Message>
+    </div>
+
   </div>
 
 </template>

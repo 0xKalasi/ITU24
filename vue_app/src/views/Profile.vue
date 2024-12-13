@@ -93,44 +93,52 @@ const GoToPreview = async () => {
 
   <div v-else-if=" ! previewData.editMode">
 
-    <div style="display: flex; margin-bottom: 20px; gap: 10px">
-      <Button
-        icon="pi pi-user"
-        label="Přepnout uživatele"
-        @click="GoToUserSelection">
-      </Button>
-      <Button
-        icon="pi pi-pencil"
-        label="Upravit profil"
-        @click="PrepareToUpdate">
-      </Button>
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 220px);">
+      <div style="display: flex; margin-bottom: 20px; gap: 10px">
+        <Button
+          icon="pi pi-user"
+          label="Přepnout uživatele"
+          @click="GoToUserSelection">
+        </Button>
+        <Button
+          icon="pi pi-pencil"
+          label="Upravit profil"
+          @click="PrepareToUpdate"
+          style="margin-left: auto;">
+        </Button>
+      </div>
+
+      <Divider></Divider>
+
+      <h2>
+        {{ currentUser.name }}
+      </h2>
+      <i>
+        {{ currentUser.bio }}
+      </i>
+
+      <Divider style="margin-top: 20px;"></Divider>
+
+      <div @click="router.push('/recipes')">
+        <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+        <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+        <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
+        <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+      </div>
+
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+      <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
+
+      <Divider></Divider>
     </div>
 
-    <Divider></Divider>
-
-    <h2>
-      {{ currentUser.name }}
-    </h2>
-    <i>
-      {{ currentUser.bio }}
-    </i>
-
-    <Divider style="margin-top: 20px;"></Divider>
-
-    <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-    <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-    <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-    <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
-
-    <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
-    <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
-
-    <Divider></Divider>
-
   </div>
-  <div v-else> <!-- EDIT MODE -->
+
+  <!-- EDIT MODE -->
+
+  <div v-else>
 
     <div style="margin-bottom: 20px;">
       <Button
@@ -150,36 +158,43 @@ const GoToPreview = async () => {
       </Button>
     </div>
 
-    <Divider></Divider>
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 280px);">
+      <Divider></Divider>
 
-    <div style="margin-bottom: 20px;">
-      <InputText
-        v-model="previewData.name"
-        size="small"
-        style="margin-top: 20px; margin-bottom: 20px;">
-      </InputText>
+      <div style="margin-bottom: 20px; margin-top: 20px;">
+        <div>
+          <InputText
+            v-model="previewData.name"
+            size="small"
+            style="margin-bottom: 20px;">
+          </InputText>
+        </div>
 
-      <Textarea
-        v-model="previewData.bio"
-        rows="5"
-        cols="30"
-        size="small">
-      </Textarea>
+        <div>
+          <Textarea
+            v-model="previewData.bio"
+            rows="5"
+            cols="30"
+            size="small">
+          </Textarea>
+        </div>
+      </div>
+
+      <Divider></Divider>
+
+      <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+      <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+      <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
+      <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+      <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
+
+      <Divider></Divider>
+
     </div>
-
-    <Divider></Divider>
-
-    <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-    <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-    <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-    <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
-
-    <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
-    <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
-
-    <Divider></Divider>
 
   </div>
 

@@ -27,7 +27,9 @@ const WhoPosted = computed(() => {
 </script>
 
 <template>
-  <Card :class="WhoPosted" @click="GoToRecipe">
+  <Card
+    :class="WhoPosted"
+    @click="GoToRecipe">
     <template #title>
       <div v-if="message.recipe_id != null">
         <Divider style="margin-bottom: 10px;"></Divider>
@@ -56,12 +58,15 @@ const WhoPosted = computed(() => {
   margin-top: 10px;
   width: 250px;
   margin-left: auto;
+  background: linear-gradient(to top, aquamarine, rgb(47, 131, 96));
+  color: black;
 }
 
 .sent-by-other {
   margin-bottom: 10px;
   margin-top: 10px;
   width: 250px;
+  background: linear-gradient(to top, rgb(20, 20, 20), black);
 }
 
 </style>

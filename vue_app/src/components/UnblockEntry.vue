@@ -49,7 +49,7 @@ const UnBlock = async () => {
 .blocked {
   width: 100%;
   display: flex;
-  margin-bottom: 20px;
+  margin: 20px 0 20px 0;
 }
 
 .name-button {

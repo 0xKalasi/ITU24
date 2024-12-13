@@ -6,8 +6,9 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-import { useUserStore } from '../stores/userStore';
+import { useUserStore, chatsSelectedStore } from '../stores/userStore';
 const currentUser = useUserStore();
+const selected = chatsSelectedStore();
 
 import { readUsersFriends, readUsersRequests, readUsersBlocked } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
@@ -84,6 +85,10 @@ const ToggleGroupCreation = () => {
   });
 }
 
+const CreationButtonToggled = computed(() => {
+  return (selected.option != "Chaty") ? "disable-creating p-button-secondary" : "";
+});
+
 const CreateNewGroupchat = async () => {
   await createGroupchat(newGroupName.value);
   CreateGroupchat.value = false;
@@ -110,8 +115,6 @@ const ToggleMenu = (event) => {
 }
 
 
-const selected = ref("Chaty");
-
 </script>
 
 <template>
@@ -128,7 +131,8 @@ const selected = ref("Chaty");
           @click="ToggleMenu"
           aria-haspopup="true"
           aria-controls="overlay_menu"
-          style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);">
+          style="position: absolute; top: 50%; right: 0; transform: translate(0, -50%);"
+          :class="CreationButtonToggled">
         </Button>
         <Menu
           ref="menu"
@@ -140,18 +144,22 @@ const selected = ref("Chaty");
     </div>
 
     <ConvSelect
-      v-model="selected"
+      v-model="selected.option"
       :requestCount="friendRequests.length">
     </ConvSelect>
 
-    <Divider style="margin-top: 20px; margin-bottom: 20px;"></Divider>
+    <Divider style="margin-top: 20px;"></Divider>
   </div>
 
   <!-- PENDING REQUEST -->
 
-  <div v-if="selected == 'Žádosti'">
+  <div
+   v-if="selected.option == 'Žádosti'"
+   class="entries">
     
-    <div v-if="friendRequests.length == 0">
+    <div
+      v-if="friendRequests.length == 0"
+      class="empty-notif">
       Nemáte žádné žádosti o přátelství.
     </div>
 
@@ -165,29 +173,34 @@ const selected = ref("Chaty");
 
   <!-- MY CHATS -->
 
-  <div 
-    v-if="selected == 'Chaty'">
+  <div
+    v-if="selected.option == 'Chaty'"
+    class="entries">
     
-    <div v-if="chats.length == 0">
+    <div
+      v-if="chats.length == 0"
+      class="empty-notif">
       Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
     </div>
 
     <div v-else>
       <div
         v-if="CreateGroupchat"
-        style="display: flex; width: 100%; align-items: center; gap: 10px; margin-bottom: 20px;">
+        style="display: flex; align-items: center; gap: 10px; margin-top: 20px;">
 
         <InputText
           ref="createGroupText"
           v-model="newGroupName"
-          style="width: 80%"
-          @keydown.enter="CreateNewGroupchat">
+          size="large"
+          @keydown.enter="CreateNewGroupchat"
+          style="width: calc(270px - 50px - 10px)">
         </InputText>
 
         <ButtonGroup style="display: flex;">
           <Button
             icon="pi pi-check"
             raised
+            size="large"
             @click="CreateNewGroupchat"
             style="width: 50px">
           </Button>
@@ -205,16 +218,19 @@ const selected = ref("Chaty");
       <div v-for="chat in chats">
         <ChatLink :chat="chat"></ChatLink>
       </div>
+
     </div>
 
   </div>
 
   <!-- BLOCKED USERS -->
 
-  <div v-if="selected == 'Zablokované'">
+  <div
+    v-if="selected.option == 'Zablokované'"
+    class="entries">
     <div
       v-if="blockedUsers.length == 0"
-      style="margin-top: 20px;">
+      class="empty-notif">
       Seznam zablokovaných uživatelů je prázdný.
     </div>
 
@@ -226,4 +242,24 @@ const selected = ref("Chaty");
 
   </div>
 
+  <Divider position="absolute"></Divider>
+
 </template>
+
+<style scoped>
+.entries {
+  position: relative;
+  overflow-y: auto;
+  height: calc(100vh - 180px - 100px);
+}
+
+.empty-notif {
+  width: 320px;
+  margin-top: 10px;
+}
+
+.disable-creating {
+  pointer-events: none;
+}
+
+</style>

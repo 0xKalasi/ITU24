@@ -31,6 +31,7 @@ const Block = async () => {
   <ButtonGroup class="request">
     <Button
       :label="friend.name"
+      icon="pi pi-user"
       severity="secondary"
       raised
       @click="GoToProfile"
@@ -59,11 +60,12 @@ const Block = async () => {
 .request {
   width: 100%;
   display: flex;
-  margin-bottom: 20px;
+  margin: 20px 0 20px 0;
 }
 
 .name-button {
   flex-grow: 1;
+  justify-items: center;
 }
 
 </style>

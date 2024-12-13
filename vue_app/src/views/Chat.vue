@@ -20,7 +20,6 @@ const DeleteHistory = async () => {
 }
 
 const BlockUser = async () => {
-  console.log("BLOCK");
   await blockUser(currentUser.id, peerUser.id);
   router.push("/chats");
 }
