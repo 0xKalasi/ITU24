@@ -16,7 +16,13 @@ import { useUserStore } from '../stores/userStore';
 import BasicPageHeader from "../components/basicPageHeader.vue";
 const currentUser = useUserStore();
 
+/* check if user is logged in */
+let logged_in = ref( true );
 const user_id = currentUser.id;
+if ( user_id == 0 ) {
+	logged_in.value = false;
+}
+
 const recipe_id = parseInt( route.params.recipe_id );
 
 /* create or load cook state */
@@ -126,7 +132,9 @@ function update() {
 	update_async();
 }
 
-update();
+if ( user_id != 0 ) {
+	update();
+}
 
 function next_step() {
 
@@ -230,85 +238,105 @@ function open_step_timer( timer ) {
 </script>
 
 <template>
-	<div v-if="!steps_vm.ready.value">
-		Načítání receptu...
+	<div v-if="!logged_in">
+		Přihlašte se
 	</div>
-	<div v-if="steps_vm.ready.value">
-		<BasicPageHeader :text="recipe.name"></BasicPageHeader>
-		<div v-for="step in steps_vm.steps" class="step_container">
-			<div
-				@mousedown="step_mouse_down( step )"
-				@mouseup="step_mouse_up( step )"
-				v-bind:class="
-					{
-						step: step.state == 0,
-						step_hidden: step.state == 1
-					}"
-				v-if="step.state == 0 || (show_archived_steps && step.state == 1)"
-			>
-				<h4>Krok {{step.number}}: {{step.name}}</h4>
-				<p>{{step.text}}</p>
-				<div v-if="step.timers.length != 0">
-					<Button
-						v-if="!step.show_timers.value"
-						@click="step.show_timers.value = true"
-					>Ukázat časovače</Button>
-					<Button
-						v-if="step.show_timers.value"
-						@click="step.show_timers.value = false"
-					>Schovat časovače</Button>
+	<template v-else>
+		<LoadingScreen v-if="!steps_vm.ready.value"/>
+		<div v-if="steps_vm.ready.value">
+			<BasicPageHeader :text="recipe.name"></BasicPageHeader>
+			<div>
+				<div v-for="step in steps_vm.steps" class="step_container">
 					<div
-						v-if="step.show_timers.value"
-						v-for="timer in step.timers"
-						@click="open_step_timer( timer )"
+						@mousedown="step_mouse_down( step )"
+						@touchstart="step_mouse_down( step )"
+						@mouseup="step_mouse_up( step )"
+						@touchend="step_mouse_up( step )"
+						v-bind:class="
+							{
+								step: step.state == 0,
+								step_hidden: step.state == 1
+							}"
+						v-if="step.state == 0 || (show_archived_steps && step.state == 1)"
 					>
-						{{ timer.description }} - {{ timer.time }}
+						<h4>Krok {{step.number}}: {{step.name}}</h4>
+						<div>
+							<p>{{step.text}}</p>
+							<div v-if="step.timers.length != 0" class="step_timers">
+								<h5
+									@click="step.show_timers.value = !step.show_timers.value"
+								>Časovače</h5>
+								<Button
+									v-if="!step.show_timers.value"
+									@click="step.show_timers.value = true"
+								>Ukázat časovače</Button>
+								<Button
+									v-if="step.show_timers.value"
+									@click="step.show_timers.value = false"
+								>Schovat časovače</Button>
+								<div>
+									<p
+										v-if="step.show_timers.value"
+										v-for="timer in step.timers"
+										@click="open_step_timer( timer )"
+									>
+										{{ timer.description }} - {{ timer.time }}
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="step_menu" v-if="step.open_menu.value" @click="step.open_menu.value = false">
+						<Button
+							v-if="step.state != 0"
+							@click="open_step( step )"
+						>Otevřít krok</Button>
+						<Button
+							v-if="step.state != 1"
+							@click="finish_step( step )"
+						>Krok dokončen</Button>
+						<Button
+							v-if="step.state != 2"
+							@click="discard_step( step )"
+						>Zahodit krok</Button>
 					</div>
 				</div>
 			</div>
-			<div class="step_menu" v-if="step.open_menu.value" @click="step.open_menu.value = false">
+
+			<div v-if="next_step_available">
+				<Button @click="next_step">Další krok</Button>
+			</div>
+
+			<div class="bottom">
+				<TimerView :cook_state_id="cook_state.id" ref="timer_view"/>
+
+				<Button @click="goto_recipe">Recept</Button>
+
+				<Button v-if="recipe_finished" @click="finish">Hotovo</Button>
 				<Button
-					v-if="step.state != 0"
-					@click="open_step( step )"
-				>Otevřít krok</Button>
+					v-if="show_archived_steps == false"
+					@click="show_archived_steps = true"
+				>
+					Zobrazit ukončené kroky
+				</Button>
 				<Button
-					v-if="step.state != 1"
-					@click="finish_step( step )"
-				>Krok dokončen</Button>
-				<Button
-					v-if="step.state != 2"
-					@click="discard_step( step )"
-				>Zahodit krok</Button>
+					v-if="show_archived_steps == true"
+					@click="show_archived_steps = false"
+				>
+					Schovat ukončené kroky
+				</Button>
 			</div>
 		</div>
-
-		<div v-if="next_step_available">
-			<Button @click="next_step">Další krok</Button>
-		</div>
-
-		<div>
-			<TimerView :cook_state_id="cook_state.id" ref="timer_view"/>
-
-			<Button @click="goto_recipe">Recept</Button>
-
-			<Button v-if="recipe_finished" @click="finish">Hotovo</Button>
-			<Button
-				v-if="show_archived_steps == false"
-				@click="show_archived_steps = true"
-			>
-				Zobrazit ukončené kroky
-			</Button>
-			<Button
-				v-if="show_archived_steps == true"
-				@click="show_archived_steps = false"
-			>
-				Schovat ukončené kroky
-			</Button>
-		</div>
-	</div>
+	</template>
 </template>
 
 <style scoped>
+
+.bottom {
+	position: fixed;
+	bottom: 100px;
+}
+
 .step_container {
 	height: auto;
 /*	position: relative; */
@@ -321,12 +349,41 @@ function open_step_timer( timer ) {
 	height: auto;
 }
 */
+
+.step, .step_hidden {
+	background-color: var(--p-primary-950);
+	border-radius: var(--p-button-border-radius);
+}
+
+.step > h4, .step_hidden > h4 {
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+	margin-left: 1em;
+}
+
+.step > div, .step_hidden > div {
+	background-color: var(--p-primary-900);
+	border-radius: var(--p-button-border-radius);
+	padding: var(--p-button-padding-y) var(--p-button-padding-x);
+}
+
+.step_timers {
+}
+
+.step_timers > div {
+	background-color: var(--p-primary-850);
+}
+
 .step {
+	/*
 	background-color: green;
+	*/
 }
 
 .step_hidden {
+	/*
 	background-color: DarkGreen;
+	*/
 }
 
 .step_menu {
