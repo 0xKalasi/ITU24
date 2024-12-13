@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineModel } from "vue";
+import { ref, defineModel, onBeforeMount } from "vue";
 import PhotoUploader from "./photoUploader.vue";
 
 const steps = defineModel();
@@ -7,6 +7,7 @@ const steps = defineModel();
 const newStep = ref({ number: 1, text: "", name: "Krok 1", photo: "", name_was_edited: false});
 const editedStep = ref({ number: 0, text: "", name: "", photo: "", name_was_edited: false });
 const editingStepIndex = ref(null);
+
 
 // Update step numbers after adding or deleting a step
 function updateStepNumbers() {
@@ -20,6 +21,10 @@ function updateStepNumbers() {
     newStep.value.number = steps.value.length + 1; // Next step number
     newStep.value.name = "Krok " + newStep.value.number;
 };
+
+onBeforeMount(async () => {
+    updateStepNumbers();
+  }) 
 
 // Add new step
 function PushStep() {
