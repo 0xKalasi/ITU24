@@ -19,6 +19,13 @@ const ChangeListed = (which) => {
 }
 
 
+const Options = {
+  REQUESTS: "Žádosti",
+  CHATS: "Chaty",
+  BLOCKED: "Zablokované"
+}
+
+
 const SetHighlight = computed(() => (which) => {
   return (selected.value == which) ? "primary" : "secondary";
 });
@@ -34,9 +41,9 @@ const GetBadgeSeverity = computed(() => (which) => {
 </script>
 
 <template>
-  <ButtonGroup style="display: flex; justify-content: center; border: 1px solid aquamarine; border-radius: 7px;">
+  <ButtonGroup class="group">
     <Button
-      label="Žádosti"
+      :label="Options.REQUESTS"
       :badge="PendingCount"
       :badgeSeverity="GetBadgeSeverity('Žádosti')"
       :severity="SetHighlight('Žádosti')"
@@ -45,14 +52,14 @@ const GetBadgeSeverity = computed(() => (which) => {
       style="flex: 1">
     </Button>
     <Button
-      label="Chaty"
+      :label="Options.CHATS"
       :severity="SetHighlight('Chaty')"
       @click="ChangeListed('Chaty')"
       raised
       style="flex: 1">
     </Button>
     <Button
-      label="Zablokované"
+      :label="Options.BLOCKED"
       :severity="SetHighlight('Zablokované')"
       @click="ChangeListed('Zablokované')"
       raised
@@ -61,3 +68,13 @@ const GetBadgeSeverity = computed(() => (which) => {
   </ButtonGroup>
 
 </template>
+
+<style scoped>
+.group {
+  display: flex;
+  justify-content: center;
+  border: 1px solid aquamarine;
+  border-radius: 7px;
+}
+
+</style>

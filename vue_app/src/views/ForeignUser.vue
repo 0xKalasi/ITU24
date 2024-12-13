@@ -72,7 +72,8 @@ const Unblock = async () => {
       <h2>
         {{ viewedUser.name }}
       </h2>
-      <i>
+      <i v-if="currentFriendshipState != ForeignUserRelation.BLOCKED_BY_THEM">
+        <!-- The only thing we show when blocked is name and the status -->
         {{ viewedUser.bio }}
       </i>
     </div>
@@ -90,27 +91,28 @@ const Unblock = async () => {
       <!-- NO RELATION -->
 
       <div v-else-if="currentFriendshipState == ForeignUserRelation.NO_RELATION">
-
         <h3>Poslat žádost o přátelství</h3>
         <Button
           label="Poslat žádost o přátelství"
           icon="pi pi-users"
           @click="SendRequest">
         </Button>
+
+        <Divider style="margin-top: 20px;"></Divider>
       </div>
 
       <!-- SENT -->
 
       <div v-else-if="currentFriendshipState == ForeignUserRelation.SENT" >
-
         <h3>Poslat žádost o přátelství</h3>
         <i>Žádost byla odeslána a čeká na potvrzení</i>
+
+        <Divider style="margin-top: 20px;"></Divider>
       </div>
 
       <!-- PENDING -->
 
       <div v-else-if="currentFriendshipState == ForeignUserRelation.PENDING">
-
         <h3>Od tohoto uživatele máte příchozí žádost o přátelství</h3>
 
         <Button
@@ -119,6 +121,7 @@ const Unblock = async () => {
           @click="AcceptRequest">
         </Button>
 
+        <Divider style="margin-top: 20px;"></Divider>
       </div>
 
       <!-- ACCEPTED -->
@@ -135,6 +138,8 @@ const Unblock = async () => {
           </Button>
 
         </div>
+
+        <Divider style="margin-top: 20px;"></Divider>
       </div>
 
       <!-- BLOCKED BY CURRENT USER -->
@@ -150,6 +155,8 @@ const Unblock = async () => {
           icon="pi pi-lock-open"
           @click="Unblock">
         </Button>
+
+        <Divider style="margin-top: 20px;"></Divider>
       </div>
 
       <!-- BLOCKED BY PEER -->
@@ -158,37 +165,39 @@ const Unblock = async () => {
         <div style="color: red; margin-top: 20px;">
           Tento uživatel Vás zablokoval
         </div>
-      </div>
 
+        <Divider style="margin-top: 20px;"></Divider>
+      </div>
     </div>
 
-    <Divider></Divider>
+    <div v-if="currentFriendshipState != ForeignUserRelation.BLOCKED_BY_THEM">
+      <!-- Statistics -->
 
-    <!-- Statistics -->
+      <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+      <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+      <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
+      <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
-    <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-    <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-    <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-    <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+      <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
 
-    <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
-    <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
+      <Divider></Divider>
 
-    <Divider></Divider>
+      <!-- Recipe list -->
 
-    <!-- Recipe list -->
+      <h2>Recepty</h2>
 
-    <h2>Recepty</h2>
+      <div v-for="recipe in usersRecipes">
+        <Message
+          severity="success"
+          icon="pi pi-play-circle"
+          @click="GoToRecipe(recipe.id)">
+          {{ recipe.name }}
+        </Message>
+      </div>
 
-    <div v-for="recipe in usersRecipes">
-      <Message
-        severity="success"
-        icon="pi pi-play-circle"
-        @click="GoToRecipe(recipe.id)">
-        {{ recipe.name }}
-      </Message>
     </div>
 
   </div>

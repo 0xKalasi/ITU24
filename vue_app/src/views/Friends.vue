@@ -95,6 +95,10 @@ const CreateNewGroupchat = async () => {
   newGroupName.value = "";
 }
 
+const CancelCreatingGroupchat = () => {
+  CreateGroupchat.value = false;
+  newGroupName.value = "";
+}
 
 const menu = ref();
 const items = ref([
@@ -192,8 +196,9 @@ const ToggleMenu = (event) => {
           ref="createGroupText"
           v-model="newGroupName"
           size="large"
+          placeholder="Nová skupina"
           @keydown.enter="CreateNewGroupchat"
-          style="width: calc(270px - 50px - 10px)">
+          style="width: calc(320px - 100px - 10px)"> <!-- (width of entry) - (width of buttons) - (width of space in between) -->
         </InputText>
 
         <ButtonGroup style="display: flex;">
@@ -208,7 +213,7 @@ const ToggleMenu = (event) => {
           <Button
             icon="pi pi-times"
             raised
-            @click="CreateGroupchat = false"
+            @click="CancelCreatingGroupchat"
             style="width: 50px; background: crimson; border: 1px solid crimson;">
           </Button>
 

@@ -17,7 +17,6 @@ import Recipes from "../views/MyRecipes.vue";
 import CreateFilter from "../views/CreateFilter.vue"
 import Share from "../views/Share.vue";
 import ProfilePreview from "../views/ProfilePreview.vue";
-import Groupchats from "../views/Groupchats.vue";
 import Groupchat from "../views/Groupchat.vue";
 import EditGroupchat from "../views/EditGroupchat.vue";
 import AddGroupchatmember from "../views/AddGroupchatmember.vue";
@@ -52,7 +51,6 @@ const routes = [
   { path: "/profile/preview", component: ProfilePreview,
     name: "PREVIEW",
   },
-  { path: "/groupchats", component: Groupchats },
   { path: "/groupchats/:groupchat_id", component: Groupchat },
   { path: "/groupchats/edit/:groupchat_id", component: EditGroupchat},
   { path: "/groupchats/add/:groupchat_id", component: AddGroupchatmember },

@@ -108,109 +108,106 @@ const DeleteGroupchat = async () => {
 
   <BasicPageHeader text="Spravovat skupinu">
   </BasicPageHeader>
-  
-  <Divider></Divider>
 
-  <div
-    v-if="currentUser.id == 0"
-    style="margin-top: 20px">
-    Pro zobrazení správy skupiny musíte být přihlášeni.
-  </div>
+  <div>
 
-  <!-- CREATOR VIEW -->
-  <div v-else-if="isCreator">
-    <!-- Rename -->
-    <div
-      style="display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px; gap: 20px;">
-      <InputText
-        v-model="groupName"
-        size="small"
-        @keydown.enter="Rename">
-      </InputText>
-      <Button
-        icon="pi pi-pencil"
-        @click="Rename">
-      </Button>
-    </div>
+    <!-- CREATOR VIEW -->
 
-    <!-- Delete features -->
-    <div
-      v-if="( ! confirmDelHist) && ( ! confirmDelGroup)"
-      style="margin-bottom: 10px; display: flex; gap: 10px">
+    <div v-if="isCreator" style="position: relative; overflow-y: auto; height: calc(100vh - 220px);">
+      <Divider></Divider>
 
-      <Button
-        label="Smazat historii zpráv"
-        icon="pi pi-history"
-        severity="warn"
-        @click="AskDeleteHistory">
-      </Button>
-      <Button
-        label="Odstranit skupinu"
-        icon="pi pi-exclamation-circle"
-        @click="AskDeleteGroup"
-        style="background: crimson; border: 1px solid crimson;">
-      </Button>
-    </div>
-
-    <div v-else-if="confirmDelHist">
-      <div style="color: red; margin-top: 10px;">
-        Tato akce je nevratná, skutečně chcete smazat historii zpráv?
-      </div>
-
-      <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
+      <!-- Rename -->
+      <div
+        style="display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px;">
+        <InputText
+          v-model="groupName"
+          size="small"
+          @keydown.enter="Rename">
+        </InputText>
         <Button
-          icon="pi pi-check"
-          label="Ano, smazat historii"
-          @click="DeleteHistory"
-          style="background: crimson; border: 1px solid crimson; flex: 1;">
-        </Button>
-        <Button
-          icon="pi pi-times"
-          label="Ne, ponechat historii"
-          style="flex: 1;"
-          @click="CancelDeleteHistory">
-        </Button>
-      </div>
-    </div>
-
-    <div v-else-if="confirmDelGroup">
-      <div style="color: red; margin-top: 10px;">
-        Skutečně chcete smazat skupinu? Tato akce je nevratná.
-      </div>
-
-      <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px;">
-        <Button
-          icon="pi pi-check"
-          label="Ano, smazat"
-          @click="DeleteGroupchat"
-          style="background: crimson; border: 1px solid crimson; flex: 1;">
-        </Button>
-        <Button
-          icon="pi pi-times"
-          label="Ne, nemazat"
-          @click="CancelDeleteGroup"
-          style="flex: 1;">
+          icon="pi pi-pencil"
+          @click="Rename"
+          style="transform: translate(50%, 0);">
         </Button>
       </div>
 
-    </div>
+      <!-- Delete features -->
+      <div
+        v-if="( ! confirmDelHist) && ( ! confirmDelGroup)"
+        style="margin-bottom: 10px; display: flex; gap: 10px">
 
-    <!-- Member managment -->
-    <div style="display: flex; align-items: center; gap: 20px;">
-      <h3>Členové</h3>
-
-      <div style="display: flex; flex: 1; justify-content: end;">
         <Button
-          label="Přidat členy"
-          icon="pi pi-plus"
-          @click="GoToAddMembers">
+          label="Smazat historii zpráv"
+          icon="pi pi-history"
+          severity="warn"
+          @click="AskDeleteHistory">
+        </Button>
+        <Button
+          label="Odstranit skupinu"
+          icon="pi pi-exclamation-circle"
+          @click="AskDeleteGroup"
+          style="background: crimson; border: 1px solid crimson;">
         </Button>
       </div>
-    </div>
 
-    <Divider></Divider>
+      <div v-else-if="confirmDelHist">
+        <div style="color: red; margin-top: 10px;">
+          Tato akce je nevratná, skutečně chcete smazat historii zpráv?
+        </div>
 
-    <div style="position: relative; overflow-y: auto; height: calc(100vh - 450px);">
+        <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
+          <Button
+            icon="pi pi-check"
+            label="Ano, smazat historii"
+            @click="DeleteHistory"
+            style="background: crimson; border: 1px solid crimson; flex: 1;">
+          </Button>
+          <Button
+            icon="pi pi-times"
+            label="Ne, ponechat historii"
+            style="flex: 1;"
+            @click="CancelDeleteHistory">
+          </Button>
+        </div>
+      </div>
+
+      <div v-else-if="confirmDelGroup">
+        <div style="color: red; margin-top: 10px;">
+          Skutečně chcete smazat skupinu? Tato akce je nevratná.
+        </div>
+
+        <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px;">
+          <Button
+            icon="pi pi-check"
+            label="Ano, smazat"
+            @click="DeleteGroupchat"
+            style="background: crimson; border: 1px solid crimson; flex: 1;">
+          </Button>
+          <Button
+            icon="pi pi-times"
+            label="Ne, nemazat"
+            @click="CancelDeleteGroup"
+            style="flex: 1;">
+          </Button>
+        </div>
+
+      </div>
+
+      <!-- Member managment -->
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <h3>Členové</h3>
+
+        <div style="display: flex; flex: 1; justify-content: end;">
+          <Button
+            label="Přidat členy"
+            icon="pi pi-plus"
+            @click="GoToAddMembers">
+          </Button>
+        </div>
+      </div>
+
+      <Divider></Divider>
+
       <div
         v-for="member in members"
         style="margin-top: 10px">
@@ -235,65 +232,18 @@ const DeleteGroupchat = async () => {
         </div>
 
       </div>
-    </div>
-
-    <Divider></Divider>
-
-  </div>
-
-  <!-- MEMBER VIEW -->
-  <div v-else>
-
-    <!-- Leave group -->
-    <div v-if=" ! confirmLeaveGroup">
-      <Button
-        icon="pi pi-times"
-        label="Opustit skupinu"
-        severity="danger"
-        @click="AskLeaveGroup"
-        style="margin-top: 10px; margin-bottom: 10px;">
-      </Button>
+      
+      <Divider></Divider>
 
     </div>
+
+      <!-- MEMBER VIEW -->
 
     <div v-else>
-      <div style="color: red; margin-top: 10px;">
-        Skutečně chcete opustit skupinu?
-      </div>
-
-      <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
-        <Button
-          icon="pi pi-check"
-          label="Ano, opustit skupinu"
-          severity="danger"
-          @click="LeaveGroup">
-        </Button>
-        <Button
-          icon="pi pi-times"
-          label="Ne, neopouštět"
-          @click="CancelLeaveGroup">
-        </Button>
-      </div>
+      <!-- THIS PART WAS REPLACED BY A SUBMENU FOR USERS OPTIONS -->
+      <!-- It is left here for completeness and as a safeguard, a non-creator, cannot edit the group here -->
 
     </div>
-
-    <Divider></Divider>
-
-    <!-- Member view and adding -->
-    <h3>Členové</h3>
-
-    <div
-      v-for="member in members"
-      style="margin-bottom: 10px;">
-      -> {{ member.name }}
-    </div>
-
-    <Button
-      label="Přidat členy"
-      icon="pi pi-plus"
-      @click="GoToAddMembers"
-      style="margin-top: 10px;">
-    </Button>
 
   </div>
 
