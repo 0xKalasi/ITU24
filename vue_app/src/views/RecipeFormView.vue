@@ -132,11 +132,17 @@
   </script>
 
 <template>
+  <!-- Aert component for showing alerts use the fucntion showAlertMessage -->
   <Alert v-if="showAlert" :type="alertType" :text="alertText" :key="alertKey"></Alert>
 
+  <!-- If loading the recipe from database wait for it to load -->
   <LoadingScreen v-if="isLoading" />
+
+  <!-- Show the form for creating/editing a recipe -->
   <div v-else>
-    <BasicPageHeader text="Uprav recept"/>
+    <BasicPageHeader v-if="recipeId" text="Uprav recept"/>
+    <BasicPageHeader v-else text="Vytvoř recept"/>
+
       <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
         <div style="display: flex; align-items: center;">
         <label style="margin-right: 8px;">Is public</label>
@@ -146,8 +152,27 @@
           </template>
         </ToggleSwitch>
       </div>
+
+      <div v-if="recipe.photo" class="image-container">
+        <img :src="recipe.photo" alt="Preview" class="image-preview" />
+
+        <!-- Delete Button -->
+        <Button 
+          icon="pi pi-trash" 
+          class="delete-photo-button p-button-danger" 
+          @click="deleteRecipePhoto" 
+        />
+
+        <!-- Edit Button TBD
+        <Button 
+          icon="pi pi-pencil" 
+          class="edit-photo-button p-button-ok" 
+          @click="editRecipePhoto" 
+        />-->
+      </div>
+
        <!-- Title TextArea Input -->
-      <div class="p-field p-d-flex p-ai-center p-mb-3 title-container">
+      <div class="p-field p-d-flex p-ai-center p-mb-3 title-container in-one-row">
         <label for="title" class="title-label">Název</label>
         <Textarea
           id="title"
@@ -157,14 +182,8 @@
           autoResize
           v-model="recipe.name"
         />
+        <PhotoUploader v-if="!recipe.photo" v-model="recipe.photo" />
       </div>
-      <PhotoUploader v-model="recipe.photo" />
-      <Button 
-          v-if="recipe.photo" 
-          label="Smazat foto" 
-          class="p-button-danger p-button-outlined p-my-2" 
-          @click="deleteRecipePhoto" 
-      />
 
         <h3>Ingredence</h3>
         <addIngredient v-model="recipe.Ingredients"/>
@@ -271,4 +290,52 @@
   .centered-input .p-inputtext {
     text-align: center;
   }
+
+  /* Container for image and buttons */
+.image-container {
+  position: relative; /* Enable positioning for buttons */
+  width: 100%; /* Full width */
+  max-height: 100px; /* Constrain height */
+}
+
+/* Image preview */
+.image-preview {
+  width: 100%; /* Full width */
+  max-height: 100px; /* Fix the maximum height */
+  object-fit: cover; /* Ensure image covers the container proportionally */
+  border-radius: 5px; /* Rounded corners */
+}
+
+/* Delete button positioned at the top-right corner */
+.delete-photo-button {
+  position: absolute; /* Position relative to the container */
+  top: 5px; /* Adjust vertical positioning */
+  right: 5px; /* Adjust horizontal positioning */
+  padding: 5px; /* Compact padding */
+  width: 30px; /* Square button */
+  height: 30px; /* Square button */
+  border-radius: 50%; /* Circular button */
+  display: flex; /* Center icon */
+  align-items: center; /* Center icon vertically */
+  justify-content: center; /* Center icon horizontally */
+  font-size: 1rem; /* Icon size */
+  z-index: 10; /* Ensure it's above the image */
+}
+
+/* Edit button positioned below the delete button */
+.edit-photo-button {
+  position: absolute; /* Position relative to the container */
+  top: 45px; /* Positioned below the delete button */
+  right: 5px; /* Align with the delete button */
+  padding: 5px; /* Compact padding */
+  width: 30px; /* Square button */
+  height: 30px; /* Square button */
+  border-radius: 50%; /* Circular button */
+  display: flex; /* Center icon */
+  align-items: center; /* Center icon vertically */
+  justify-content: center; /* Center icon horizontally */
+  font-size: 1rem; /* Icon size */
+  z-index: 10; /* Ensure it's above the image */
+}
+  
   </style>

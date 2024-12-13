@@ -44,10 +44,10 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
 <template>
     <!-- Display each ingredient with edit options -->
     <div v-if="ingredients.length > 0" class="p-d-flex p-ai-center p-mb-10">
-          <div v-for="(ingredient, index) in ingredients" :key="index" class="p-d-flex p-ai-center p-mb-2">
+          <div v-for="(ingredient, index) in ingredients" :key="index" class="in-one-row">
             <template v-if="editingIngredientIndex === index">
               <!-- Editing Mode -->
-              <MyOnFloatLabel label="Název Ingredence" v-model="editedIngredient.name" />
+              <MyOnFloatLabel class="larger-input" label="Název Ingredence" v-model="editedIngredient.name" />
               <MyOnFloatLabel :number="true" label="Množství" v-model="editedIngredient.quantity" />
               <MyOnFloatLabel label="Jednotka" v-model="editedIngredient.unit" />
               <MyOnFloatLabel label="Poznámka" v-model="editedIngredient.notes" />
@@ -65,11 +65,38 @@ import MyOnFloatLabel from "./myOnFloatLabel.vue"
         </div>
   
         <!-- New ingredient input -->
-        <div class="in-one-row">
-          <MyOnFloatLabel label="Název Ingredence" v-model="newIngredient.name" />
-          <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" />
-          <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" />
-          <MyOnFloatLabel label="Poznámka" v-model="newIngredient.notes" />
+        <div>
+          <div class="in-one-row">
+            <MyOnFloatLabel class="larger-input" label="Název Ingredence" v-model="newIngredient.name" />
+            <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" />
+            <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" />
+            <MyOnFloatLabel label="Poznámka" v-model="newIngredient.notes" />
+            <Button icon="pi pi-plus" class="add-button" @click="PushIngredient" />
+          </div>
         </div>
-        <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushIngredient" />
 </template>
+
+<style scoped>
+.in-one-row {
+  display: flex; /* Arrange elements in a row */
+  align-items: center; /* Vertically align all items */
+  gap: 1px; /* Adjust space between elements */
+  width: 100%; /* Occupy full available width */
+}
+
+.add-button {
+  width: 10px; /* Square width */
+  height: 30px; /* Square height */
+  padding: 0; /* Remove unnecessary padding */
+  flex: 1;
+  /*margin-left: 8px; /* Add some spacing to the last input */
+}
+
+.larger-input {
+  flex: 4; /* Allow this input to take more space */
+}
+
+.in-one-row > *:not(.larger-input, .add-button) {
+  flex: 2; /* Keep other inputs equally sized */
+}
+</style>

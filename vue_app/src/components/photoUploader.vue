@@ -39,38 +39,50 @@ const onFileChange = (event) => {
 </script>
 
 <template>
-  <div style="display: flex;">
-    <!-- Display image preview if a photo is selected -->
-    <div v-if="photo">
-      <img :src="photo" alt="Preview" class="image-preview" />
-    </div>
-    <!-- File Input for photo upload -->
-    <input 
-      type="file" 
-      accept="image/*" 
-      @change="onFileChange" 
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <!-- Hidden File Input -->
+    <input
+      type="file"
+      accept="image/*"
+      @change="onFileChange"
       :disabled="disabled"
       ref="fileInput"
+      style="display: none;"
     />
+
+    <!-- Styled Button -->
+    <button 
+      class="upload-button"
+      :disabled="disabled"
+      @click="$refs.fileInput.click()"
+    >
+      <i class="pi pi-camera"></i> Upload Photo
+    </button>
   </div>
 </template>
 
-<style>
-/* Container for the image preview with a fixed aspect ratio (rectangle) */
-.image-preview {
-  max-width: 100px;  /* Adjust the max width as needed */
-  max-height: 100px;
-  object-fit: cover;
-  margin-top: 10px;
-  width: 100px; /* Width of the rectangle */
-  height: 100px; /* Height of the rectangle */
-  overflow: hidden; /* Hide the overflowed part of the image */
+
+<style scoped>
+/* Style for the upload button */
+.upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding for button size */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 1rem; /* Adjust font size */
+  gap: 8px; /* Space between icon and text */
 }
 
-/* Ensure the image is cropped to fit the container */
-.image-preview img {
-  width: 100%; /* Fill the width of the container */
-  height: 100%; /* Fill the height of the container */
-  object-fit: cover; /* Crop the image to fill the area, maintaining aspect ratio */
+.upload-button i {
+  font-size: 1.2rem; /* Adjust camera icon size */
+}
+
+
+.upload-button:disabled {
+  background-color: #cccccc; /* Gray for disabled state */
+  cursor: not-allowed;
 }
 </style>
