@@ -6,9 +6,11 @@ import { computed } from "vue";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
+
 const props = defineProps({
   chat: Object
 });
+
 
 const GoToChat = async () => {
   if (props.chat.is_groupchat) {

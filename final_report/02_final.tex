@@ -34,6 +34,8 @@
 \newcommand{\plus}{\textbf{\color{ForestGreen}+}}
 \renewcommand{\minus}{\textbf{\color{Red}-}}
 
+\newcommand{\todo}{\textbf{\color{Red}TODO !!!}}
+
 \title {
     {\Huge \emph{\textbf{resipi.}}{\huge}} \\[0.25em] %, Kuchařka nové generace
     {\Large \emph{Závěrečná zpráva k projektu do předmětu ITU}}
@@ -67,7 +69,7 @@
     \clearpage
 
     \tableofcontents
-    \listoffigures
+    %\listoffigures
     \newpage
 
 \section{Cíl projektu}
@@ -102,35 +104,240 @@ tím pádem ji bude možné použít i na dalších zařízeních, jako jsou tab
 \subsection{Odchylky od zadání ve výsledné implementaci}
 
 % Co jsme nakonec vytvořili
+Aplikace obsahuje většinu původně zamýšlené funckionality. Některé
+části byly upraveny, aby lépe vyhovovaly uživatelským potřebám na základě testování
+výsledné aplikace viz.\ sekce \ref{testovani}.
+
+Bohužel se nepodařilo implementovat veškerou kýženou funkcionalitu, přesněji se jedná o:
+\begin{itemize}
+    \item \todo
+    \item
+\end{itemize}
 
 \section{Rozdělení práce v týmu}
 
 % Co kdo dělal obecně JENOM NA FE
+Rozdělení práce odpovídá původně zamýšlenému. Každý vytvořil svoji přidělenou část, kterou
+integroval do společné aplikace. Propojení jednotlivých částí se odehrávalo podle
+principu párového programování, kde dva nebo více členů společně zvolilo nejlepší řešení,
+jak své části propojit. Jako příklad tohoto postupu lze uvést umístění spuštění
+interaktivního režimu vaření nebo možnosti sdílení na stránku receptu.
+
+Pro úplnost zde uvádíme rozdělení, jak bylo původně zamýšleno, a jak jsme se jej drželi:
+\begin{itemize}
+    \item \textbf{Tomáš B.}\,--\,Komplexní vyhledávání, ukládání a hodnocení cizích receptů.
+    \item \textbf{Martin}\,--\,Správa uživatelských profilů, konverzací, skupin a sdílení receptů.
+    \item \textbf{Ondřej}\,--\,Interaktivní režim s~ukládáním stavu a časovači.
+    \item \textbf{Tomáš T.}\,--\,Kompletní správa receptů: jejich tvorba, úprava a mazání.
+\end{itemize}
+
+V rámci implementace jsme se společně podíleli na některých prvcích projektu.
+Přesněji se jedná o některé komponenty z adresáře \t{/vue\_app/components/}.
+V některých případech byla jedna komponenta navržena více členy týmu.
+V takových případech jsou jména všech podílejících se členů označena
+v hlavičce jejího souboru.
+
+V následujících podsekcích jsou uvedeny podrobnosti o zpracování jednotlivých částí.
+
+
+
+% PRO KAŽDÉHO odkazy do adresářové struktury, co sám implementoval, na své zdrojové soubory
+
+
 
 \subsection{Část Tomáše B.}
+\todo
+
 \subsection{Část Martina}
+Jak bylo uvedeno, implementovány byly skupinové a osobní chaty s možností sdílené nejen zpráv, ale i receptů.
+Pro skupinové chaty byla vytvořena jejich správa dostupná pro původního tvůrce, ostatní uživatelé k ní
+pro daný chat přistupují v omezené formě.
+Kromě toho byly implementovány možnosti úpravy a zobrazení uživatelských profilů a správa
+relací mezi uživateli v zažité formě žádostí o přátelství.
+
+Původní návrh v systému Figma byl s drobnými úpravami integrován do společné aplikace.
+Zamýšlené principy zůstaly.
+
+Jednotlivé prvky implementace jsou v projektu umístěny následovně:
+\begin{itemize}
+    \item \t{/vue\_app/src/components/} obsahující vytvořené komponenty
+        \begin{itemize}
+            \item \t{ConvSelect.vue}\,--\,komponenta pro výběr chatů, žádostí o přátelství a zablokovaných uživatelů
+            \item \t{FriendRequest.vue}\,--\,žádost o přátelství
+            \item \t{Divider.vue}\,--\,jednoduchý oddělovač
+            \item \t{GroupchatComp.vue}\,--\,skupinový chat
+            \item \t{ChatComp.vue}\,--\,osobní chat (je samostatnou komponentou pro svoje odlišné API)
+            \item \t{ChatLink.vue}\,--\,odkaz na osobní nebo skupinový chat
+            \item \t{MessageComp.vue}\,--\,zpráva v konverzaci
+            \item \t{UnblockEntry.vue}\,--\,odkaz na zablokovaného uživatele
+        \end{itemize}
+    \item \t{/vue\_app/src/views/} obsahující implementace jednotlivých stránek
+        \begin{itemize}
+            \item \t{AddGroupchatMember.vue}\,--\,stránka pro přidání nových členů do skupiny
+            \item \t{EditGroupchat.vue}\,--\,správa skupiny z pohledu jejího tvůrce
+            \item \t{ForeignUser.vue}\,--\,pohled na profil jiného uživatele než právě přihlášeného
+            \item \t{Friends.vue}\,--\,seznam přátel a skupin, příchozích žádostní o přátelství a zablokovaných uživatelů
+            \item \t{Groupchat.vue}\,--\,stránka skupinového chatu
+            \item \t{Chat.vue}\,--\,stránka osobního chatu
+            \item \t{Profile.vue}\,--\,pohled na změny v profilu při jeho úpravě
+            \item \t{ProfilePreview.vue}\,--\,náhled na vlastní profil při jeho úpravě
+            \item \t{Share.vue}\,--\,stránka pro sdílení receptu
+            \item \t{Users.vue}\,--\,výběr uživatele
+        \end{itemize}
+\end{itemize}
+
 \subsection{Část Ondřeje}
+\todo
+
 \subsection{Část Tomáše T.}
-% PRO KAŽDÉHO odkazy do adresářové struktury, co sám implementoval, na své zdrojové soubory
+\todo
 
 \section{Zpracování připomínek z kontrolní prezentace}
 
 % heslovitě, odrážkově
+Zásadní připomínkou na kontrolní prezentaci byl nedostatečný rozsah práce v části Martina.
+Jako doporučení byla uvedena implementace skupinových chatů. Toto doporučení bylo
+zcela implementováno.
 
-\section{Testování}
+Uživatelé mohou tvořit, spravovat a popř.\ rušit skupinové konverzace,
+vést v nich diskuse a sdílet recepty stejně jako v osobních konverzacích a přidávat,
+popř.\ odebírat jejich členy.
+
+% Propojení GUI komponent: Demonstruje pouze částečně, k lepšímu hodnocení projektu je vhodné ještě vylepšit/rozšířit.
+\todo
+
+\section{Testování}\label{testovani}
 
 % Obecné postupy
+Jak bylo zadáno, testování aplikace bylo provedeno se stejnými uživateli jako úvodní průzkum.
+Každý člen testování provedl sám a to nejen pro svoji část, ale i ty ostatních.
+
+Zjištění z testování jsou pro každého člena týmu podrobně popsána v podsekcích níže.
 
 \subsection{Testování Tomáše B.}
+\todo
+
 \subsection{Testování Martina}
+
+Testování probíhalo formou zadávání jednoduchých úkolů v aplikaci, které byly popřípadě rozšířeny,
+pokud daná část aplikace uživatele obzvláště zaujala. Průběžně byly sledovány komentáře
+uživatelů a jejich reakce na různé funkce.
+
+Níže jsou popsány jednotlivé provedené testy: \\
+
+\noindent\textbf{Olga, máma} \\[-1em]
+\begin{itemize}
+    \item 50-60 let
+    \item Méně technicky zdatná, telefon používá pro telefonování, psaní zpráv a vyhledávání na webu
+    \item Státní zaměstnankyně
+\end{itemize}
+
+Testování probíhalo osobně. Na vlastním telefonu si po lokální síti spustila aplikaci a používala
+ji k věcem, které ji nejvíce zajímají. Nejprve si aplikaci vyzkoušela na funkcích, které si při
+úvodním průzkumu představovala, a poté dostávala jednoduché úkoly. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item V některých případech jsou v aplikace přítomny samotné ikonky, které považovala
+    za neintuitivní. Toto bylo opraveno na, podle ní, lepší a použito v dalších testech.
+    Různé funkce potom už snáze našla a zvládla je samostatně použít k zamýšleným
+    účelům.
+
+    \item Vizuální oddělení vlastních a cizích textovách zpráv jí připadalo
+    nedostatečné a nepřehledné. Po jeho přidání považovala chatovací funkcionalitu za velmi dobrou.
+    Na základě tohoto zjištění byl dán důraz na lepší vizuální oddělení i dalších částí aplikace.
+
+\end{itemize}
+
+
+\noindent\textbf{Startší sestra Katka} \\[-1em]
+\begin{itemize}
+    \item 30-40 let
+    \item S technologiemi umí pracovat, ale nezaměřuje se na ně, telefon používá na internet a sociální sítě
+    \item Lingvistka
+\end{itemize}
+
+Průběh testování zde byl opět osobní na jejím vlasntím telefonu. Pro změnu jí bylo zadáno více
+úkolu, aby byla větší kontrola nad průběhem. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Vlastní recepty hledá na stránce profilu, což nebylo zamýšleno. Jako řešení sama navrhla, 
+    aby na informaci o počtu vlastních receptů byl proklik na recepty samotné. Toto bylo implementováno,
+    a značně zlepšilo kvalitu profilové stránky.
+
+    \item Některé aspekty tvorby receptu ji přišly značně neintuitivní. Jednalo se hlavně o popisky
+    kroků. Jejich úpravou byl nedostatek napraven.
+
+    \item Líbila se jí jednoduchost tvorby skupin a přidávání nových osob do ní.
+    Úkol splnila bez problému a velice rychle.
+\end{itemize}
+
+
+\noindent\textbf{Adam, kamarád} \\[-1em]
+\begin{itemize}
+    \item 26 let
+    \item Technologie používá denně a je v nich velmi zdatný
+    \item Student geografie
+\end{itemize}
+
+Test s Adamem, který žije v Praze, probíhal online formou. S aplikací pracoval pomocí vzdáleného
+přístupu k obrazovce. Tento test se zaměřoval hlavně na zadávání specifických úkolů. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Stěžuje si, že obrazovka s recepty nevypadá jako úvodní, ale jako už by byla otevřena
+    nějaká karta.
+
+    \item Nepochopil princip hodnocení ve smyslu \uv{Počet spokojených kuchařů}. Úpravou
+    na intuitivnějších zápis, \uv{Kladně hodnocených receptů}, pak už pochopil hned
+    a způsob hodnocení i ocenil.
+
+    \item Ocenil tvorbu skupin a ukládání receptů. Obě funkce rád využíval.
+\end{itemize}
+
+
+\noindent\textbf{Daan, kamarád z~Erasmu} \\[-1em]
+\begin{itemize}
+    \item 25 let
+    \item Má bohaté zkušenosti s informatikou a uživatelskými rozhraními, technologie používá denně
+    \item Student oboru \uv{Human computer interaction}
+\end{itemize}
+
+Testování zde probíhalo opět pomocí vzdáleného přístupu a zadáváním úkolů. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Velmi význačným aspektem tohoto testu bylo, že Daan pochází z Nizozemska, a tedy
+    pochopitelně neumí česky\,--\,jazykem, ve kterém je daná aplikace vytvořena. Tento test však
+    potvrdil, že s využitým vhodných ikon je i on schopen bez vynaložení velkého úsilí pochopit,
+    kde najít jakou funkcionalitu. Aplikaci zvládl použít i přes jazykovou bariéru, což považujeme
+    za velký úspěch.
+
+    \item U sdílení zmiňuje, že by mu přišlo intuitivnější, kdyby uživatel nejprve zvolil komu
+    chce poslat daný recept, a až pak jej hromadně poslal. Tento způsob sdílení používá aplikace
+    WhatsApp. Implementovaný způsob, kde uživatel zadá zprávu a postupně odesílá jendotlivým
+    protějškům či do skupin, je inspirován touto činností v aplikaci Messenger. Po důkladném zvážení
+    byl způsob sdílení inspirovaný Messengerem ponechán. V Česku je tato aplikace obecně rozšířenější
+    než Whatsapp, což právě pro Nizozemsko platí naopak, a většina našich testovaných uživatelů Messenger používá
+    častěji.
+\end{itemize}
+
+
 \subsection{Testování Ondřeje}
+\todo
+
 \subsection{Testování Tomáše T.}
+\todo
+
 % popis uživatele (věkpvá skupina, pohlaví, technická zdatnost, pracovní zaměření)
 % průběh testu/ů
 % 2 vybrané klíčové výsledky - ponaučení
 %% (Jak přesně na to je v zadání, str. 12)
 
 \subsection{Shrnutí testování a ponaučení}
+
+\todo
 
 \end{document}
 

@@ -9,9 +9,11 @@ const currentUser = useUserStore();
 
 import { acceptFriendRequest, blockUser } from "../../utils/users_api";
 
+
 const props = defineProps({
   friend: Object
 });
+
 
 const GoToProfile = async () => {
   router.push(`/profile/${props.friend.id}`);

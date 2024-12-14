@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onMounted, onUnmounted, onUpdated, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, onUpdated } from 'vue';
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -18,6 +18,7 @@ const peerUser = await readUser(peerUserId);
 
 
 // Sending messages
+
 const textMessage = ref("");
 const HandleSending = async () => {
   if (textMessage.value.length != 0) { // Do not send an empty message
@@ -45,8 +46,6 @@ onMounted(async () => {
 
   messageChanges = await createSubscription("*", "Message", async () => {
     messages.value = await readChat(currentUser.id, peerUser.id);
-    //await nextTick();
-    //scrollDown();
   });
 });
 onUnmounted(async () => {
@@ -75,7 +74,7 @@ onUpdated(() => {
   <!-- Entry field -->
   <Divider></Divider>
 
-  <div style="display: flex; position: fixed; bottom: 80px; width: 320px; padding-top: 100px; gap: 5px;">
+  <div class="entry-field">
     <InputText
       v-model="textMessage"
       size="large"
@@ -94,4 +93,13 @@ onUpdated(() => {
 </template>
 
 <style scoped>
+.entry-field {
+  display: flex;
+  position: fixed;
+  bottom: 80px;
+  width: 320px;
+  padding-top: 100px;
+  gap: 5px;
+}
+
 </style>

@@ -14,6 +14,7 @@ const props = defineProps({
   message: Object
 });
 
+
 const GoToRecipe = async () => {
   if (props.message.recipe_id != null) {
     router.push(`/recipe/public/${props.message.recipe_id}`)
@@ -24,23 +25,28 @@ const WhoPosted = computed(() => {
   return (props.message.person_posted == currentUser.id) ? "sent-by-me" : "sent-by-other";
 });
 
+// Show name only for massages of others and do so only in groupchats
+const ShowName = computed(() => {
+  return (props.message.person_posted != currentUser.id) && (props.message.groupchat_id != null);
+});
+
 </script>
 
 <template>
   <Card
     :class="WhoPosted"
     @click="GoToRecipe">
-    <template #title>
+    <template #title> <!-- only set when there is a recipe associated with the message -->
       <div v-if="message.recipe_id != null">
         <Divider style="margin-bottom: 10px;"></Divider>
         {{ message.Recipe.name }}
         <Divider style="margin-top: 10px;"></Divider>
+
       </div>
     </template>
 
     <template #subtitle>
-      <!-- Show name only for others massages and do so only in groupchats -->
-      <div v-if="(message.person_posted != currentUser.id) && (message.groupchat_id != null)">
+      <div v-if="ShowName">
         {{ message.User.name }}
       </div>
     </template>

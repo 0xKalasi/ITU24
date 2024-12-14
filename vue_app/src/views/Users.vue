@@ -7,7 +7,9 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const user = useUserStore();
 
+
 import { readAllUsers } from "../../utils/users_api.js";
+
 
 const users = await readAllUsers();
 
@@ -27,18 +29,18 @@ const GoToProfile = async (id) => {
   <div style="position: relative; overflow-y: auto; height: calc(100vh - 210px);">
     <table>
       <div
-        v-for="u in users"
+        v-for="user in users"
         style="display: flex; width: 100%; gap: 10px; margin-bottom: 5px">
         <Message
           severity="secondary"
-          @click="GoToProfile(u.id)"
+          @click="GoToProfile(user.id)"
           style="flex-grow: 1;">
-          {{ u.name }}
+          {{ user.name }}
         </Message>
 
         <Button 
           label="Přihlásit"
-          @click="SwitchUser(u.id)">
+          @click="SwitchUser(user.id)">
         </Button>
       </div>
     </table>

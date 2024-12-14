@@ -9,6 +9,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+
 import { acceptFriendRequest, readUser } from "../../utils/users_api.js";
 import { readUsersPublicRecipe } from "../../utils/api.js";
 import { sendFriendRequest, ForeignUserRelation, getFriendshipState, unblockUser } from "../../utils/users_api.js";
@@ -22,7 +23,8 @@ const usersRecipes = await readUsersPublicRecipe(viewedUser.id);
 const recipeCnt = usersRecipes.length;
 const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
 
-const currentFriendshipState = ref(ForeignUserRelation.loggedOut); // Initally hide the state
+
+const currentFriendshipState = ref(ForeignUserRelation.LOGGED_OUT); // Initally hide the state
 
 // Frienship state is stored in DB, so we need to listen to it
 let stateChanges;
@@ -73,7 +75,7 @@ const Unblock = async () => {
         {{ viewedUser.name }}
       </h2>
       <i v-if="currentFriendshipState != ForeignUserRelation.BLOCKED_BY_THEM">
-        <!-- The only thing we show when blocked is name and the status -->
+        <!-- The only thing we show when blocked is name and the fact -->
         {{ viewedUser.bio }}
       </i>
     </div>
@@ -84,7 +86,7 @@ const Unblock = async () => {
 
     <div style="margin-bottom: 20px">
 
-      <!-- Just for completeness; nothing should be output when logged out or looking at own profile -->
+      <!-- Just for completeness; nothing should be visible when logged out or looking at own profile -->
       <div v-if="currentFriendshipState == ForeignUserRelation.LOGGED_OUT"></div>
       <div v-else-if="currentFriendshipState == ForeignUserRelation.SELF"></div>
 
@@ -171,16 +173,16 @@ const Unblock = async () => {
     </div>
 
     <div v-if="currentFriendshipState != ForeignUserRelation.BLOCKED_BY_THEM">
-      <!-- Statistics -->
+      <!-- Statistics, shown only when not blocked -->
 
       <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
       <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
       <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
       <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
-      <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
       <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
 
       <Divider></Divider>

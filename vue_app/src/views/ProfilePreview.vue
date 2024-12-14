@@ -8,7 +8,9 @@ import { useUserStore, profilePreviewStore } from '../stores/userStore';
 const currentUser = useUserStore();
 const previewData = profilePreviewStore();
 
+
 import { readUsersPublicRecipe } from "../../utils/api.js";
+
 
 const usersRecipes = await readUsersPublicRecipe(currentUser.id);
 const recipeCnt = usersRecipes.length;
@@ -17,9 +19,9 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
 </script>
 
 <template>
-  <a style="color: aquamarine; display: flex; justify-content: center;">
+  <div style="color: aquamarine; display: flex; justify-content: center;">
     Takto Vás uvidí ostatní uživatelé
-  </a>
+  </div>
   <Divider></Divider>
   
   <BasicPageHeader text="Náhled profilu"></BasicPageHeader>
@@ -41,9 +43,9 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
     <h3 v-else-if="recipeCnt == 1">{{ usersRecipes.length }} veřejný recept</h3>
     <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
-    <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+    <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
     <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
 
     <Divider></Divider>

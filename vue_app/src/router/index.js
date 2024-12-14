@@ -19,7 +19,7 @@ import Share from "../views/Share.vue";
 import ProfilePreview from "../views/ProfilePreview.vue";
 import Groupchat from "../views/Groupchat.vue";
 import EditGroupchat from "../views/EditGroupchat.vue";
-import AddGroupchatmember from "../views/AddGroupchatmember.vue";
+import AddGroupchatMember from "../views/AddGroupchatMember.vue";
 import RecipeView from "../views/RecipeFormView.vue";
 
 const routes = [
@@ -53,7 +53,7 @@ const routes = [
   },
   { path: "/groupchats/:groupchat_id", component: Groupchat },
   { path: "/groupchats/edit/:groupchat_id", component: EditGroupchat},
-  { path: "/groupchats/add/:groupchat_id", component: AddGroupchatmember },
+  { path: "/groupchats/add/:groupchat_id", component: AddGroupchatMember },
 
   { path: "/:pathMatch(.*)*", component: NotFound },
 ];

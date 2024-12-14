@@ -9,15 +9,18 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+
 import { readPublicRecipe } from "../../utils/api.js";
 import { readUsersFriends, sendChatMessage } from "../../utils/users_api.js";
 import { readUsersGroupchats, sendGroupchatMessage } from "../../utils/groupchat_api.js";
+
 
 const recipeId = router.currentRoute.value.params.recipe_id;
 const recipe = await readPublicRecipe(recipeId);
 
 const friends = await readUsersFriends(currentUser.id);
 const groupchats = await readUsersGroupchats(currentUser.id);
+
 
 const friendsButtonsPressed = ref(
   friends.reduce((arr, friend) => {

@@ -9,6 +9,7 @@ const currentUser = useUserStore();
 
 import { unblockUser } from '../../utils/users_api';
 
+
 const props = defineProps({
   blocked: Object
 });

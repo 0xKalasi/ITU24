@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onMounted, onUnmounted, onUpdated, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, onUpdated } from 'vue';
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -18,6 +18,7 @@ const currentGroup = await readGroupchat(currentGroupId);
 
 
 // Sending messages
+
 const textMessage = ref("");
 const HandleSending = async () => {
   if (textMessage.value.length != 0) { // Do not send an empty message
@@ -43,10 +44,8 @@ onMounted(async () => {
   messages.value = await readGroupchatMessages(currentGroup.id);
   scrollDown();
 
-  groupMessageChanges = await createSubscription("INSERT", "Message", async () => {
+  groupMessageChanges = await createSubscription("*", "Message", async () => {
     messages.value = await readGroupchatMessages(currentGroup.id);
-    //await nextTick();
-    //scrollDown();
   });
 });
 onUnmounted(async () => {
@@ -63,7 +62,9 @@ onUpdated(() => {
   <div
     ref="container"
     style="overflow-y: auto; height: calc(100vh - 266px);">
-    <div v-if="messages.length == 0" style="margin-top: 20px;">
+    <div
+      v-if="messages.length == 0"
+      style="margin-top: 20px;">
       Skupina je dosud prázdná.
     </div>
 
@@ -75,7 +76,7 @@ onUpdated(() => {
   <!-- Entry field -->
   <Divider></Divider>
 
-  <div style="display: flex; position: fixed; bottom: 80px; width: 320px; padding-top: 100px; gap: 5px;">
+  <div class="entry-field">
     <InputText
       v-model="textMessage"
       size="large"
@@ -94,4 +95,13 @@ onUpdated(() => {
 </template>
 
 <style scoped>
+.entry-field {
+  display: flex;
+  position: fixed;
+  bottom: 80px;
+  width: 320px;
+  padding-top: 100px;
+  gap: 5px;
+}
+
 </style>

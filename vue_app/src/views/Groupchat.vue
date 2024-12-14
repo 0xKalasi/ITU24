@@ -9,6 +9,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+
 import { readGroupchat, removeUserFromGroup } from "../../utils/groupchat_api";
 
 
@@ -68,7 +69,7 @@ const ToggleMenu = (event) => {
   menu.value.toggle(event);
 }
 
-const ChooseModel = computed(() => {
+const ChooseMenuContent = computed(() => {
   return (currentUser.id == currentGroup.creator) ? items_creator.value : items_member.value;
 });
 
@@ -98,7 +99,7 @@ const isLoading = ref(false);
         <Menu
           ref="menu"
           id="overlay_menu"
-          :model="ChooseModel"
+          :model="ChooseMenuContent"
           :popup="true">
         </Menu>
       </div>

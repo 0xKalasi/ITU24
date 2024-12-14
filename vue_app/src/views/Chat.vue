@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -9,15 +9,13 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
-import { readUser, deleteChatHistory, blockUser } from "../../utils/users_api";
+
+import { readUser, blockUser } from "../../utils/users_api";
 
 
 const peerUserId = router.currentRoute.value.params.user_id;
 const peerUser = await readUser(peerUserId);
 
-const DeleteHistory = async () => {
-  await deleteChatHistory(currentUser.id, peerUser.id);
-}
 
 const BlockUser = async () => {
   await blockUser(currentUser.id, peerUser.id);
@@ -43,11 +41,6 @@ const items = ref([
   {
     label: "Možnosti chatu",
     items: [
-      {
-        label: "Vymazat Historii konverzace",
-        icon: "pi pi-history",
-        command: DeleteHistory
-      },
       {
         label: "Zablokovat uživatele",
         icon: "pi pi-lock",
@@ -93,7 +86,7 @@ const isLoading = ref(false);
 
     </div>
 
-    <Divider style="margin-bottom: 0px; margin-top: 10px;"></Divider>
+    <Divider style="margin-top: 10px;"></Divider>
 
     <ChatComp></ChatComp>
 

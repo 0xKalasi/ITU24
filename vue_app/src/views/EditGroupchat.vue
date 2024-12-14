@@ -9,6 +9,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+
 import { 
   readGroupchat,
   updateGroupName,
@@ -61,12 +62,6 @@ const Rename = async () => {
   }
 }
 
-const AskLeaveGroup = async () => { confirmLeaveGroup.value = true; }
-const CancelLeaveGroup = async () => { confirmLeaveGroup.value = false; }
-const LeaveGroup = async () => {
-  await removeUserFromGroup(currentUser.id, currentGroup.id);
-  router.push("/chats");
-}
 
 const GoToAddMembers = async () => {
   router.push(`/groupchats/add/${currentGroup.id}`)
@@ -76,15 +71,23 @@ const RemoveUser = async (id) => {
   await removeUserFromGroup(id, currentGroup.id);
 }
 
-const AskDeleteHistory = async () => { confirmDelHist.value = true; }
-const CancelDeleteHistory = async () => { confirmDelHist.value = false; }
+const AskDeleteHistory = async () => {
+  confirmDelHist.value = true;
+}
+const CancelDeleteHistory = async () => {
+  confirmDelHist.value = false;
+}
 const DeleteHistory = async () => {
   await deleteGroupchatMessages(currentGroup.id);
   confirmDelHist.value = false;
 }
 
-const CancelDeleteGroup = async () => { confirmDelGroup.value = false; }
-const AskDeleteGroup = async () => { confirmDelGroup.value = true; }
+const CancelDeleteGroup = async () => {
+  confirmDelGroup.value = false;
+}
+const AskDeleteGroup = async () => {
+  confirmDelGroup.value = true;
+}
 const DeleteGroupchat = async () => {
   await deleteGroupchat(currentGroup.id);
   router.push("/chats");
@@ -116,7 +119,7 @@ const DeleteGroupchat = async () => {
     <div v-if="isCreator" style="position: relative; overflow-y: auto; height: calc(100vh - 220px);">
       <Divider></Divider>
 
-      <!-- Rename -->
+      <!-- RENAME -->
       <div
         style="display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px;">
         <InputText
@@ -131,7 +134,9 @@ const DeleteGroupchat = async () => {
         </Button>
       </div>
 
-      <!-- Delete features -->
+      <!-- DELETE FEATURES -->
+
+      <!-- Default view -->
       <div
         v-if="( ! confirmDelHist) && ( ! confirmDelGroup)"
         style="margin-bottom: 10px; display: flex; gap: 10px">
@@ -150,6 +155,7 @@ const DeleteGroupchat = async () => {
         </Button>
       </div>
 
+      <!-- History deletion confirmation -->
       <div v-else-if="confirmDelHist">
         <div style="color: red; margin-top: 10px;">
           Tato akce je nevratná, skutečně chcete smazat historii zpráv?
@@ -171,6 +177,7 @@ const DeleteGroupchat = async () => {
         </div>
       </div>
 
+      <!-- Whole group deletion confirmation -->
       <div v-else-if="confirmDelGroup">
         <div style="color: red; margin-top: 10px;">
           Skutečně chcete smazat skupinu? Tato akce je nevratná.
@@ -193,7 +200,8 @@ const DeleteGroupchat = async () => {
 
       </div>
 
-      <!-- Member managment -->
+      <!-- MEMBER MANAGMENT -->
+
       <div style="display: flex; align-items: center; gap: 20px;">
         <h3>Členové</h3>
 
@@ -241,7 +249,7 @@ const DeleteGroupchat = async () => {
 
     <div v-else>
       <!-- THIS PART WAS REPLACED BY A SUBMENU FOR USERS OPTIONS -->
-      <!-- It is left here for completeness and as a safeguard, a non-creator, cannot edit the group here -->
+      <!-- It is left here for completeness and as a safeguard, a non-creator, cannot edit the group on this page -->
 
     </div>
 

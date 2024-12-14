@@ -10,8 +10,10 @@ import { useUserStore, profilePreviewStore } from '../stores/userStore';
 const currentUser = useUserStore();
 const previewData = profilePreviewStore();
 
+
 import { readUsersPublicRecipe } from "../../utils/api";
 import { updateUser } from "../../utils/users_api";
+
 
 const usersRecipes = await readUsersPublicRecipe(currentUser.id);
 const recipeCnt = usersRecipes.length;
@@ -27,7 +29,7 @@ const IsLoggedOut = computed (() => {
   return currentUser.id == 0;
 });
 
-const PrepareToUpdate = async () => {
+const StartEditMode = async () => {
   previewData.name = currentUser.name;
   previewData.bio = currentUser.bio;
   
@@ -103,7 +105,7 @@ const GoToPreview = async () => {
         <Button
           icon="pi pi-pencil"
           label="Upravit profil"
-          @click="PrepareToUpdate"
+          @click="StartEditMode"
           style="margin-left: auto;">
         </Button>
       </div>
@@ -117,18 +119,38 @@ const GoToPreview = async () => {
         {{ currentUser.bio }}
       </i>
 
-      <Divider style="margin-top: 20px;"></Divider>
+      <Divider style="margin-top: 20px; margin-bottom: 20px"></Divider>
 
       <div @click="router.push('/recipes')">
-        <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-        <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-        <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-        <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+        <Message v-if="recipeCnt >= 5"
+          severity="contrast"
+          variant="outlined"
+          size="large">
+          <b>{{ recipeCnt }}</b> veřejných receptů
+        </Message>
+        <Message v-else-if="recipeCnt >= 2"
+          severity="contrast"
+          variant="outlined"
+          size="large">
+          <b>{{ recipeCnt }}</b> veřejné recepty
+        </Message>
+        <Message v-else-if="recipeCnt == 1"
+          severity="contrast"
+          variant="outlined"
+          size="large">
+          <b>{{ recipeCnt }}</b> veřejný recept
+        </Message>
+        <Message v-else
+          severity="contrast"
+          variant="outlined"
+          size="large"> <!-- recipeCnt == 0 -->
+          Žádné veřejné recepty
+        </Message>
       </div>
 
-      <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
       <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
 
       <Divider></Divider>
@@ -187,9 +209,9 @@ const GoToPreview = async () => {
       <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
       <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
-      <h3 v-if="totalLikes >= 5">{{ totalLikes }} spokojených kuchařů</h3>
-      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} spokojení kuchaři</h3>
-      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} spokojený kuchař</h3>
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
       <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
 
       <Divider></Divider>

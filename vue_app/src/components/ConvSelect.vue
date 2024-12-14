@@ -6,6 +6,7 @@ import { computed } from "vue";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
+import { Options } from "../stores/userStore";
 
 const props = defineProps({
   requestCount: Number
@@ -16,13 +17,6 @@ const selected = defineModel(); // Two way binding with v-model
 
 const ChangeListed = (which) => {
   selected.value = which;
-}
-
-
-const Options = {
-  REQUESTS: "Žádosti",
-  CHATS: "Chaty",
-  BLOCKED: "Zablokované"
 }
 
 
@@ -45,26 +39,29 @@ const GetBadgeSeverity = computed(() => (which) => {
     <Button
       :label="Options.REQUESTS"
       :badge="PendingCount"
-      :badgeSeverity="GetBadgeSeverity('Žádosti')"
-      :severity="SetHighlight('Žádosti')"
-      @click="ChangeListed('Žádosti')"
+      :badgeSeverity="GetBadgeSeverity(Options.REQUESTS)"
+      :severity="SetHighlight(Options.REQUESTS)"
+      @click="ChangeListed(Options.REQUESTS)"
       raised
       style="flex: 1">
     </Button>
+
     <Button
       :label="Options.CHATS"
-      :severity="SetHighlight('Chaty')"
-      @click="ChangeListed('Chaty')"
+      :severity="SetHighlight(Options.CHATS)"
+      @click="ChangeListed(Options.CHATS)"
       raised
       style="flex: 1">
     </Button>
+
     <Button
       :label="Options.BLOCKED"
-      :severity="SetHighlight('Zablokované')"
-      @click="ChangeListed('Zablokované')"
+      :severity="SetHighlight(Options.BLOCKED)"
+      @click="ChangeListed(Options.BLOCKED)"
       raised
       style="flex: 1">
     </Button>
+
   </ButtonGroup>
 
 </template>

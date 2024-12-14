@@ -9,6 +9,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+
 import { readGroupchat, readGroupchatMembers, addUserToGroup } from "../../utils/groupchat_api";
 import { readUsersFriends } from "../../utils/users_api";
 
@@ -53,7 +54,8 @@ const AddToGroup = async (id) => {
     :key="addedMemberKey">
   </Alert>
 
-  <BasicPageHeader text=""></BasicPageHeader>
+  <BasicPageHeader text=""></BasicPageHeader> <!-- Only for the back button, the text itself will be lower -->
+
   <h2>
     Přídat členy do skupiny {{ currentGroup.name }}
   </h2>
@@ -66,9 +68,8 @@ const AddToGroup = async (id) => {
       style="margin-top: 10px;">
 
       <div style="margin-bottom: 10px; display: flex; align-items: center;">
-        ->
-        <b style="margin-left:10px;">
-          {{ friend.name }}
+        <b>
+          -> {{ friend.name }}
         </b>
 
         <div style="display: flex; flex: 1; justify-content: end;">

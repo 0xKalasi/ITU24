@@ -1,3 +1,5 @@
+<!-- Martin Jabůrek, xjabur02 -->
+
 <script setup>
 </script>
 
@@ -11,4 +13,5 @@
     width: 100%;
     height: 2px;
   }
+  
 </style>

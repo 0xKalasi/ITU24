@@ -6,13 +6,15 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-import { useUserStore, chatsSelectedStore } from '../stores/userStore';
+import { useUserStore, chatsSelectedStore, Options } from '../stores/userStore';
 const currentUser = useUserStore();
 const selected = chatsSelectedStore();
+
 
 import { readUsersFriends, readUsersRequests, readUsersBlocked } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
 import { readUsersGroupchats, createGroupchat } from "../../utils/groupchat_api.js";
+
 
 const friends = ref([]);
 const friendRequests = ref([]);
@@ -58,7 +60,7 @@ onUnmounted(async () => {
 const chats = ref([]);
 
 // Friend and group chats are shown together as is customary
-// Here they are put together, differentiated and sorted
+// Here they are differentiated, put together, and sorted
 const ConstructChatList = async () => {
   friends.value.forEach(friend => {
     friend.is_groupchat = false;
@@ -68,6 +70,7 @@ const ConstructChatList = async () => {
   });
 
   chats.value = [...friends.value, ...groupchats.value];
+
   chats.value.sort((y, x) => new Date(x.created_at) - new Date(y.created_at));
 }
 
@@ -80,13 +83,12 @@ const createGroupText = ref(null);
 const ToggleGroupCreation = () => {
   CreateGroupchat.value = true;
   nextTick(() => {
-    // createGroupText.value?.$el?.querySelector('input')?.focus();
     // TODO FIND OUT HOW TO FOCUS
   });
 }
 
 const CreationButtonToggled = computed(() => {
-  return (selected.option != "Chaty") ? "disable-creating p-button-secondary" : "";
+  return (selected.option != Options.CHATS) ? "disable-creating p-button-secondary" : "";
 });
 
 const CreateNewGroupchat = async () => {
@@ -158,7 +160,7 @@ const ToggleMenu = (event) => {
   <!-- PENDING REQUEST -->
 
   <div
-   v-if="selected.option == 'Žádosti'"
+   v-if="selected.option == Options.REQUESTS"
    class="entries">
     
     <div
@@ -178,7 +180,7 @@ const ToggleMenu = (event) => {
   <!-- MY CHATS -->
 
   <div
-    v-if="selected.option == 'Chaty'"
+    v-if="selected.option == Options.CHATS"
     class="entries">
     
     <div
@@ -231,7 +233,7 @@ const ToggleMenu = (event) => {
   <!-- BLOCKED USERS -->
 
   <div
-    v-if="selected.option == 'Zablokované'"
+    v-if="selected.option == Options.BLOCKED"
     class="entries">
     <div
       v-if="blockedUsers.length == 0"
