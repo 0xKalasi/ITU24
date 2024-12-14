@@ -1,6 +1,8 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
+import { computed } from 'vue';
+
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -15,6 +17,14 @@ const props = defineProps({
 });
 
 
+const truncateStr = computed(() => (str, max) => {
+  if (str.length > max) {
+    return str.substring(0, max - 3) + "...";
+  } else {
+    return str;
+  }
+});
+
 const GoToProfile = async () => {
   router.push(`/profile/${props.blocked.id}`);
 }
@@ -28,11 +38,11 @@ const UnBlock = async () => {
 <template>
 <ButtonGroup class="blocked">
   <Button
+    :label="truncateStr(blocked.name, 23)"
     severity="secondary"
     @click="GoToProfile"
     raised
     class="name-button">
-    {{ blocked.name }}
   </Button>
 
   <Button

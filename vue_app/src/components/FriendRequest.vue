@@ -1,6 +1,8 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
+import { computed } from 'vue';
+
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -12,6 +14,15 @@ import { acceptFriendRequest, blockUser } from "../../utils/users_api";
 
 const props = defineProps({
   friend: Object
+});
+
+
+const truncateStr = computed(() => (str, max) => {
+  if (str.length > max) {
+    return str.substring(0, max - 3) + "...";
+  } else {
+    return str;
+  }
 });
 
 
@@ -32,7 +43,7 @@ const Block = async () => {
 <template>
   <ButtonGroup class="request">
     <Button
-      :label="friend.name"
+      :label="truncateStr(friend.name, 23)"
       icon="pi pi-user"
       severity="secondary"
       raised

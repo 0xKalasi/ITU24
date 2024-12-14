@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onUnmounted } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -16,6 +16,14 @@ import { readUser, blockUser, setLastTimeSeenForChat } from "../../utils/users_a
 const peerUserId = router.currentRoute.value.params.user_id;
 const peerUser = await readUser(peerUserId);
 
+
+const truncateStr = computed(() => (str, max) => {
+  if (str.length > max) {
+    return str.substring(0, max - 3) + "...";
+  } else {
+    return str;
+  }
+});
 
 const BlockUser = async () => {
   await blockUser(currentUser.id, peerUser.id);
@@ -68,7 +76,7 @@ const isLoading = ref(false);
 
   <div v-else>
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
-      <BasicPageHeader :text="`${peerUser.name}`"></BasicPageHeader>
+      <BasicPageHeader :text="truncateStr(peerUser.name, 16)"></BasicPageHeader>
 
       <div>
         <Button 

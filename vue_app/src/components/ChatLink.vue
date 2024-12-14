@@ -19,6 +19,14 @@ const props = defineProps({
 });
 
 
+const truncateStr = computed(() => (str, max) => {
+  if (str.length > max) {
+    return str.substring(0, max - 3) + "...";
+  } else {
+    return str;
+  }
+});
+
 const GoToChat = async () => {
   if (props.chatWith.is_groupchat) {
     router.push(`/groupchats/${props.chatWith.id}`);
@@ -88,7 +96,7 @@ onUnmounted(async () => {
     </Button>
     
     <Button
-      :label="chatWith.name"
+      :label="truncateStr(chatWith.name, 23)"
       icon="pi pi-send"
       iconPos="right"
       :badge="NewMessageCount"

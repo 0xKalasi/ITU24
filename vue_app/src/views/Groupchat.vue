@@ -17,6 +17,14 @@ const currentGroupId = router.currentRoute.value.params.groupchat_id;
 const currentGroup = await readGroupchat(currentGroupId);
 
 
+const truncateStr = computed(() => (str, max) => {
+  if (str.length > max) {
+    return str.substring(0, max - 3) + "...";
+  } else {
+    return str;
+  }
+});
+
 const IsCreator = computed(() => {
   return (currentUser.id == currentGroup.creator) ? "pi pi-pencil" : "pi pi-ellipsis-h";
 });
@@ -86,7 +94,7 @@ const isLoading = ref(false);
 
   <div v-else>
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
-      <BasicPageHeader :text="currentGroup.name"></BasicPageHeader>
+      <BasicPageHeader :text="truncateStr(currentGroup.name, 16)"></BasicPageHeader>
 
       <div>
         <Button 
