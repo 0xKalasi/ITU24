@@ -56,11 +56,14 @@ const createGroupchat = async (groupName) => {
   }
 
   // Add the creator into it
+  const now = new Date().toISOString();
+
   const { data, error: err2 } = await supabase
   .from('GroupchatMembers')
   .insert([{
     user: currentUser.id,
-    groupchat: createdGroupchat[0].id 
+    groupchat: createdGroupchat[0].id,
+    last_viewed: now
   }])
   .select()
 
