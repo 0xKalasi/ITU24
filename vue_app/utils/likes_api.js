@@ -1,5 +1,7 @@
 import { supabase } from "./supabase";
 
+import { readUsersPublicRecipe } from "./api";
+
 const likeRecipe = async (recipeId, userId) => {
   const { data, error } = await supabase
   .from('UserLikes')
@@ -44,10 +46,23 @@ const getRecipeLikeCount = async (recipeId) => {
   return recipeLikeCount[0].count;
 }
 
-// HOW MANY LIKES FOR ALL USERS RECIPES
+const getAllUsersLikes = async (userId) => {
+  const recipes = await readUsersPublicRecipe(userId);
+
+  let sum = 0;
+
+  for (const recipe of recipes) {
+    sum += await getRecipeLikeCount(recipe.id);
+  }
+
+  console.log(sum);
+
+  return sum;
+}
 
 export {
   likeRecipe,
   unLikeRecipe,
-  getRecipeLikeCount
+  getRecipeLikeCount,
+  getAllUsersLikes
 };

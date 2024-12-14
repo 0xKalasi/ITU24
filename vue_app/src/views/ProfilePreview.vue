@@ -10,11 +10,12 @@ const previewData = profilePreviewStore();
 
 
 import { readUsersPublicRecipe } from "../../utils/api.js";
+import { getAllUsersLikes } from "../../utils/likes_api.js";
 
 
 const usersRecipes = await readUsersPublicRecipe(currentUser.id);
 const recipeCnt = usersRecipes.length;
-const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
+const totalLikes = await getAllUsersLikes(currentUser.id);
 
 </script>
 

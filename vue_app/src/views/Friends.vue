@@ -22,8 +22,8 @@ const blockedUsers = ref([]);
 const groupchats = ref([]);
 
 let friendListChanges;
-let friendRequestChanges;
-let blockedUsersChanges;
+//let friendRequestChanges;
+//let blockedUsersChanges;
 let groupsChanges;
 onMounted(async () => {
   friends.value = await readUsersFriends(currentUser.id);
@@ -51,8 +51,8 @@ onMounted(async () => {
 });
 onUnmounted(async () => {
   await removeSubscription(friendListChanges);
-  await removeSubscription(friendRequestChanges);
-  await removeSubscription(blockedUsersChanges);
+  //await removeSubscription(friendRequestChanges);
+  //await removeSubscription(blockedUsersChanges);
   await removeSubscription(groupsChanges);
 });
 
@@ -71,7 +71,7 @@ const ConstructChatList = async () => {
 
   chats.value = [...friends.value, ...groupchats.value];
 
-  chats.value.sort((y, x) => new Date(x.created_at) - new Date(y.created_at));
+  chats.value.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
 }
 
 
