@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -10,7 +10,7 @@ import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 
-import { readGroupchat, removeUserFromGroup } from "../../utils/groupchat_api";
+import { readGroupchat, removeUserFromGroup, setLastTimeSeenForGroupchat } from "../../utils/groupchat_api";
 
 
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
@@ -73,7 +73,9 @@ const ChooseMenuContent = computed(() => {
   return (currentUser.id == currentGroup.creator) ? items_creator.value : items_member.value;
 });
 
-
+onUnmounted(async () => {
+  await setLastTimeSeenForGroupchat(currentGroup.id, currentUser.id);
+});
 
 const isLoading = ref(false);
 

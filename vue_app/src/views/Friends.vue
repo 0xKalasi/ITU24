@@ -223,7 +223,7 @@ const ToggleMenu = (event) => {
       </div>
 
       <div v-for="chat in chats">
-        <ChatLink :chat="chat"></ChatLink>
+        <ChatLink :chatWith="chat"></ChatLink>
       </div>
 
     </div>

@@ -283,6 +283,8 @@ const getFriendshipState = async (user, peer) => {
 // The chats starts existing here and can be accessed when state is "accepted"
 // It is never removed when two people are friends
 const sendFriendRequest = async (sender, receiver) => {
+  const now = new Date().toISOString();
+
   const { statusData, statusError } = await supabase
   .from('FriendStatus')
   .insert([{ 
@@ -303,7 +305,9 @@ const sendFriendRequest = async (sender, receiver) => {
   .from('Chat')
   .insert([{
     user_1: Math.min(sender, receiver),
-    user_2: Math.max(sender, receiver) 
+    user_2: Math.max(sender, receiver),
+    user_1_last_viewed: now,
+    user_2_last_viewed: now
   }])
   .select()
 
@@ -384,6 +388,73 @@ const deleteChatHistory = async (user1, user2) => {
   }
 }
 
+// We need to first get the chat of the two users that are together
+const getUnseenMessageCount = async (user, peer) => {
+  const chatId = await getChatFromUserIds(user, peer);
+
+  const { data: Chat, error: err1 } = await supabase
+  .from('Chat')
+  .select('*')
+  .eq('id', chatId)
+
+  if (err1) {
+    console.log(err1);
+    return null;
+  }
+
+  const chat = Chat[0];
+
+  // Get when the user saw the chat last time
+  let lastTimeOpened;
+  if (user == chat.user_1) {
+    lastTimeOpened = chat.user_1_last_viewed;
+  } else {
+    lastTimeOpened = chat.user_2_last_viewed;
+  }
+
+  let { data: count, error: err2 } = await supabase
+  .from('Message')
+  .select('count')
+  .eq('chat_id', chat.id)
+  .gt('created_at', lastTimeOpened)
+  
+  if (err2) {
+    console.log(err2);
+    return null;
+  }
+
+  return count[0].count;
+}
+
+const setLastTimeSeenForChat = async (user, peer) => {
+  const chatId = await getChatFromUserIds(user, peer);
+
+  const now = new Date().toISOString();
+
+  if (user < peer) {
+    const { data, error } = await supabase
+    .from('Chat')
+    .update({ user_1_last_viewed: now })
+    .eq('id', chatId)
+    .select()
+
+    if (error) {
+      console.log(error);
+    }
+
+  } else {
+    const { data, error } = await supabase
+    .from('Chat')
+    .update({ user_2_last_viewed: now })
+    .eq('id', chatId)
+    .select()
+
+    if (error) {
+      console.log(error);
+    }
+  }
+}
+
 export {
   readAllUsers,
   readUser,
@@ -400,5 +471,7 @@ export {
   acceptFriendRequest,
   blockUser,
   unblockUser,
-  deleteChatHistory
+  deleteChatHistory,
+  getUnseenMessageCount,
+  setLastTimeSeenForChat
 };

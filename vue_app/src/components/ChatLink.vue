@@ -1,43 +1,79 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
+import { useUserStore } from "../stores/userStore";
+const currentUser = useUserStore();
+
+import { getUnseenMessageCount } from "../../utils/users_api";
+import { getUnseenGroupchatMessageCount } from "../../utils/groupchat_api";
+import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+
 
 const props = defineProps({
-  chat: Object
+  chatWith: Object
 });
 
 
 const GoToChat = async () => {
-  if (props.chat.is_groupchat) {
-    router.push(`/groupchats/${props.chat.id}`);
+  if (props.chatWith.is_groupchat) {
+    router.push(`/groupchats/${props.chatWith.id}`);
   } else {
-    router.push(`/chats/${props.chat.id}`);
+    router.push(`/chats/${props.chatWith.id}`);
   }
 }
 
 const GoToProfile = async () => {
-  if ( ! props.chat.is_groupchat) { // Safeguard, do not go to groupchat id equal to chat id
-    router.push(`/profile/${props.chat.id}`);
+  if ( ! props.chatWith.is_groupchat) { // Safeguard, do not go to groupchat id equal to chat id
+    router.push(`/profile/${props.chatWith.id}`);
   }
 }
 
 const GetIcon = computed(() => {
-  return props.chat.is_groupchat ? "pi pi-users" : "pi pi-user";
+  return props.chatWith.is_groupchat ? "pi pi-users" : "pi pi-user";
 });
 
 const ProfileButtonClass = computed(() => {
-  return props.chat.is_groupchat ? "profile-button not-clickable" : "profile-button";
+  return props.chatWith.is_groupchat ? "profile-button not-clickable" : "profile-button";
 });
 
 const TextClass = computed(() => {
-  return props.chat.is_groupchat ? "name-button-groupchat align-icon-right" : "name-button-chat align-icon-right";
+  return props.chatWith.is_groupchat ? "name-button-groupchat" : "name-button-chat";
 });
 
+// Dynamic loading of badges for newest read messages
+
+const NewMessageCount = ref("");
+
+let messageCountChanges;
+onMounted(async () => {
+  let messageCount = 0;
+
+  if (props.chatWith.is_groupchat) {
+    messageCount = await getUnseenGroupchatMessageCount(props.chatWith.id, currentUser.id);
+  } else {
+    messageCount = await getUnseenMessageCount(currentUser.id, props.chatWith.id);
+  }
+  NewMessageCount.value = messageCount != 0 ? String(messageCount) : "";
+
+  messageCountChanges = await createSubscription("*", "Message",  async () => {
+    let messageCount = 0;
+    
+    if (props.chatWith.is_groupchat) {
+      messageCount = await getUnseenGroupchatMessageCount(props.chatWith.id, currentUser.id);
+    } else {
+      messageCount = await getUnseenMessageCount(currentUser.id, props.chatWith.id);
+    }
+    NewMessageCount.value = messageCount != 0 ? String(messageCount) : "";
+  });
+});
+onUnmounted(async () => {
+  await removeSubscription(messageCountChanges);
+});
 
 </script>
 
@@ -52,13 +88,15 @@ const TextClass = computed(() => {
     </Button>
     
     <Button
-      :label="chat.name"
+      :label="chatWith.name"
       icon="pi pi-send"
       iconPos="right"
+      :badge="NewMessageCount"
+      badgeSeverity="primary"
       severity="secondary"
       raised
       @click="GoToChat"
-      :class="TextClass">
+      :class="[TextClass, 'align-icon-right']">
     </Button>
   </ButtonGroup>
 </template>

@@ -209,6 +209,50 @@ const deleteGroupchat = async (groupId) => {
 
 }
 
+const getUnseenGroupchatMessageCount = async (groupchatId, userId) => {
+  const { data: lastTimeOpened, error: err1 } = await supabase
+  .from('GroupchatMembers')
+  .select('last_viewed')
+  .eq('user', userId)
+  .eq('groupchat', groupchatId)
+
+  if (err1) {
+    console.log(err1);
+    return null;
+  }
+  
+  const lastTimeViewed = lastTimeOpened[0].last_viewed;
+
+  const { data: count, error: err2 } = await supabase
+  .from('Message')
+  .select('count')
+  .eq('groupchat_id', groupchatId)
+  .gt('created_at', lastTimeViewed)
+
+  if (err2) {
+    console.log(err2);
+    return null;
+  }
+
+  return count[0].count;
+}
+
+const setLastTimeSeenForGroupchat = async (groupchatId, userId) => {
+  const now = new Date().toISOString();
+
+  const { data, error } = await supabase
+  .from('GroupchatMembers')
+  .update({ last_viewed: now })
+  .eq('user', userId)
+  .eq('groupchat', groupchatId)
+  .select()
+        
+  if (error) {
+    console.log(error);
+  }
+
+}
+
 export {
   readGroupchat,
   readUsersGroupchats,
@@ -220,5 +264,7 @@ export {
   removeUserFromGroup,
   addUserToGroup,
   deleteGroupchatMessages,
-  deleteGroupchat
+  deleteGroupchat,
+  getUnseenGroupchatMessageCount,
+  setLastTimeSeenForGroupchat
 };

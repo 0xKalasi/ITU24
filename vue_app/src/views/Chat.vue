@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref } from "vue";
+import { ref, onUnmounted } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -10,7 +10,7 @@ import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
 
-import { readUser, blockUser } from "../../utils/users_api";
+import { readUser, blockUser, setLastTimeSeenForChat } from "../../utils/users_api";
 
 
 const peerUserId = router.currentRoute.value.params.user_id;
@@ -54,6 +54,10 @@ const ToggleMenu = (event) => {
   menu.value.toggle(event);
 }
 
+// We store the fact that the chat was opened
+onUnmounted(async () => {
+  await setLastTimeSeenForChat(currentUser.id, peerUser.id);
+});
 
 const isLoading = ref(false);
 

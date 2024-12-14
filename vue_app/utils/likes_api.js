@@ -44,6 +44,8 @@ const getRecipeLikeCount = async (recipeId) => {
   return recipeLikeCount[0].count;
 }
 
+// HOW MANY LIKES FOR ALL USERS RECIPES
+
 export {
   likeRecipe,
   unLikeRecipe,
