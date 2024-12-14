@@ -48,18 +48,24 @@ const confirmLeaveGroup = ref(false);
 // Alert detection:
 const nameChanged = ref(false);
 const nameChangedKey = ref(0);
-const emptyName = ref(false);
-const emptyNameKey = ref(0);
+
+
+const isInvalid = ref(false);
 
 const Rename = async () => {
-  if (groupName.value == "") {
-    emptyName.value = true;
-    emptyNameKey.value++;
-  } else {
+  if (groupName.value != "") {
+    await updateGroupName(currentGroup.id, groupName.value);
+    isInvalid.value = false;
+
     nameChanged.value = true;
     nameChangedKey.value++;
-    await updateGroupName(currentGroup.id, groupName.value)
+  } else {
+    isInvalid.value = true;
   }
+}
+
+const SetValid = () => {
+  isInvalid.value = false;
 }
 
 
@@ -102,12 +108,6 @@ const DeleteGroupchat = async () => {
     text="Jméno skupiny změněno."
     :key="nameChangedKey">
   </Alert>
-  <Alert
-    v-if="emptyName"
-    type="warn"
-    text="Chybí jméno skupiny."
-    :key="emptyNameKey">
-  </Alert>
 
   <BasicPageHeader text="Spravovat skupinu">
   </BasicPageHeader>
@@ -122,11 +122,24 @@ const DeleteGroupchat = async () => {
       <!-- RENAME -->
       <div
         style="display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px;">
-        <InputText
-          v-model="groupName"
-          size="small"
-          @keydown.enter="Rename">
-        </InputText>
+        <div>
+          <InputText
+            v-model="groupName"
+            size="small"
+            placeholder="Nový název skupiny"
+            :invalid="isInvalid"
+            @input="SetValid"
+            @keydown.enter="Rename">
+          </InputText>
+          <Message
+            v-if="isInvalid"
+            variant="simple"
+            severity="error"
+            size="small">
+            Není zadáno žádné jméno
+          </Message>
+        </div>
+
         <Button
           icon="pi pi-pencil"
           @click="Rename"

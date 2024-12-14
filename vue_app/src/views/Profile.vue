@@ -22,8 +22,6 @@ const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_co
 // Alerts:
 const profileUpdated = ref(false);
 const profileUpdatedKey = ref(0);
-const emptyName = ref(false);
-const emptyNameKey = ref(false);
 
 const IsLoggedOut = computed (() => {
   return currentUser.id == 0;
@@ -44,24 +42,30 @@ const GoToUserSelection = async () => {
   router.push("/users");
 }
 
+const isInvalid = ref(false);
+
 const UpdateProfile = async () => {
-  if (previewData.name == "") {
-    emptyName.value = true;
-    emptyNameKey.value++;
-  } else {
+  if (previewData.name != "") {
+    await updateUser(currentUser.id, previewData.name, previewData.bio);
     profileUpdated.value = true;
     profileUpdatedKey.value++;
-    await updateUser(currentUser.id, previewData.name, previewData.bio);
+    
     previewData.editMode = !previewData.editMode;
+  } else {
+    isInvalid.value = true;
   }
 }
 
+const SetValid = () => {
+  isInvalid.value = false;
+}
+
 const GoToPreview = async () => {
-  if (previewData.name == "") {
-    emptyName.value = true;
-    emptyNameKey.value++;
-  } else {
+  if (previewData.name != "") {
+    isInvalid.value = false;
     router.push(`/profile/preview`);
+  } else {
+    isInvalid.value = true;
   }
 }
 
@@ -72,11 +76,6 @@ const GoToPreview = async () => {
     type="success" 
     text="Profil úspěšně upraven"
     :key="profileUpdatedKey">
-  </Alert>
-  <Alert v-if="emptyName"
-    type="warn"
-    text="Není zadáno žádné jméno"
-    :key="emptyNameKey">
   </Alert>
 
   <BasicPageHeader text="Profil"></BasicPageHeader>
@@ -188,8 +187,17 @@ const GoToPreview = async () => {
           <InputText
             v-model="previewData.name"
             size="small"
-            style="margin-bottom: 20px;">
+            placeholder="Uživatelské jméno"
+            :invalid="isInvalid"
+            @input="SetValid">
           </InputText>
+          <Message
+            v-if="isInvalid"
+            variant="simple"
+            severity="error"
+            size="small">
+            Není zadáno žádné uživatelské jméno
+          </Message>
         </div>
 
         <div>
@@ -197,7 +205,9 @@ const GoToPreview = async () => {
             v-model="previewData.bio"
             rows="5"
             cols="30"
-            size="small">
+            size="small"
+            placeholder="Popisek"
+            style="margin-top: 20px">
           </Textarea>
         </div>
       </div>

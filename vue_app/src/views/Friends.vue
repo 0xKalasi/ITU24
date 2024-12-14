@@ -88,14 +88,26 @@ const CreationButtonToggled = computed(() => {
   return (selected.option != Options.CHATS) ? "disable-creating p-button-secondary" : "";
 });
 
+
+const isInvalid = ref(false);
+
 const CreateNewGroupchat = async () => {
-  await createGroupchat(newGroupName.value);
-  CreateGroupchat.value = false;
-  newGroupName.value = "";
+  if (newGroupName.value != "") {
+    await createGroupchat(newGroupName.value);
+    CreateGroupchat.value = false;
+    newGroupName.value = "";
+  } else {
+    isInvalid.value = true;
+  }
+}
+
+const SetValid = () => {
+  isInvalid.value = false;
 }
 
 const CancelCreatingGroupchat = () => {
   CreateGroupchat.value = false;
+  isInvalid.value = false;
   newGroupName.value = "";
 }
 
@@ -190,18 +202,29 @@ const ToggleMenu = (event) => {
     <div v-else>
       <div
         v-if="CreateGroupchat"
-        style="display: flex; align-items: center; gap: 10px; margin-top: 20px;">
+        style="display: flex; gap: 10px; margin-top: 20px;">
 
-        <InputText
-          id="createGroupText"
-          v-model="newGroupName"
-          size="large"
-          placeholder="Nová skupina"
-          @keydown.enter="CreateNewGroupchat"
-          style="width: calc(320px - 100px - 10px)"> <!-- (width of entry) - (width of buttons) - (width of space in between) -->
-        </InputText>
+        <div>
+          <InputText
+            id="createGroupText"
+            v-model="newGroupName"
+            size="large"
+            placeholder="Nová skupina"
+            :invalid="isInvalid"
+            @input="SetValid"
+            @keydown.enter="CreateNewGroupchat"
+            style="width: calc(320px - 100px - 10px)"> <!-- (width of entry) - (width of buttons) - (width of space in between) -->
+          </InputText>
+          <Message
+            v-if="isInvalid"
+            variant="simple"
+            severity="error"
+            size="small">
+            Není zadáno žádné jméno
+          </Message>
+        </div>
 
-        <ButtonGroup style="display: flex;">
+        <ButtonGroup>
           <Button
             icon="pi pi-check"
             raised
@@ -213,6 +236,7 @@ const ToggleMenu = (event) => {
           <Button
             icon="pi pi-times"
             raised
+            size="large"
             @click="CancelCreatingGroupchat"
             style="width: 50px; background: crimson; border: 1px solid crimson;">
           </Button>
