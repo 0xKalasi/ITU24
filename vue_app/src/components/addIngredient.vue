@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineModel } from "vue";
+import { ref } from "vue";
 import MyOnFloatLabel from "./myOnFloatLabel.vue";
 
 // Ingredient data
@@ -100,22 +100,24 @@ function handleDragEnd() {
                   <Button icon="pi pi-check" class="add-ingredient-btn p-button-outlined" @click="saveIngredient" />
                 </template>
                 <template v-else>
-                  <!-- Display Mode -->
-                  <div class="ingredient-info">
-                      <span class="ingredient-name">{{ ingredient.name }}</span> 
-                       {{ ingredient.quantity }}{{ ingredient.unit }} 
-                      <Tag v-if="ingredient.notes" severity="info">{{ ingredient.notes }}</Tag>
-                  </div>
-                  <Button 
-                      icon="pi pi-pencil" 
-                      class="wide-button p-button-outlined" 
-                      @click="editIngredient(index, ingredient)"
-                  />
-                  <Button 
-                      icon="pi pi-trash" 
-                      class="wide-button p-button-outlined" 
-                      @click="deleteIngredient(index)"
-                  />
+                <!-- Display Mode -->
+                <div class="ingredient-display">
+                    <div class="ingredient-field ingredient-name">{{ ingredient.name }}</div>
+                    <div class="ingredient-field ingredient-unit">{{ ingredient.quantity }} {{ ingredient.unit }}</div>
+                    <div class="ingredient-field ingredient-notes">{{ ingredient.notes }}</div>
+                    <div class="ingredient-buttons">
+                        <Button 
+                            icon="pi pi-pencil" 
+                            class="wide-button p-button-outlined" 
+                            @click="editIngredient(index, ingredient)"
+                        />
+                        <Button 
+                            icon="pi pi-trash" 
+                            class="wide-button p-button-outlined" 
+                            @click="deleteIngredient(index)"
+                        />
+                    </div>
+                </div>
                 </template>
             </div>
         </div>
@@ -131,62 +133,68 @@ function handleDragEnd() {
     </div>
 </template>
 
+
 <style scoped>
-    
 .ingredients-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem; /* Adds space between ingredient items */
 }
 
 .ingredient-item {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column; /* Allow wrapping for mobile or narrow screens */
+    gap: 0.5rem;
     padding: 0.5rem;
     border-radius: 8px;
     transition: background-color 0.3s ease;
+    width: 100%;
 }
 
 .ingredient-item.dragging {
     background-color: rgb(42, 42, 42);
 }
 
-.ingredient-info {
-    flex: 1;
+.ingredient-display {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap; /* Allows fields to wrap if content exceeds available space */
+    width: 100%;
+}
+
+.ingredient-field {
+    flex: 1; /* Equal space for each field */
+    word-wrap: break-word; /* Ensure long text wraps */
+    white-space: normal; /* Allow natural wrapping */
+    min-width: 80px; /* Ensures readability on smaller screens */
+}
+
+.ingredient-buttons {
+    display: flex;
+    gap: 0.5rem; /* Adds spacing between buttons */
+    margin-left: auto; /* Push buttons to the utmost right */
 }
 
 .in-one-row {
-      display: flex; /* Arrange elements in a row */
-      align-items: center; /* Vertically align all items */
-      gap: 1px; /* Adjust space between elements */
-      width: 100%; /* Occupy full available width */
+    display: flex;
+    align-items: center; /* Vertically align all items */
+    gap: 0.5rem; /* Adjust space between elements */
+    width: 100%; /* Occupy full available width */
 }
 
 .larger-input {
-      flex: 4; /* Allow this input to take more space */
-  }
+    flex: 4; /* Allow this input to take more space */
+}
     
 .in-one-row > *:not(.larger-input) {
-  flex: 2; /* Keep other inputs equally sized */
+    flex: 2; /* Keep other inputs equally sized */
 }
-/*
-.add-ingredient-btn {
-  width: 1rem;
-  height: 3rem; 
-  padding: 0; 
-  flex: 1;
-}*/
 
 .wide-button {
-    min-width: 70px;
+    min-width: 100px;
     padding: 0.5rem 1rem;
-    font-size: 1rem;
-    text-align: center;
-}
-
-.ingredient-name {
-    font-size: 1.2rem; /* Slightly larger font for the name */
-    font-weight: bold;
+    font-size: 0.9rem;
 }
 </style>
+

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineModel, onBeforeMount } from "vue";
+import { ref, onBeforeMount } from "vue";
 import PhotoUploader from "./photoUploader.vue";
 
 const steps = defineModel();
@@ -28,6 +28,11 @@ onBeforeMount(async () => {
 
 // Add new step
 function PushStep() {
+    console.log(newStep.value.name);
+    if(newStep.value.name === ""){
+        newStep.value.name = "Krok " + newStep.value.number;
+        newStep.value.name_was_edited = false;
+    }
     steps.value.push({ ...newStep.value }); // Push the step into the recipe
     newStep.value.number++; // Increment the step number
     newStep.value = { 
@@ -319,9 +324,9 @@ function deletePhoto(mode) {
 .step-name {
     font-weight: bold;
     font-size: 1.4rem;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    overflow: scroll;
     white-space: nowrap;
+    max-width: 300px;
 }
 
 .step-text {
@@ -329,6 +334,7 @@ function deletePhoto(mode) {
     word-wrap: break-word; /* Break words if they exceed the container width */
     white-space: pre-wrap; /* Preserve line breaks and wrap text */
     line-height: 1.5; /* Optional: Improve readability with spacing */
+    max-width: 300px;
 }
 
 .step-actions {

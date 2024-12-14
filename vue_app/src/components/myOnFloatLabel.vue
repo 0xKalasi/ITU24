@@ -2,7 +2,6 @@
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
-import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
   modelValue: [String, Number], // Allow both String and Number types
@@ -27,7 +26,7 @@ const value = defineModel();
       class="p-inputtext-sm custom-input"
       v-model="value"
     />
-    <label>{{ label }}</label>
+    <label class="truncate-label">{{ label }}</label>
   </FloatLabel>
 </template>
 
@@ -36,7 +35,7 @@ const value = defineModel();
 .custom-input {
     width: 100%;
     flex-grow: 0; /* Prevent stretching */
-    height: 3rem;
+    height: 4rem;
 }
 
 :deep(.p-inputnumber.p-component.custom-input) {
@@ -46,19 +45,28 @@ const value = defineModel();
 :deep(.p-inputnumber-input) {
     width: 100% !important; /* Inner input width */
     padding: 0.25rem;
-    font-size: 0.9rem; /* Adjust font size to match smaller text inputs */
+    font-size: 1.3rem; /* Adjust font size to match smaller text inputs */
 }
 
 .p-inputtext {
   width: 100% !important; /* Ensures the inner input adapts to the wrapper width */
   padding: 0.25rem; /* Adjusts inner input padding */
-  font-size: 0.9rem; /* Adjust font size to match smaller text inputs */
+  font-size: 1.3rem; /* Adjust font size to match smaller text inputs */
 }
 
 /* Optional: Adjust buttons if the InputNumber has increment/decrement buttons */
 .p-inputnumber-button {
   height: 24px; /* Make buttons smaller */
   width: 24px; /* Adjust button width */
-  font-size: 0.8rem; /* Adjust button icon size */
+  font-size: 1.3rem; /* Adjust button icon size */
+}
+
+/* Apply text truncation to the label */
+.truncate-label {
+  display: inline-block;
+  max-width: calc(100% - 10px); /* Ensures label doesn't overflow its container */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

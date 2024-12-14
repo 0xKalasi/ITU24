@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineModel } from "vue";
+import { ref } from "vue";
 import MyOnFloatLabel from "./myOnFloatLabel.vue";
 
 const props = defineProps({
@@ -62,13 +62,14 @@ function cancelEdit() {
           <MyOnFloatLabel v-model="editedUtencil" @keyup.enter="saveUtencil(index)" label="Název pomúcky" />
         </template>
         <template v-else>
-          {{ utencil.name }}
+          <div >
+            {{ utencil.name }}
+          </div>
         </template>
       </div>
       <div class="utencil-buttons">
         <template v-if="editingIndex === index">
           <Button icon="pi pi-check" class="wide-button p-button-outlined" @click="saveUtencil(index)" />
-          <Button icon="pi pi-times" class="wide-button p-button-outlined" @click="cancelEdit"/>
         </template>
         <template v-else>
           <Button 
@@ -85,7 +86,7 @@ function cancelEdit() {
       </div>
     </div>
 
-    <div class="add-utencil-row">
+    <div>
       <MyOnFloatLabel v-model="newUtencil" @keyup.enter="PushUtencil" label="Název pomúcky" />
       <Button 
         icon="pi pi-plus" 
@@ -108,6 +109,9 @@ function cancelEdit() {
   flex: 1; /* Takes up all available space */
   font-size: 1rem;
   text-align: left;
+  word-wrap: break-word; /* Allows long words to break and wrap to the next line */
+  white-space: normal; /* Ensures that text wraps naturally */
+  max-width: 8rem;
 }
 
 .utencil-buttons {

@@ -1,45 +1,43 @@
 <template>
-  <div class="time-input">
-    <div class="time-fields">
-      <InputNumber 
-        id="hours" 
-        v-model="hours" 
-        :min="0" 
-        :max="100" 
-        placeholder="Hours" 
-        :showButtons="true" 
-        buttonLayout="horizontal" 
-        decrementButtonClass="p-button-sm p-button-secondary" 
-        incrementButtonClass="p-button-sm p-button-secondary" 
-        decrementButtonIcon="pi pi-minus" 
-        incrementButtonIcon="pi pi-plus" 
-        class="p-inputnumber-sm centered-input"
-        @paste="handlePaste"
-      />
-      <span>h</span>
-      <InputNumber 
-        id="minutes" 
-        v-model="minutes" 
-        :min="0" 
-        :max="59" 
-        placeholder="Minutes" 
-        :showButtons="true" 
-        buttonLayout="horizontal" 
-        decrementButtonClass="p-button-sm p-button-secondary" 
-        incrementButtonClass="p-button-sm p-button-secondary" 
-        decrementButtonIcon="pi pi-minus" 
-        incrementButtonIcon="pi pi-plus" 
-        class="p-inputnumber-sm centered-input"
-        @paste="handlePaste"
-      />
-      <span>m</span>
-    </div>
+  <div >
+    <InputNumber
+      id="hours"
+      v-model="hours"
+      :min="0"
+      :max="100"
+      placeholder="Hours"
+      :showButtons="true"
+      buttonLayout="horizontal"
+      decrementButtonClass="p-button-sm p-button-secondary"
+      incrementButtonClass="p-button-sm p-button-secondary"
+      decrementButtonIcon="pi pi-minus"
+      incrementButtonIcon="pi pi-plus"
+      class="p-inputnumber-sm time-input"
+      @paste="handlePaste"
+    />
+    <span> Hodin</span>
+    <InputNumber
+      id="minutes"
+      v-model="minutes"
+      :min="0"
+      :max="59"
+      placeholder="Minutes"
+      :showButtons="true"
+      buttonLayout="horizontal"
+      decrementButtonClass="p-button-sm p-button-secondary"
+      incrementButtonClass="p-button-sm p-button-secondary"
+      decrementButtonIcon="pi pi-minus"
+      incrementButtonIcon="pi pi-plus"
+      class="p-inputnumber-sm time-input"
+      @paste="handlePaste"
+    />
+    <span> Minut</span>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
-import InputNumber from 'primevue/inputnumber';
+import { ref, watch, computed } from "vue";
+import InputNumber from "primevue/inputnumber";
 
 const props = defineProps({
   modelValue: {
@@ -48,7 +46,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 // Reactive variables for hours and minutes, initializing from props.modelValue (seconds)
 const hours = ref(Math.floor(props.modelValue / 3600));
@@ -59,7 +57,7 @@ const tot_time = computed(() => hours.value * 3600 + minutes.value * 60);
 
 // Watch computed total time and emit changes
 watch(tot_time, (newTime) => {
-  emit('update:modelValue', newTime);
+  emit("update:modelValue", newTime);
 });
 
 // Watch prop value and update hours and minutes accordingly
@@ -74,7 +72,7 @@ watch(
 
 // Handle pasting time in HH:MM format
 const handlePaste = (event) => {
-  const pasteContent = event.clipboardData.getData('Text');
+  const pasteContent = event.clipboardData.getData("Text");
   const timePattern = /^(\d{1,3}):([0-5]?\d)$/;
   const match = pasteContent.match(timePattern);
 
@@ -96,25 +94,16 @@ const handlePaste = (event) => {
 };
 </script>
 
-<style>
+<style scoped>
+
+
+:deep(.p-inputnumber-input) {
+    width: 100% !important; /* Inner input width */
+    padding: 0.25rem;
+    font-size: 1.3rem; /* Adjust font size to match smaller text inputs */
+}
+
 .time-input {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.time-fields {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.time-fields span {
-  font-weight: bold;
-}
-
-/* Centering the numbers inside the InputNumber fields */
-.centered-input .p-inputtext {
-  text-align: center;
+  max-width: 50%;
 }
 </style>
