@@ -197,9 +197,13 @@ function step_mouse_up( step ) {
 	if ( now - down < 200 )
 		return
 
-	step.open_menu.value = true
+	show_step_options( step )
 
 	console.log( "long press on step: ", step )
+}
+
+function show_step_options( step ) {
+	step.open_menu.value = true
 }
 
 function open_step( step ) {
@@ -245,7 +249,7 @@ function open_step_timer( timer ) {
 		<LoadingScreen v-if="!steps_vm.ready.value"/>
 		<div v-if="steps_vm.ready.value">
 			<BasicPageHeader :text="recipe.name"></BasicPageHeader>
-			<div>
+			<div class="content">
 				<div v-for="step in steps_vm.steps" class="step_container">
 					<div
 						@mousedown="step_mouse_down( step )"
@@ -259,8 +263,14 @@ function open_step_timer( timer ) {
 							}"
 						v-if="step.state == 0 || (show_archived_steps && step.state == 1)"
 					>
-						<h4>Krok {{step.number}}: {{step.name}}</h4>
-						<div>
+						<div class="step_bar">
+							<div class="step_title">{{step.name + ( step.state == 1 ? " (Dokončeno)" : "" )}}</div>
+							<div
+								@click="show_step_options( step )"
+								class="step_options"
+							>...</div>
+						</div>
+						<div class="step_body">
 							<p>{{step.text}}</p>
 							<div v-if="step.timers.length != 0" class="step_timers">
 								<h5
@@ -284,28 +294,28 @@ function open_step_timer( timer ) {
 									</p>
 								</div>
 							</div>
+							<div class="step_menu" v-if="step.open_menu.value" @click="step.open_menu.value = false">
+								<Button
+									v-if="step.state != 0"
+									@click="open_step( step )"
+								>Otevřít krok</Button>
+								<Button
+									v-if="step.state != 1"
+									@click="finish_step( step )"
+								>Krok dokončen</Button>
+								<Button
+									v-if="step.state != 2"
+									@click="discard_step( step )"
+								>Zahodit krok</Button>
+							</div>
 						</div>
 					</div>
-					<div class="step_menu" v-if="step.open_menu.value" @click="step.open_menu.value = false">
-						<Button
-							v-if="step.state != 0"
-							@click="open_step( step )"
-						>Otevřít krok</Button>
-						<Button
-							v-if="step.state != 1"
-							@click="finish_step( step )"
-						>Krok dokončen</Button>
-						<Button
-							v-if="step.state != 2"
-							@click="discard_step( step )"
-						>Zahodit krok</Button>
-					</div>
+				</div>
+				<div v-if="next_step_available">
+					<Button @click="next_step" class="next_step">Další krok</Button>
 				</div>
 			</div>
 
-			<div v-if="next_step_available">
-				<Button @click="next_step">Další krok</Button>
-			</div>
 
 			<div class="bottom">
 				<TimerView :cook_state_id="cook_state.id" ref="timer_view"/>
@@ -332,61 +342,73 @@ function open_step_timer( timer ) {
 
 <style scoped>
 
-.bottom {
-	position: fixed;
-	bottom: 100px;
+.content {
+	margin-bottom: 0px;
 }
 
-.step_container {
-	height: auto;
-/*	position: relative; */
+.content > * {
+	margin-bottom: 1em;
 }
-/*
-.step, .step_hidden, .step_menu {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	height: auto;
+
+.bottom {
+	position: sticky;
+	bottom: 70px;
+	width: auto;
+	display: block;
+	padding: 0.1em;
 }
-*/
 
 .step, .step_hidden {
 	background-color: var(--p-primary-950);
 	border-radius: var(--p-button-border-radius);
 }
 
-.step > h4, .step_hidden > h4 {
+.step_title {
 	margin-top: 0.2em;
 	margin-bottom: 0.2em;
 	margin-left: 1em;
 }
 
-.step > div, .step_hidden > div {
-	background-color: var(--p-primary-900);
+.step_bar {
+	overflow: hidden;
+	white-space: nowrap;
+	display: flex;
+	font-weight: bold;
+}
+
+.step_options {
+	text-align: right;
+	width: 100%;
+	margin-right: 1em;
+}
+
+.step_body, .step_menu {
 	border-radius: var(--p-button-border-radius);
 	padding: var(--p-button-padding-y) var(--p-button-padding-x);
 }
 
-.step_timers {
+.step_body {
+	background-color: var(--p-primary-900);
+
+	position: relative;
 }
 
 .step_timers > div {
 	background-color: var(--p-primary-850);
 }
 
-.step {
-	/*
-	background-color: green;
-	*/
-}
-
-.step_hidden {
-	/*
-	background-color: DarkGreen;
-	*/
-}
-
 .step_menu {
 	background-color: Gray;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.next_step {
+	width: 100%;
+	height: 4em;
+	font-weight: bold;
 }
 </style>
