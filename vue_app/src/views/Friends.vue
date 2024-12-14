@@ -34,7 +34,7 @@ onMounted(async () => {
   await ConstructChatList();
 
   // Update every time the relation changes
-  friendListChanges = await createSubscription("UPDATE", "FriendStatus", async () => {
+  friendListChanges = await createSubscription("*", "FriendStatus", async () => {
     friends.value = await readUsersFriends(currentUser.id);
     friendRequests.value = await readUsersRequests(currentUser.id);
     blockedUsers.value = await readUsersBlocked(currentUser.id);
@@ -78,13 +78,10 @@ const ConstructChatList = async () => {
 const CreateGroupchat = ref(false);
 const newGroupName = ref("");
 
-const createGroupText = ref(null);
-
-const ToggleGroupCreation = () => {
+const ToggleGroupCreation = async () => {
   CreateGroupchat.value = true;
-  nextTick(() => {
-    // TODO FIND OUT HOW TO FOCUS
-  });
+  await nextTick();
+  document.getElementById("createGroupText").focus(); // When opening the creation, autofocus on it
 }
 
 const CreationButtonToggled = computed(() => {
@@ -120,8 +117,9 @@ const ToggleMenu = (event) => {
   menu.value.toggle(event);
 }
 
-
 </script>
+
+
 
 <template>
   <!-- Header -->
@@ -195,7 +193,7 @@ const ToggleMenu = (event) => {
         style="display: flex; align-items: center; gap: 10px; margin-top: 20px;">
 
         <InputText
-          ref="createGroupText"
+          id="createGroupText"
           v-model="newGroupName"
           size="large"
           placeholder="Nová skupina"
