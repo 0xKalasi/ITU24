@@ -36,6 +36,7 @@ const value = defineModel();
 .custom-input {
     width: 100%;
     flex-grow: 0; /* Prevent stretching */
+    height: 3rem;
 }
 
 :deep(.p-inputnumber.p-component.custom-input) {

@@ -72,47 +72,19 @@ function PushStep() {
       editingStepIndex.value = null;
       editedStep.value = { number: 1, text: "", name: "", photo: "" };
     }
-
-    const temporarySteps = ref({}); // Track temporary inputs for "add between" fields
-
-// Add step between function
-function addStepBetween(index) {
-    if (!temporarySteps.value[index]) {
-        temporarySteps.value[index] = {
-            number: steps.value[index].number + 1,
-            name: "Krok " + (steps.value[index].number + 1),
-            text: "",
-            photo: "",
-            isVisible: true,
-            name_was_edited: false,
-        };
-    }
-};
-
-// Finalize the temporary step
-function finalizeStepBetween(index){
-    const tempStep = temporarySteps.value[index];
-    if (tempStep && tempStep.name.trim() !== "" && tempStep.text.trim() !== "") {
-        steps.value.splice(index + 1, 0, { ...tempStep });
-        delete temporarySteps.value[index]; // Clear temporary step
-        updateStepNumbers();
-    }
-};
-
-// Cancel editing and remove temporary step
-function cancelStepBetween (index) {
-    delete temporarySteps.value[index];
-};
-
+    
 // Dragging logic
 const draggedStep = ref(null);
 const draggingIndex = ref(null); // To track the index being dragged
 
 // Start dragging
 function handleDragStart(event, index) {
-    draggedStep.value = index;
-    draggingIndex.value = index; // Set the index for styling
-    event.dataTransfer.effectAllowed = "move";
+    if(!editingStepIndex.value){
+        draggedStep.value = index;
+        draggingIndex.value = index; // Set the index for styling
+        event.dataTransfer.effectAllowed = "move";
+    }
+
 }
 
 // Allow dropping
@@ -140,109 +112,240 @@ function handleDragEnd() {
 }
 
 // Function to delete the photo in editing mode
-function deletePhoto() {
-    editedStep.value.photo = ""; // Clear the photo field
+function deletePhoto(mode) {
+    if (mode === "new") {
+        newStep.value.photo = ""; // Clear the photo for the new step
+    } else if (mode === "edit") {
+        editedStep.value.photo = ""; // Clear the photo for the editing step
+    }
 }
 </script>
 
 <template>
-  <div class="p-mb-3">
-      <div v-if="steps.length > 0" class="p-d-flex p-ai-center p-mb-10">
-          <div
-              v-for="(step, index) in steps"
-              :key="index"
-              class="p-d-flex p-ai-center p-mb-2"
-              :class="{ 'dragging': draggingIndex === index }"
-              draggable="true"
-              @dragstart="handleDragStart($event, index)"
-              @dragover="handleDragOver"
-              @drop="handleDrop($event, index)"
-              @dragend="handleDragEnd"
-          >
-              <template v-if="editingStepIndex === index">
-                  <InputText v-model="editedStep.name" placeholder="Název kroku" @input="editedStep.name_was_edited = true" />
-                  <div class="in-one-row">
-                      <Textarea
-                          v-model="editedStep.text"
-                          placeholder="Sem pište vaše kroky"
-                          rows="3"
-                          autoResize
-                      />
-                      <PhotoUploader v-model="editedStep.photo" />
-                  </div>
-
-                  <!-- Delete Photo Button -->
-                  <Button 
-                      v-if="editedStep.photo" 
-                      label="Smazat foto" 
-                      class="p-button-danger p-button-outlined p-my-2" 
-                      @click="deletePhoto" 
-                  />
-
-                  <Button icon="pi pi-check" class="p-button-text p-button-rounded" @click="saveStep(index)" />
-              </template>
-              <template v-else>
-                  <li>
-                      {{ step.name }} <br /> {{ step.text }}
-                      <Button icon="pi pi-pencil" class="p-button-text p-button-rounded" @click="editStep(index, step)" />
-                      <Button icon="pi pi-trash" class="p-button-text p-button-rounded" @click="deleteStep(index)" />
-                  </li>
-
-                  <div v-if="step.photo">
-                      <img :src="step.photo" alt="step-preview" class="image-preview" />
-                  </div>
-              </template>
-
-              <div v-if="index < steps.length - 1" class="p-d-flex p-ai-center p-my-2">
-                  <Button
-                      label="Přidat krok mezi"
-                      class="p-button-outlined p-button-secondary"
-                      @click="addStepBetween(index)"
-                  />
-              </div>
-
-              <div v-if="temporarySteps[index]?.isVisible" class="temporary-step-container">
-                  <InputText
-                      v-model="temporarySteps[index].name"
-                      placeholder="Název kroku"
-                      class="step-name-input"
-                      @input="temporarySteps[index].name_was_edited = true"
-                  />
-                  <Textarea
-                      v-model="temporarySteps[index].text"
-                      placeholder="Popis kroku"
-                      class="step-textarea"
-                      rows="3"
-                  />
-                  <PhotoUploader v-model="temporarySteps[index].photo" />
-                  <Button icon="pi pi-check" @click="finalizeStepBetween(index)" />
-                  <Button icon="pi pi-times" @click="cancelStepBetween(index)" />
-              </div>
-          </div>
-      </div>
-
-      <InputText v-model="newStep.name" placeholder="Krok 1" @input="newStep.name_was_edited = true" />
-      <div class="in-one-row">
-          <Textarea
-              v-model="newStep.text"
-              class="step-textarea"
-              placeholder="Sem pište vaše kroky"
-              rows="3"
-              autoResize
-          />
-          <PhotoUploader v-model="newStep.photo" />
-      </div>
-  </div>
-  <Button icon="pi pi-plus" class="p-button-text p-button-rounded" @click="PushStep" />
-</template>
+    <div class="p-mb-3">
+        <!-- Steps List -->
+        <div v-if="steps.length > 0" class="steps-list">
+            <div
+                v-for="(step, index) in steps"
+                :key="index"
+                class="step-item"
+                :class="{ 'dragging': draggingIndex === index }"
+                draggable="true"
+                @dragstart="handleDragStart($event, index)"
+                @dragover="handleDragOver"
+                @drop="handleDrop($event, index)"
+                @dragend="handleDragEnd"
+            >
+                <!-- Editing Mode -->
+                <template v-if="editingStepIndex === index">
+                    <div class="step-container">
+                        <InputText 
+                            v-model="editedStep.name" 
+                            placeholder="Název kroku" 
+                            class="step-name-input"
+                            @input="editedStep.name_was_edited = true" 
+                        />
+                        <div class="step-input-row">
+                            <Textarea
+                                v-model="editedStep.text"
+                                class="step-textarea"
+                                placeholder="Sem pište vaše kroky"
+                                rows="3"
+                                autoResize
+                            />
+                            <div class="image-container">
+                                <div class="image-wrapper" v-if="editedStep.photo">
+                                    <img 
+                                        :src="editedStep.photo" 
+                                        alt="step-photo" 
+                                        class="image-preview" 
+                                    />
+                                    <button class="delete-photo-btn p-button-danger" @click="deletePhoto('edit')">×</button>
+                                </div>
+                                <PhotoUploader v-model="editedStep.photo" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-wrapper">
+                        <Button icon="pi pi-check" class="wide-button p-button-outlined" @click="saveStep(index)" />
+                    </div>
+                </template>
+  
+                <!-- Display Mode -->
+                <template v-else>
+                    <div class="step-display">
+                        <div class="step-name">{{ step.name }}</div>
+                        <div class="step-text" :title="step.text">{{ step.text }}</div>
+                        <div class="button-wrapper">
+                            <Button icon="pi pi-pencil" class="wide-button p-button-outlined" @click="editStep(index, step)" />
+                            <Button icon="pi pi-trash" class="wide-button p-button-outlined" @click="deleteStep(index)" />
+                        </div>
+                    </div>
+                    <div v-if="step.photo" class="image-wrapper">
+                        <img :src="step.photo" alt="step-preview" class="image-preview" />
+                    </div>
+                </template>
+            </div>
+        </div>
+  
+        <!-- New Step Input -->
+        <div class="step-container">
+            <InputText 
+                v-model="newStep.name" 
+                placeholder="Krok 1" 
+                class="step-name-input"
+                @input="newStep.name_was_edited = true" 
+            />
+            <div class="step-input-row">
+                <Textarea
+                    v-model="newStep.text"
+                    class="step-textarea"
+                    placeholder="Sem pište vaše kroky"
+                    rows="3"
+                    autoResize
+                />
+                <div class="image-container">
+                    <div class="image-wrapper" v-if="newStep.photo">
+                        <img 
+                            :src="newStep.photo" 
+                            alt="new-step-photo" 
+                            class="image-preview" 
+                        />
+                        <button class="delete-photo-btn p-button-danger" @click="deletePhoto('new')">×</button>
+                    </div>
+                    <PhotoUploader v-model="newStep.photo" />
+                </div>
+            </div>
+        </div>
+        <div class="button-wrapper">
+            <Button icon="pi pi-plus" class="wide-button p-button-outlined" @click="PushStep" />
+        </div>
+    </div>
+  </template>
 
 
 <style scoped>
-  .dragging {
-    opacity: 0.5; /* Make it semi-transparent */
-    border: 2px dashed #007bff; /* Highlight with a dashed border */
-    background-color: #8d8d8e; /* Light background color */
-    transform: scale(1.05); /* Slightly enlarge for effect */
-    transition: transform 0.2s ease;
-  }
+.step-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+}
+
+.step-name-input {
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+}
+
+.step-input-row {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.step-textarea {
+    flex: 2;
+    font-size: 1rem;
+    padding: 0.5rem;
+    resize: none;
+}
+
+.image-container {
+    flex: 1; /* Takes 1/3 of the space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-preview {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.delete-photo-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+/*
+.step-item:hover {
+    background-color: rgb(42, 42, 42);
+}*/
+
+.step-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.step-name {
+    font-weight: bold;
+    font-size: 1.4rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.step-text {
+    font-size: 1rem;
+    word-wrap: break-word; /* Break words if they exceed the container width */
+    white-space: pre-wrap; /* Preserve line breaks and wrap text */
+    line-height: 1.5; /* Optional: Improve readability with spacing */
+}
+
+.step-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.button-wrapper {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.wide-button {
+    min-width: 120px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+}
 </style>

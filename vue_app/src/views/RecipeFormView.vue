@@ -41,6 +41,7 @@
     Utencils: [],
     timers: [],
     photo: "",
+    
   });
   
   const checked= ref();
@@ -125,10 +126,37 @@
       console.log("Recipe private status:", recipe.value.private ? "Private" : "Public");
     }
 
-    // Function to delete the photo in editing mode
-  function deleteRecipePhoto() {
-    recipe.value.photo = ""; // Clear the photo field
+    
+    // Full-screen view state
+const isFullImage = ref(false);
+const toggleFullImage = () => {
+  isFullImage.value = !isFullImage.value;
+};
+
+// Reference for file input
+const fileInput = ref(null);
+
+// Trigger the hidden file input for editing an existing photo
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+// Handle the file change for editing the photo
+const handleFileEdit = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      recipe.value.photo = reader.result; // Update the photo
+    };
+    reader.readAsDataURL(file);
   }
+};
+
+// Delete the photo
+const deleteRecipePhoto = () => {
+  recipe.value.photo = ''; // Clear the photo
+};
   </script>
 
 <template>
@@ -143,40 +171,46 @@
     <BasicPageHeader v-if="recipeId" text="Uprav recept"/>
     <BasicPageHeader v-else text="Vytvoř recept"/>
 
-      <div class="p-card p-p-4 p-mx-auto p-mt-5" style="max-width: 500px;">
-        <div style="display: flex; align-items: center;">
-        <label style="margin-right: 8px;">Is public</label>
-        <ToggleSwitch v-model="checked" @click="setPublic">
-          <template #handle="{ checked }">
-            <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
-          </template>
-        </ToggleSwitch>
-      </div>
+      <div>
 
       <div v-if="recipe.photo" class="image-container">
-        <img :src="recipe.photo" alt="Preview" class="image-preview" />
+        <img :src="recipe.photo" alt="Preview" class="image-preview" @click="toggleFullImage" />
 
-        <!-- Delete Button -->
-        <Button 
-          icon="pi pi-trash" 
-          class="delete-photo-button p-button-danger" 
-          @click="deleteRecipePhoto" 
-        />
+        <!-- Delete Photo Button -->
+    <Button 
+      icon="pi pi-trash" 
+      class="delete-photo-button p-button-danger" 
+      @click="deleteRecipePhoto" 
+    />
 
-        <!-- Edit Button TBD
-        <Button 
-          icon="pi pi-pencil" 
-          class="edit-photo-button p-button-ok" 
-          @click="editRecipePhoto" 
-        />-->
+    <!-- Edit Photo Button -->
+    <Button 
+      icon="pi pi-pencil" 
+      class="edit-photo-button p-button-success" 
+      @click="triggerFileInput"
+    />
+
+    <!-- Hidden File Input to trigger edit functionality -->
+    <input 
+      type="file" 
+      accept="image/*" 
+      ref="fileInput" 
+      style="display: none" 
+      @change="handleFileEdit"
+    />
+
+        <!-- Full-Screen Image -->
+        <div v-if="isFullImage" class="full-image-overlay" @click="toggleFullImage">
+          <img :src="recipe.photo" alt="Full View" class="full-image" />
+        </div>
       </div>
 
        <!-- Title TextArea Input -->
-      <div class="p-field p-d-flex p-ai-center p-mb-3 title-container in-one-row">
-        <label for="title" class="title-label">Název</label>
+       <div class="p-field p-d-flex p-ai-center p-mb-3 title-container in-one-row">
+        <!-- <h2>Název</h2> -->
         <Textarea
           id="title"
-          placeholder="Enter a name for your recipe!"
+          placeholder="Vložte název pro váš recept!"
           class="title-textarea"
           rows="1"
           autoResize
@@ -185,21 +219,21 @@
         <PhotoUploader v-if="!recipe.photo" v-model="recipe.photo" />
       </div>
 
-        <h3>Ingredence</h3>
+        <h2>Ingredence</h2>
         <addIngredient v-model="recipe.Ingredients"/>
         
-        <h3>Instrukce</h3>
+        <h2>Instrukce</h2>
         <addSteps v-model="recipe.Step"/>
         
 
-        <h3>Speciální pomúcky</h3>
+        <h2>Speciální pomúcky</h2>
         <addUtencils v-model="recipe.Utencils"/>
     
         <!-- General Info Section -->
         <div class="p-mb-3">
-          <h3>Všeobecné informace</h3>
+          <h2>Všeobecné informace</h2>
           <div class="p-d-flex p-ai-center p-mb-2">
-            <label class="p-mr-2">Počet porcí</label>
+            <h3 class="p-mr-2">Počet porcí</h3>
             <InputNumber v-model="recipe.portions" mode="decimal" showButtons :min="1" :max="100" buttonLayout="horizontal" fluid class="p-inputnumber-sm centered-input">
                 <template #incrementicon>
                     <span class="pi pi-plus" />
@@ -210,25 +244,34 @@
             </InputNumber>
           </div>
           <div class="p-d-flex p-ai-center p-mb-2">
-            <label class="p-mr-2">Čas přípravy</label>
+            <h3 class="p-mr-2">Čas přípravy</h3>
             <TimePicker v-model="recipe.time_to_cook" showIcon fluid iconDisplay="input" timeOnly >
               <template #inputicon="slotProps" @change="saveTime" >
                   <i class="pi pi-clock" @click="slotProps.clickCallback" />
               </template>
             </TimePicker>
           </div>
+
+          <div style="display: flex; align-items: center;">
+            <h3 style="padding-right: 3rem;">Is public</h3>
+            <ToggleSwitch v-model="checked" @click="setPublic">
+              <template #handle="{ checked }">
+                <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
+              </template>
+            </ToggleSwitch>
+          </div>
         </div>
         
   
         <!-- Create, Delete Button -->
         <div class="flex justify-between items-center px-4">
-          <Button label="Zrušit" class="p-button-danger" @click='cancelEditing();'></Button>
           <div v-if="recipeId">
-            <Button label="Uložit úpravy" class="p-button-ok" @click='updateRecipeLocal();'></Button>
-            <Button label="Vytvořit jako kopii" class="p-button-ok" @click='createRecipe();'></Button>
+            <Button label="Uložit úpravy" class="wide-button p-button-ok" @click='updateRecipeLocal();'></Button>
+            <Button label="Vytvořit jako kopii" class=" wide-button p-button-ok" @click='createRecipe();'></Button>
           </div>
           <div v-else>
-            <Button label="Vytvořit" class="p-button-ok" @click='createRecipe();'></Button>
+            <Button label="Zrušit" class="wide-button p-button-danger" @click='cancelEditing();'></Button>
+            <Button label="Vytvořit" class="wide-button p-button-ok" @click='createRecipe();'></Button>
           </div>
 
         </div>
@@ -246,23 +289,21 @@
 
 .title-container {
   display: flex;
-  align-items: top; /* Center-aligns the label with the Textarea vertically */
-  text-align: center;
-}
-
-.title-label {
-  white-space: nowrap; /* Prevents the label text from wrapping */
-  margin-right: 5px; /* Adds space between the label and the Textarea */
+  align-items: center; /* Center-aligns items */
+  justify-content: space-between; /* Ensures title and uploader are spaced */
 }
 
 .title-textarea {
   width: 100%; /* Ensures the Textarea fills the available width */
   font-size: 20px;
   background-color: #5a5a5a;
-  border: 0;
-  align-content: top;
-  border-radius: 0px;
-  row-gap: 0;
+  border: none; /* Removes border */
+  border-radius: 5px; /* Slight rounding */
+  resize: none; /* Prevents resizing */
+  padding: 10px; /* Adds padding for better usability */
+  color: #fff; /* Text color for better readability */
+  overflow: hidden; /* Prevents scrollbars if any */
+  line-height: 1.5; /* Adjusts line spacing */
 }
 
 .step-textarea {
@@ -337,5 +378,52 @@
   font-size: 1rem; /* Icon size */
   z-index: 10; /* Ensure it's above the image */
 }
-  
+  /* Full-Screen Image Overlay */
+.full-image-overlay {
+  position: fixed; /* Full-screen positioning */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it overlays everything */
+  cursor: pointer; /* Clicking anywhere will exit */
+}
+
+/* Full-Screen Image */
+.full-image {
+  max-width: 90%; /* Ensure the image fits the screen */
+  max-height: 90%;
+  object-fit: contain; /* Ensure aspect ratio is maintained */
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  position: relative; /* Ensure relative positioning for the line */
+  padding-bottom: 0.5rem; /* Add some spacing below the text */
+  margin-bottom: 1rem; /* Add spacing between the text and subsequent content */
+  font-size: 1.5rem; /* Adjust heading size if needed */
+}
+
+h2::after {
+  content: ""; /* Creates an empty element for the line */
+  position: absolute;
+  left: 0;
+  bottom: 0; /* Positions the line at the bottom of the heading */
+  width: 100%;
+  height: 2px; /* Thickness of the line */
+  background-color: #ccc; /* Line color */
+  border-radius: 2px; /* Slight rounding for a softer look */
+}
+
+.wide-button {
+    min-width: 70px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+}
   </style>

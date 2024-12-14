@@ -1,5 +1,6 @@
 <script setup>
 import { ref, defineModel } from "vue";
+import MyOnFloatLabel from "./myOnFloatLabel.vue";
 
 const props = defineProps({
   modelValue: {
@@ -39,7 +40,7 @@ function saveUtencil(index) {
 
 // Delete a utensil
 function deleteUtencil(index) {
-    utencils.value.splice(index, 1);
+  utencils.value.splice(index, 1);
   if (editingIndex.value === index) {
     editingIndex.value = null;
     editedUtencil.value = "";
@@ -48,57 +49,76 @@ function deleteUtencil(index) {
 
 // Cancel the edit
 function cancelEdit() {
-    editingIndex.value = null;
-    editedUtencil.value = ""; // Clear the edited utensil input
+  editingIndex.value = null;
+  editedUtencil.value = ""; // Clear the edited utensil input
 }
-
 </script>
 
 <template>
-<div>
-  <div v-for="(utencil, index) in utencils" :key="index" class="p-d-flex p-ai-center p-mb-2">
-    <template v-if="editingIndex === index">
-      <InputText 
-        v-model="editedUtencil" 
-        class="p-inputtext-sm" 
-        @keyup.enter="saveUtencil(index)" 
-        placeholder="Edit utensil name" 
-      />
-      <Button 
-        icon="pi pi-check" 
-        class="p-button-text p-button-rounded p-ml-2" 
-        @click="saveUtencil(index)" 
-      />
-    </template>
-    <template v-else>
-      <span>
-        {{ utencil.name }}
-        <Button 
-          icon="pi pi-pencil" 
-          class="p-button-text p-button-rounded p-ml-2" 
-          @click="editUtencil(index, utencil.name)" 
-        />
-        <Button 
-          icon="pi pi-trash" 
-          class="p-button-text p-button-rounded" 
-          @click="deleteUtencil(index)" 
-        />
-      </span>
-    </template>
-  </div>
+  <div>
+    <div v-for="(utencil, index) in utencils" :key="index" class="utencil-row">
+      <div class="utencil-name">
+        <template v-if="editingIndex === index">
+          <MyOnFloatLabel v-model="editedUtencil" @keyup.enter="saveUtencil(index)" label="Název pomúcky" />
+        </template>
+        <template v-else>
+          {{ utencil.name }}
+        </template>
+      </div>
+      <div class="utencil-buttons">
+        <template v-if="editingIndex === index">
+          <Button icon="pi pi-check" class="wide-button p-button-outlined" @click="saveUtencil(index)" />
+          <Button icon="pi pi-times" class="wide-button p-button-outlined" @click="cancelEdit"/>
+        </template>
+        <template v-else>
+          <Button 
+            icon="pi pi-pencil" 
+            class="wide-button p-button-outlined" 
+            @click="editUtencil(index, utencil.name)" 
+          />
+          <Button 
+            icon="pi pi-trash" 
+            class="wide-button p-button-outlined" 
+            @click="deleteUtencil(index)" 
+          />
+        </template>
+      </div>
+    </div>
 
-  <div class="p-d-flex p-ai-center p-mt-3">
-    <InputText 
-      v-model="newUtencil" 
-      placeholder="Type utensil name" 
-      class="p-inputtext-sm p-d-block" 
-      @keyup.enter="PushUtencil" 
-    />
-    <Button 
-      icon="pi pi-plus" 
-      class="p-button-text p-button-rounded p-ml-2" 
-      @click="PushUtencil" 
-    />
+    <div class="add-utencil-row">
+      <MyOnFloatLabel v-model="newUtencil" @keyup.enter="PushUtencil" label="Název pomúcky" />
+      <Button 
+        icon="pi pi-plus" 
+        class="wide-button p-button-outlined" 
+        @click="PushUtencil" 
+      />
+    </div>
   </div>
-</div>
 </template>
+
+<style scoped>
+.utencil-row {
+  display: flex;
+  justify-content: space-between; /* Ensures buttons are on the far right */
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.utencil-name {
+  flex: 1; /* Takes up all available space */
+  font-size: 1rem;
+  text-align: left;
+}
+
+.utencil-buttons {
+  display: flex;
+  gap: 0.5rem; /* Adds spacing between buttons */
+}
+
+
+.wide-button {
+  min-width: 100px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+</style>
