@@ -14,6 +14,7 @@ import { acceptFriendRequest, readUser } from "../../utils/users_api.js";
 import { readUsersPublicRecipe } from "../../utils/api.js";
 import { sendFriendRequest, ForeignUserRelation, getFriendshipState, unblockUser } from "../../utils/users_api.js";
 import { createSubscription, removeSubscription } from "../../utils/subscription_api.js";
+import { getAllUsersLikes } from "../../utils/likes_api.js";
 
 
 const viewedUserId = router.currentRoute.value.params.user_id;
@@ -21,7 +22,7 @@ const viewedUser = await readUser(viewedUserId);
 
 const usersRecipes = await readUsersPublicRecipe(viewedUser.id);
 const recipeCnt = usersRecipes.length;
-const totalLikes = usersRecipes.reduce((total, recipe) => total + recipe.like_count, 0);
+const totalLikes = await getAllUsersLikes(viewedUser.id);
 
 
 const currentFriendshipState = ref(ForeignUserRelation.LOGGED_OUT); // Initally hide the state
