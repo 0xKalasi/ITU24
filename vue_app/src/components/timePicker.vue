@@ -67,7 +67,7 @@ watch(
     hours.value = Math.floor(newValue / 3600);
     minutes.value = Math.floor((newValue % 3600) / 60);
   },
-  { immediate: true } // Trigger immediately on mount
+  { immediate: true } 
 );
 
 // Handle pasting time in HH:MM format
@@ -98,9 +98,9 @@ const handlePaste = (event) => {
 
 
 :deep(.p-inputnumber-input) {
-    width: 100% !important; /* Inner input width */
+    width: 100% !important;
     padding: 0.25rem;
-    font-size: 1.3rem; /* Adjust font size to match smaller text inputs */
+    font-size: 1.3rem;
 }
 
 .time-input {

@@ -183,7 +183,7 @@ function deletePhoto(mode) {
                         <div class="step-text" :title="step.text">{{ step.text }}</div>
                         <div class="button-wrapper">
                             <Button icon="pi pi-pencil" class="wide-button p-button-outlined" @click="editStep(index, step)" />
-                            <Button icon="pi pi-trash" class="wide-button p-button-outlined" @click="deleteStep(index)" />
+                            <Button icon="pi pi-trash" class="wide-button p-button-outlined p-button-danger" @click="deleteStep(index)" />
                         </div>
                     </div>
                     <div v-if="step.photo" class="image-wrapper">
@@ -258,7 +258,7 @@ function deletePhoto(mode) {
 }
 
 .image-container {
-    flex: 1; /* Takes 1/3 of the space */
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -310,10 +310,6 @@ function deletePhoto(mode) {
     border-radius: 8px;
     transition: box-shadow 0.3s ease;
 }
-/*
-.step-item:hover {
-    background-color: rgb(42, 42, 42);
-}*/
 
 .step-display {
     display: flex;
@@ -331,9 +327,9 @@ function deletePhoto(mode) {
 
 .step-text {
     font-size: 1rem;
-    word-wrap: break-word; /* Break words if they exceed the container width */
-    white-space: pre-wrap; /* Preserve line breaks and wrap text */
-    line-height: 1.5; /* Optional: Improve readability with spacing */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
     max-width: 300px;
 }
 
@@ -349,6 +345,7 @@ function deletePhoto(mode) {
 }
 
 .wide-button {
+    margin-top: 0.5rem;  
     min-width: 120px;
     padding: 0.5rem 1rem;
     font-size: 1rem;

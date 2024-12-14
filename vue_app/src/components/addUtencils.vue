@@ -79,7 +79,7 @@ function cancelEdit() {
           />
           <Button 
             icon="pi pi-trash" 
-            class="wide-button p-button-outlined" 
+            class="wide-button p-button-outlined p-button-danger" 
             @click="deleteUtencil(index)" 
           />
         </template>
@@ -100,27 +100,28 @@ function cancelEdit() {
 <style scoped>
 .utencil-row {
   display: flex;
-  justify-content: space-between; /* Ensures buttons are on the far right */
+  justify-content: space-between; 
   align-items: center;
   margin-bottom: 1rem;
 }
 
 .utencil-name {
-  flex: 1; /* Takes up all available space */
+  flex: 1; 
   font-size: 1rem;
   text-align: left;
-  word-wrap: break-word; /* Allows long words to break and wrap to the next line */
-  white-space: normal; /* Ensures that text wraps naturally */
+  word-wrap: break-word;
+  white-space: normal; 
   max-width: 8rem;
 }
 
 .utencil-buttons {
   display: flex;
-  gap: 0.5rem; /* Adds spacing between buttons */
+  gap: 0.5rem; 
 }
 
 
 .wide-button {
+  margin-top: 0.5rem;  
   min-width: 100px;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;

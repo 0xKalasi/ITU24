@@ -287,49 +287,49 @@ const deleteRecipePhoto = () => {
 <style scoped>
 .title-container {
   display: flex;
-  align-items: center; /* Center-aligns items */
-  justify-content: space-between; /* Ensures title and uploader are spaced */
+  align-items: center; 
+  justify-content: space-between; 
 }
 
 .title-textarea {
-  width: 100%; /* Ensures the Textarea fills the available width */
+  width: 100%; 
   font-size: 1rem;
   background-color: #5a5a5a;
-  border: none; /* Removes border */
-  border-radius: 5px; /* Slight rounding */
-  resize: none; /* Prevents resizing */
-  padding: 10px; /* Adds padding for better usability */
-  color: #fff; /* Text color for better readability */
-  overflow: hidden; /* Prevents scrollbars if any */
-  line-height: 1.5; /* Adjusts line spacing */
+  border: none; 
+  border-radius: 5px;
+  resize: none; 
+  padding: 10px;
+  color: #fff;
+  overflow: hidden; 
+  line-height: 1.5;
 }
 
 .image-container {
-  position: relative; /* Enable positioning for buttons */
-  width: 100%; /* Full width */
-  max-height: 100px; /* Constrain height */
+  position: relative; 
+  width: 100%; 
+  max-height: 100px; 
 }
 
 /* Image preview */
 .image-preview {
-  width: 100%; /* Full width */
-  max-height: 100px; /* Fix the maximum height */
-  object-fit: cover; /* Ensure image covers the container proportionally */
-  border-radius: 5px; /* Rounded corners */
+  width: 100%; 
+  max-height: 100px; 
+  object-fit: cover;
+  border-radius: 5px;
 }
 
 .full-image-overlay {
-  position: fixed; /* Full-screen positioning */
+  position: fixed; 
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  background: rgba(0, 0, 0, 0.8); 
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it overlays everything */
-  cursor: pointer; /* Clicking anywhere will exit */
+  z-index: 1000; 
+  cursor: pointer; 
 }
 .in-one-row {
   display: flex;
@@ -338,90 +338,91 @@ const deleteRecipePhoto = () => {
 
 /* Full-Screen Image */
 .full-image {
-  max-width: 90%; /* Ensure the image fits the screen */
+  max-width: 90%; 
   max-height: 90%;
-  object-fit: contain; /* Ensure aspect ratio is maintained */
+  object-fit: contain; 
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Delete button positioned at the top-right corner */
 .delete-photo-button {
-  position: absolute; /* Position relative to the container */
-  top: 5px; /* Adjust vertical positioning */
-  right: 5px; /* Adjust horizontal positioning */
-  padding: 5px; /* Compact padding */
-  width: 30px; /* Square button */
-  height: 30px; /* Square button */
-  border-radius: 50%; /* Circular button */
-  display: flex; /* Center icon */
-  align-items: center; /* Center icon vertically */
-  justify-content: center; /* Center icon horizontally */
-  font-size: 1rem; /* Icon size */
-  z-index: 10; /* Ensure it's above the image */
+  position: absolute; 
+  top: 5px; 
+  right: 5px; 
+  padding: 5px; 
+  width: 30px; 
+  height: 30px; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center;
+  justify-content: center; 
+  font-size: 1rem;
+  z-index: 10;
 }
 
 /* Edit button positioned below the delete button */
 .edit-photo-button {
-  position: absolute; /* Position relative to the container */
-  top: 45px; /* Positioned below the delete button */
-  right: 5px; /* Align with the delete button */
-  padding: 5px; /* Compact padding */
-  width: 30px; /* Square button */
-  height: 30px; /* Square button */
-  border-radius: 50%; /* Circular button */
-  display: flex; /* Center icon */
-  align-items: center; /* Center icon vertically */
-  justify-content: center; /* Center icon horizontally */
-  font-size: 1rem; /* Icon size */
-  z-index: 10; /* Ensure it's above the image */
+  position: absolute; 
+  top: 45px; 
+  right: 5px; 
+  padding: 5px; 
+  width: 30px; 
+  height: 30px; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 1rem; 
+  z-index: 10; 
 }
 
 h2 {
-  position: relative; /* Ensure relative positioning for the line */
-  padding-bottom: 0.5rem; /* Add some spacing below the text */
-  margin-bottom: 1rem; /* Add spacing between the text and subsequent content */
-  font-size: 1.5rem; /* Adjust heading size if needed */
+  position: relative;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem; 
 }
 
 h2::after {
-  content: ""; /* Creates an empty element for the line */
+  content: ""; 
   position: absolute;
   left: 0;
-  bottom: 0; /* Positions the line at the bottom of the heading */
+  bottom: 0;
   width: 100%;
-  height: 2px; /* Thickness of the line */
-  background-color: #ccc; /* Line color */
-  border-radius: 2px; /* Slight rounding for a softer look */
+  height: 2px; 
+  background-color: #ccc; 
+  border-radius: 2px; 
 }
 
 /* General Info Section Styling */
 .general-info-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Adds spacing between rows */
+  gap: 1rem;
 }
 
 .info-row {
   display: flex;
-  gap: 0.5rem; /* Adds spacing between the label and input */
+  gap: 0.5rem; 
 }
 
 .input-wrapper {
-  width: 100%; /* Makes the wrapper take full width */
+  width: 100%; 
 }
 
 .responsive-input {
-  width: 100%; /* Ensure the input adjusts to the wrapper's width */
-  max-width: 100px; /* Optional: Limit the maximum width */
+  width: 100%; 
+  max-width: 100px; 
 }
 
 .info-row h3 {
   margin: 0;
-  font-size: 1rem; /* Ensure heading fits well on smaller screens */
+  font-size: 1rem; 
 }
 
 .wide-button {
+  margin-top: 0.5rem;  
     min-width: 120px;
     font-size: 1rem;
     margin-right: 2rem;

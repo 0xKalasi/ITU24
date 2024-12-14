@@ -91,8 +91,8 @@ function handleDragEnd() {
                 @dragend="handleDragEnd"
             >
                 <template v-if="editingIngredientIndex === index">
+                    <MyOnFloatLabel style="flex" label="Název Ingredence" v-model="editedIngredient.name" />
                   <div class="in-one-row">
-                    <MyOnFloatLabel class="larger-input" label="Název Ingredence" v-model="editedIngredient.name" />
                     <MyOnFloatLabel :number="true" label="Množství" v-model="editedIngredient.quantity" />
                     <MyOnFloatLabel label="Jednotka" v-model="editedIngredient.unit" />
                     <MyOnFloatLabel label="Poznámka" v-model="editedIngredient.notes" />
@@ -113,7 +113,7 @@ function handleDragEnd() {
                         />
                         <Button 
                             icon="pi pi-trash" 
-                            class="wide-button p-button-outlined" 
+                            class="wide-button p-button-outlined p-button-danger" 
                             @click="deleteIngredient(index)"
                         />
                     </div>
@@ -123,8 +123,8 @@ function handleDragEnd() {
         </div>
 
         <!-- New Ingredient Input -->
+        <MyOnFloatLabel style="flex" label="Název Ingredence" v-model="newIngredient.name" />
         <div class="in-one-row">
-                <MyOnFloatLabel class="larger-input" label="Název Ingredence" v-model="newIngredient.name" />
                 <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" />
                 <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" />
                 <MyOnFloatLabel label="Poznámka" v-model="newIngredient.notes" />
@@ -138,12 +138,12 @@ function handleDragEnd() {
 .ingredients-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; /* Adds space between ingredient items */
+    gap: 0.5rem;
 }
 
 .ingredient-item {
     display: flex;
-    flex-direction: column; /* Allow wrapping for mobile or narrow screens */
+    flex-direction: column; 
     gap: 0.5rem;
     padding: 0.5rem;
     border-radius: 8px;
@@ -159,39 +159,40 @@ function handleDragEnd() {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
-    flex-wrap: wrap; /* Allows fields to wrap if content exceeds available space */
+    flex-wrap: wrap; 
     width: 100%;
 }
 
 .ingredient-field {
-    flex: 1; /* Equal space for each field */
-    word-wrap: break-word; /* Ensure long text wraps */
-    white-space: normal; /* Allow natural wrapping */
-    min-width: 80px; /* Ensures readability on smaller screens */
+    flex: 1; 
+    word-wrap: break-word;
+    white-space: normal; 
+    min-width: 80px; 
 }
 
 .ingredient-buttons {
     display: flex;
-    gap: 0.5rem; /* Adds spacing between buttons */
-    margin-left: auto; /* Push buttons to the utmost right */
+    gap: 0.5rem; 
+    margin-left: auto; 
 }
 
 .in-one-row {
     display: flex;
-    align-items: center; /* Vertically align all items */
-    gap: 0.5rem; /* Adjust space between elements */
-    width: 100%; /* Occupy full available width */
+    align-items: center;
+    gap: 0.5rem; 
+    width: 100%; 
 }
 
 .larger-input {
-    flex: 4; /* Allow this input to take more space */
+    flex: 4;
 }
     
 .in-one-row > *:not(.larger-input) {
-    flex: 2; /* Keep other inputs equally sized */
+    flex: 2; 
 }
 
 .wide-button {
+    margin-top: 0.5rem;  
     min-width: 100px;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;

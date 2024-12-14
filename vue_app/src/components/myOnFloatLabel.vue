@@ -34,37 +34,37 @@ const value = defineModel();
 /* General input customization */
 .custom-input {
     width: 100%;
-    flex-grow: 0; /* Prevent stretching */
+    flex-grow: 0; 
     height: 4rem;
 }
 
 :deep(.p-inputnumber.p-component.custom-input) {
-    width: 100% !important; /* Force desired width */
+    width: 100% !important; 
 }
 
 :deep(.p-inputnumber-input) {
-    width: 100% !important; /* Inner input width */
+    width: 100% !important;
     padding: 0.25rem;
-    font-size: 1.3rem; /* Adjust font size to match smaller text inputs */
+    font-size: 1.3rem;
 }
 
 .p-inputtext {
-  width: 100% !important; /* Ensures the inner input adapts to the wrapper width */
-  padding: 0.25rem; /* Adjusts inner input padding */
-  font-size: 1.3rem; /* Adjust font size to match smaller text inputs */
+  width: 100% !important; 
+  padding: 0.25rem; 
+  font-size: 1.3rem;
 }
 
 /* Optional: Adjust buttons if the InputNumber has increment/decrement buttons */
 .p-inputnumber-button {
-  height: 24px; /* Make buttons smaller */
-  width: 24px; /* Adjust button width */
-  font-size: 1.3rem; /* Adjust button icon size */
+  height: 24px;
+  width: 24px; 
+  font-size: 1.3rem;
 }
 
 /* Apply text truncation to the label */
 .truncate-label {
   display: inline-block;
-  max-width: calc(100% - 10px); /* Ensures label doesn't overflow its container */
+  max-width: calc(100% - 10px);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
