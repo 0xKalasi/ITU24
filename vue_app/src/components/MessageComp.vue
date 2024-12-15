@@ -30,6 +30,25 @@ const ShowName = computed(() => {
   return (props.message.person_posted != currentUser.id) && (props.message.groupchat_id != null);
 });
 
+const TimeSent = computed(() => {
+  const created = new Date(props.message.created_at);
+
+  let hours = created.getHours();
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  let minutes = created.getMinutes();
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+
+  return hours + ":" + minutes;
+})
+
+const DateColor = computed(() => {
+  return (props.message.person_posted == currentUser.id) ? "my-timestamp" : "";
+});
+
 </script>
 
 <template>
@@ -43,11 +62,18 @@ const ShowName = computed(() => {
         <Divider style="margin-top: 10px;"></Divider>
 
       </div>
+
     </template>
 
     <template #subtitle>
-      <div v-if="ShowName">
-        {{ message.User.name }}
+      <div style="display: flex;">
+        <div v-if="ShowName">
+          {{ message.User.name }}
+        </div>
+
+        <div style="margin-left: auto;" :class="DateColor">
+          {{ TimeSent }}
+        </div>
       </div>
     </template>
 
@@ -73,6 +99,10 @@ const ShowName = computed(() => {
   margin-top: 10px;
   width: 250px;
   background: linear-gradient(to top, rgb(20, 20, 20), black);
+}
+
+.my-timestamp {
+  color: black
 }
 
 </style>

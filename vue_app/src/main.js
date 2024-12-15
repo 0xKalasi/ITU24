@@ -54,6 +54,8 @@ import Image from "primevue/image";
 import DatePicker from "primevue/datepicker";
 import Card from "primevue/card";
 import Menu from "primevue/menu";
+import ConfirmDialog from "primevue/confirmdialog";
+import ConfirmationService from "primevue/confirmationservice";
 
 
 /* HERE REGISTER COMPONENTS AS A GLOBAL COMPONENTS */
@@ -85,6 +87,8 @@ app.component("MessageComp", MessageComp);
 app.component("Card", Card);
 app.component("GroupchatComp", GroupchatComp);
 app.component("Menu", Menu);
+app.component("ConfirmDialog", ConfirmDialog);
+app.use(ConfirmationService);
 
 
 /* AFTER EVERYTHING IS REGISTERED, MOUNT APP */

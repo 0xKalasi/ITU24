@@ -1,6 +1,6 @@
-import { supabase } from "./supabase";
+// Martin Jabůrek, xjabur02
 
-// TODO - DEBUG !!!
+import { supabase } from "./supabase";
 
 // Channel names are not needed in UI, they are generated automatically
 const channelNames = {

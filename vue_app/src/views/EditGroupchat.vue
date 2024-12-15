@@ -9,6 +9,9 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+// Needed for confirm dialog
+import { useConfirm } from "primevue/useconfirm";
+const confirm = useConfirm();
 
 import { 
   readGroupchat,
@@ -41,13 +44,13 @@ onUnmounted(async () => {
 const isCreator = (currentUser.id == currentGroup.creator) ? true : false;
 
 const groupName = ref(currentGroup.name);
-const confirmDelHist = ref(false);
-const confirmDelGroup = ref(false);
-const confirmLeaveGroup = ref(false);
+
 
 // Alert detection:
 const nameChanged = ref(false);
 const nameChangedKey = ref(0);
+const userRemoved = ref(false);
+const userRemovedKey = ref(0);
 
 
 const isInvalid = ref(false);
@@ -75,25 +78,51 @@ const GoToAddMembers = async () => {
 
 const RemoveUser = async (id) => {
   await removeUserFromGroup(id, currentGroup.id);
+
+  userRemoved.value = true;
+  userRemovedKey.value++;
 }
 
-const AskDeleteHistory = async () => {
-  confirmDelHist.value = true;
+// Reject is the deletion and accept is canceling, this is done to keep the same order between button pair everywhere
+const ConfirmDelHist = async () => {
+  confirm.require({
+    message: "Skutečně chcete smazat historii zpráv? Tato operace je nevratná.",
+    header: "Potvrďte akci",
+    icon: "pi pi-exclamation-circle",
+    rejectProps: {
+      label: "Ano, smazat",
+      severity: "danger"
+    },
+    acceptProps: {
+      label: "Ne, nemazat"
+    },
+    accept: () => {},
+    reject: await DeleteHistory
+  });
 }
-const CancelDeleteHistory = async () => {
-  confirmDelHist.value = false;
+
+const ConfirmDelGroup = async () => {
+  confirm.require({
+    message: "Skutečně chcete odstranit skupinu? Tato operace je nevratná.",
+    header: "Potvrďte akci",
+    icon: "pi pi-exclamation-circle",
+    rejectProps: {
+      label: "Ano, odstranit",
+      severity: "danger"
+    },
+    acceptProps: {
+      label: "Ne, ponechat"
+    },
+    accept: () => {},
+    reject: await DeleteGroupchat
+  });
 }
+
+
 const DeleteHistory = async () => {
   await deleteGroupchatMessages(currentGroup.id);
-  confirmDelHist.value = false;
 }
 
-const CancelDeleteGroup = async () => {
-  confirmDelGroup.value = false;
-}
-const AskDeleteGroup = async () => {
-  confirmDelGroup.value = true;
-}
 const DeleteGroupchat = async () => {
   await deleteGroupchat(currentGroup.id);
   router.push("/chats");
@@ -108,9 +137,14 @@ const DeleteGroupchat = async () => {
     text="Jméno skupiny změněno."
     :key="nameChangedKey">
   </Alert>
+  <Alert
+    v-if="userRemoved"
+    type="warn"
+    text="Člen odebrán ze skupiny"
+    :key="userRemovedKey">
+  </Alert>
 
-  <BasicPageHeader text="Spravovat skupinu">
-  </BasicPageHeader>
+  <BasicPageHeader text="Spravovat skupinu"></BasicPageHeader>
 
   <div>
 
@@ -149,67 +183,21 @@ const DeleteGroupchat = async () => {
 
       <!-- DELETE FEATURES -->
 
-      <!-- Default view -->
-      <div
-        v-if="( ! confirmDelHist) && ( ! confirmDelGroup)"
-        style="margin-bottom: 10px; display: flex; gap: 10px">
+      <ConfirmDialog style="width: 300px"></ConfirmDialog>
 
+      <div style="margin-bottom: 10px; display: flex; gap: 10px">
         <Button
           label="Smazat historii zpráv"
           icon="pi pi-history"
           severity="warn"
-          @click="AskDeleteHistory">
+          @click="ConfirmDelHist">
         </Button>
         <Button
           label="Odstranit skupinu"
           icon="pi pi-exclamation-circle"
-          @click="AskDeleteGroup"
+          @click="ConfirmDelGroup"
           style="background: crimson; border: 1px solid crimson;">
         </Button>
-      </div>
-
-      <!-- History deletion confirmation -->
-      <div v-else-if="confirmDelHist">
-        <div style="color: red; margin-top: 10px;">
-          Tato akce je nevratná, skutečně chcete smazat historii zpráv?
-        </div>
-
-        <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px">
-          <Button
-            icon="pi pi-check"
-            label="Ano, smazat historii"
-            @click="DeleteHistory"
-            style="background: crimson; border: 1px solid crimson; flex: 1;">
-          </Button>
-          <Button
-            icon="pi pi-times"
-            label="Ne, ponechat historii"
-            style="flex: 1;"
-            @click="CancelDeleteHistory">
-          </Button>
-        </div>
-      </div>
-
-      <!-- Whole group deletion confirmation -->
-      <div v-else-if="confirmDelGroup">
-        <div style="color: red; margin-top: 10px;">
-          Skutečně chcete smazat skupinu? Tato akce je nevratná.
-        </div>
-
-        <div style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px;">
-          <Button
-            icon="pi pi-check"
-            label="Ano, smazat"
-            @click="DeleteGroupchat"
-            style="background: crimson; border: 1px solid crimson; flex: 1;">
-          </Button>
-          <Button
-            icon="pi pi-times"
-            label="Ne, nemazat"
-            @click="CancelDeleteGroup"
-            style="flex: 1;">
-          </Button>
-        </div>
 
       </div>
 

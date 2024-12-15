@@ -1,3 +1,5 @@
+// Martin Jabůrek, xjabur02
+
 import { supabase } from "./supabase";
 import { useUserStore } from '../src/stores/userStore';
 

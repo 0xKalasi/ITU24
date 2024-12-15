@@ -9,6 +9,9 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+import { useConfirm } from "primevue/useconfirm";
+const confirm = useConfirm();
+
 
 import { readGroupchat, removeUserFromGroup, setLastTimeSeenForGroupchat } from "../../utils/groupchat_api";
 
@@ -33,6 +36,24 @@ const GoToEdit = async () => {
   router.push(`/groupchats/edit/${currentGroup.id}`);
 }
 
+// Reject is the deletion and accept is canceling, this is done to keep the same order between button pair everywhere
+const ConfirmLeaveGroup = async () => {
+  confirm.require({
+    message: "Skutečně si přejete opustit skupinu?",
+    header: "Potvrďte akci",
+    icon: "pi pi-question",
+    rejectProps: {
+      label: "Ano, opustit",
+      severity: "danger"
+    },
+    acceptProps: {
+      label: "Ne, zůstat"
+    },
+    accept: () => {},
+    reject: await LeaveGroup
+  });
+}
+
 const LeaveGroup = async () => {
   await removeUserFromGroup(currentUser.id, currentGroup.id);
   router.push("/chats");
@@ -41,6 +62,7 @@ const LeaveGroup = async () => {
 const GoToAddMembers = async () => {
   router.push(`/groupchats/add/${currentGroup.id}`)
 }
+
 
 const menu = ref();
 const items_creator = ref([
@@ -67,7 +89,7 @@ const items_member = ref([
       {
         label: "Opustit skupinu",
         icon: "pi pi-arrow-left",
-        command: LeaveGroup
+        command: ConfirmLeaveGroup
       }
     ]
   }
@@ -80,6 +102,7 @@ const ToggleMenu = (event) => {
 const ChooseMenuContent = computed(() => {
   return (currentUser.id == currentGroup.creator) ? items_creator.value : items_member.value;
 });
+
 
 onUnmounted(async () => {
   await setLastTimeSeenForGroupchat(currentGroup.id, currentUser.id);
@@ -94,7 +117,10 @@ const isLoading = ref(false);
 
   <div v-else>
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
+      
       <BasicPageHeader :text="truncateStr(currentGroup.name, 16)"></BasicPageHeader>
+
+      <ConfirmDialog style="width: 300px"></ConfirmDialog>
 
       <div>
         <Button 

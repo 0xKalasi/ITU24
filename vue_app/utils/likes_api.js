@@ -1,3 +1,5 @@
+// Martin Jabůrek, xjabur02
+
 import { supabase } from "./supabase";
 
 import { readUsersPublicRecipe } from "./api";
@@ -54,8 +56,6 @@ const getAllUsersLikes = async (userId) => {
   for (const recipe of recipes) {
     sum += await getRecipeLikeCount(recipe.id);
   }
-
-  console.log(sum);
 
   return sum;
 }

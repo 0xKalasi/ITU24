@@ -1,3 +1,5 @@
+// Martin Jabůrek, xjabur02
+
 import { supabase } from "./supabase";
 import { useUserStore } from '../src/stores/userStore';
 import { readUser } from "./users_api";
@@ -162,11 +164,14 @@ const removeUserFromGroup = async (userId, groupId) => {
 }
 
 const addUserToGroup = async (userId, groupId) => {
+  const now = new Date().toISOString();
+
   const { data, error } = await supabase
   .from('GroupchatMembers')
   .insert([{
     user: userId,
-    groupchat: groupId
+    groupchat: groupId,
+    last_viewed: now
   }])
   .select()
   

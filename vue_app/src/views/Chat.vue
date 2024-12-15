@@ -9,6 +9,10 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 const currentUser = useUserStore();
 
+// Needed for confirm dialog
+import { useConfirm } from "primevue/useconfirm";
+const confirm = useConfirm();
+
 
 import { readUser, blockUser, setLastTimeSeenForChat } from "../../utils/users_api";
 
@@ -25,9 +29,27 @@ const truncateStr = computed(() => (str, max) => {
   }
 });
 
+
 const BlockUser = async () => {
   await blockUser(currentUser.id, peerUser.id);
   router.push("/chats");
+}
+
+const ConfirmBlockUser = async () => {
+  confirm.require({
+    message: `Opravdu chcete uživatele ${peerUser.name} zablokovat?`,
+    header: "Potvrďte akci",
+    icon: "pi pi-question",
+    rejectProps: {
+      label: "Ano, zablokovat",
+      severity: "danger"
+    },
+    acceptProps: {
+      label: "Ne, ponechat"
+    },
+    accept: () => {},
+    reject: await BlockUser
+  });
 }
 
 const GoToUser = async () => {
@@ -52,7 +74,7 @@ const items = ref([
       {
         label: "Zablokovat uživatele",
         icon: "pi pi-lock",
-        command: BlockUser
+        command: ConfirmBlockUser
       }
     ]
   }
@@ -62,7 +84,7 @@ const ToggleMenu = (event) => {
   menu.value.toggle(event);
 }
 
-// We store the fact that the chat was opened
+// Updating last time viewed is only when closing the chat, otherwise incoming messages would not be seen
 onUnmounted(async () => {
   await setLastTimeSeenForChat(currentUser.id, peerUser.id);
 });
@@ -76,7 +98,10 @@ const isLoading = ref(false);
 
   <div v-else>
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
+
       <BasicPageHeader :text="truncateStr(peerUser.name, 16)"></BasicPageHeader>
+
+      <ConfirmDialog style="width: 300px"></ConfirmDialog>
 
       <div>
         <Button 
