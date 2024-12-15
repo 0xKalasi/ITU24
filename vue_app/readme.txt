@@ -86,7 +86,7 @@ vue_app
 │       ├── Groupchat.vue (xjabur02)
 │       ├── Homepage.vue
 │       ├── Chat.vue (xjabur02)
-│       ├── MyRecipes.vue
+│       ├── MyRecipes.vue (xtomcs00, )
 │       ├── NotFound.vue
 │       ├── ProfilePreview.vue (xjabur02)
 │       ├── Profile.vue (xjabur02)
