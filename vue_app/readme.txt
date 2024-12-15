@@ -9,13 +9,13 @@
 
 # Spuštění
 
-## vue.js + vite app
+## vue.js app (+ vite dev. tools)
 
 Vite - dev. tools with HMR [Hot Module Replacement]
 
 1. install node modules: **npm install**
 2. run development server: **npm run serve**
-3. open link that you got on output from serve command
+3. open link that you've got on output from step 2
 
 
 # Adresářová struktura projektu
@@ -31,69 +31,84 @@ vue_app
 ├── package-lock.json
 ├── public
 │   └── vite.svg
-├── readme.txt (xjabur02, )
+├── readme.txt (xjabur02, xborda01, )
 ├── shell.nix
 ├── src
-│   ├── App.vue
+│   ├── App.vue (xborda01)
 │   ├── components !!! OBECNĚ POUŽÍVANÉ KOMPONENTY V APLIKACI
 │   │   ├── addIngredient.vue (xtomcs00)
 │   │   ├── addSteps.vue (xtomcs00)
 │   │   ├── addUtencils.vue (xtomcs00)
-│   │   ├── alert.vue
-│   │   ├── basicPageHeader.vue
+│   │   ├── alert.vue (xborda01)
+│   │   ├── basicPageHeader.vue (xborda01)
 │   │   ├── ConvSelect.vue (xjabur02)
-│   │   ├── Divider.vue (xjabur02, )
+│   │   ├── Divider.vue (xjabur02)
 │   │   ├── EditTimer.vue (xsatin03)
+│   │   ├── Divider.vue (xjabur02)
 │   │   ├── filters
-│   │   │   ├── alergensPick.vue
-│   │   │   ├── categoriesPick.vue
-│   │   │   └── filtersHomepage.vue
+│   │   │   ├── alergensPick.vue (xborda01)
+│   │   │   ├── categoriesPick.vue (xborda01)
+│   │   │   └── filtersHomepage.vue (xborda01)
 │   │   ├── FriendRequest.vue (xjabur02)
 │   │   ├── GroupchatComp.vue (xjabur02)
 │   │   ├── ChatComp.vue (xjabur02)
 │   │   ├── ChatLink.vue (xjabur02)
-│   │   ├── loadingScreen.vue
+│   │   ├── loadingScreen.vue (xborda01)
 │   │   ├── MessageComp.vue (xjabur02)
 │   │   ├── myOnFloatLabel.vue (xtomcs00)
 │   │   ├── navigation
-│   │   │   ├── button.vue
-│   │   │   └── navigation.vue
+│   │   │   ├── button.vue (xborda01)
+│   │   │   └── navigation.vue (xborda01)
 │   │   ├── NewTimer.vue (xsatin03)
 │   │   ├── photoUploader.vue (xtomcs00)
 │   │   ├── TimeInput.vue (xsatin03)
+│   │   │   ├── button.vue (xborda01)
+│   │   │   └── navigation.vue (xborda01)
+│   │   ├── NewTimer.vue
+│   │   ├── photoUploader.vue
+│   │   ├── TimeInput.vue
 │   │   ├── timePicker.vue
 │   │   ├── TimerView.vue (xsatin03)
 │   │   └── UnblockEntry.vue (xjabur02)
-│   ├── main.js
-│   ├── router
-│   │   └── index.js
+│   ├── main.js (xborda01)
+│   ├── router 
+│   │   └── index.js (xborda01)
 │   ├── stores !!! DATA PERZISTIVNÍ MEZI STRÁNKAMI APLIKACE
-│   │   ├── filterStore.js
+│   │   ├── filterStore.js (xborda01)
 │   │   ├── recipeStore.js (xtomcs00)
-│   │   └── userStore.js
+│   │   └── userStore.js (xborda01, xjabur02)
+│   ├── main.js (xborda01)
+│   ├── router 
+│   │   └── index.js (xborda01)
+│   ├── stores !!! SPRÁVA VNITŘNÍHO STAVU APLIKACE
+│   │   ├── filterStore.js (xborda01)
+│   │   ├── recipeStore.js
+│   │   └── userStore.js (xborda01, xjabur02)
 │   ├── style.css
 │   └── views !!! JEDNOTLIVÉ STRÁNKY APLIKACE
 │       ├── AddGroupchatMember.vue (xjabur02)
 │       ├── CookModeStep.vue (xsatin03)
 │       ├── CookMode.vue (xsatin03)
 │       ├── EditGroupchat.vue (xjabur02)
-│       ├── filters
-│       │   ├── CreateFilter.vue
-│       │   ├── EditFilter.vue
-│       │   └── Filters.vue
+│       ├── filters 
+│       │   ├── CreateFilter.vue (xborda01)
+│       │   ├── EditFilter.vue (xborda01)
+│       │   └── Filters.vue (xborda01)
 │       ├── ForeignUser.vue (xjabur02)
 │       ├── Friends.vue (xjabur02)
 │       ├── Groupchat.vue (xjabur02)
-│       ├── Homepage.vue
+│       ├── Homepage.vue (xborda01)
 │       ├── Chat.vue (xjabur02)
 │       ├── MyRecipes.vue
-│       ├── NotFound.vue
+│       ├── NotFound.vue (xborda01)
 │       ├── ProfilePreview.vue (xjabur02)
 │       ├── Profile.vue (xjabur02)
-│       ├── PublicRecipe.vue
+│       ├── PublicRecipe.vue (xborda01)
 │       ├── RecipeFormView.vue (xtomcs00)
+│       ├── PublicRecipe.vue (xborda01)
+│       ├── RecipeFormView.vue
 │       ├── Share.vue (xjabur02)
-│       └── Users.vue (xjabur02, )
+│       └── Users.vue (xjabur02, xborda01)
 ├── utils
 │   ├── add_recipe_api.js (xtomcs00)
 │   ├── api_cookmode.js (xsatin03)
@@ -101,13 +116,7 @@ vue_app
 │   ├── groupchat_api.js (xjabur02)
 │   ├── likes_api.js (xjabur02)
 │   ├── subscription_api.js (xjabur02)
-│   ├── supabase.js
+│   ├── supabase.js (xborda01)
 │   ├── update_recipe_api.js (xtomcs00)
 │   └── users_api.js (xjabur02)
 └── vite.config.js
-
-
-TODO !!! důraz na umístění klíčových částí FE
-TODO !!! důraz na autorství konkrétních částí
-
-TODO KOMENTOVAT KÓD, HLAVIČKY
