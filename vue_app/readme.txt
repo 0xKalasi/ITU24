@@ -36,9 +36,9 @@ vue_app
 ├── src
 │   ├── App.vue
 │   ├── components !!! OBECNĚ POUŽÍVANÉ KOMPONENTY V APLIKACI
-│   │   ├── addIngredient.vue
-│   │   ├── addSteps.vue
-│   │   ├── addUtencils.vue
+│   │   ├── addIngredient.vue (xtomcs00)
+│   │   ├── addSteps.vue (xtomcs00)
+│   │   ├── addUtencils.vue (xtomcs00)
 │   │   ├── alert.vue
 │   │   ├── basicPageHeader.vue
 │   │   ├── ConvSelect.vue (xjabur02)
@@ -54,12 +54,12 @@ vue_app
 │   │   ├── ChatLink.vue (xjabur02)
 │   │   ├── loadingScreen.vue
 │   │   ├── MessageComp.vue (xjabur02)
-│   │   ├── myOnFloatLabel.vue
+│   │   ├── myOnFloatLabel.vue (xtomcs00)
 │   │   ├── navigation
 │   │   │   ├── button.vue
 │   │   │   └── navigation.vue
 │   │   ├── NewTimer.vue (xsatin03)
-│   │   ├── photoUploader.vue
+│   │   ├── photoUploader.vue (xtomcs00)
 │   │   ├── TimeInput.vue (xsatin03)
 │   │   ├── timePicker.vue
 │   │   ├── TimerView.vue (xsatin03)
@@ -69,7 +69,7 @@ vue_app
 │   │   └── index.js
 │   ├── stores !!! DATA PERZISTIVNÍ MEZI STRÁNKAMI APLIKACE
 │   │   ├── filterStore.js
-│   │   ├── recipeStore.js
+│   │   ├── recipeStore.js (xtomcs00)
 │   │   └── userStore.js
 │   ├── style.css
 │   └── views !!! JEDNOTLIVÉ STRÁNKY APLIKACE
@@ -91,18 +91,18 @@ vue_app
 │       ├── ProfilePreview.vue (xjabur02)
 │       ├── Profile.vue (xjabur02)
 │       ├── PublicRecipe.vue
-│       ├── RecipeFormView.vue
+│       ├── RecipeFormView.vue (xtomcs00)
 │       ├── Share.vue (xjabur02)
 │       └── Users.vue (xjabur02, )
 ├── utils
-│   ├── add_recipe_api.js
+│   ├── add_recipe_api.js (xtomcs00)
 │   ├── api_cookmode.js (xsatin03)
 │   ├── api.js (všichni)
 │   ├── groupchat_api.js (xjabur02)
 │   ├── likes_api.js (xjabur02)
 │   ├── subscription_api.js (xjabur02)
 │   ├── supabase.js
-│   ├── update_recipe_api.js
+│   ├── update_recipe_api.js (xtomcs00)
 │   └── users_api.js (xjabur02)
 └── vite.config.js
 
