@@ -78,38 +78,44 @@ function open_cook_step() {
 			<h4>Porce:</h4> {{ recipe_vm.portion_count }}
 			<h4>Očekávaný čas:</h4> {{ recipe_vm.time_to_cook.value / 60 }} minut
 
-			<h4>Ingredience:</h4>
-			<ul>
-				<template v-for="(ingredient, index) in recipe_vm.ingredients">
-					<li
-						v-bind:class="
-							{
-								selected: ingredient.selected.value,
-								not_selected: !ingredient.selected.value,
-							}"
-						@click="ingredient.selected.value = !ingredient.selected.value"
-					>
-						{{ ingredient.name }} {{ ingredient.quantity }} {{ ingredient.unit }}
-						<div class="note" v-if="ingredient.notes">{{ ingredient.notes }}</div>
-					</li>
-				</template>
-			</ul>
+			<div v-if="recipe_vm.ingredients.length > 0">
+				<h4>Ingredience:</h4>
+				<small>Klikněte pro označení</small>
+				<ul>
+					<template v-for="(ingredient, index) in recipe_vm.ingredients">
+						<li
+							v-bind:class="
+								{
+									selected: ingredient.selected.value,
+									not_selected: !ingredient.selected.value,
+								}"
+							@click="ingredient.selected.value = !ingredient.selected.value"
+						>
+							{{ ingredient.name }} {{ ingredient.quantity }} {{ ingredient.unit }}
+							<div class="note" v-if="ingredient.notes">{{ ingredient.notes }}</div>
+						</li>
+					</template>
+				</ul>
+			</div>
 
-			<h4>Náčiní:</h4>
-			<ul>
-				<template v-for="(utencil, index) in recipe_vm.utencils">
-					<li
-						v-bind:class="
-							{
-								selected: utencil.selected.value,
-								not_selected: !utencil.selected.value,
-							}"
-						@click="utencil.selected.value = !utencil.selected.value"
-					>
-						{{ utencil.name }}
-					</li>
-				</template>
-			</ul>
+			<div v-if="recipe_vm.utencils.length > 0">
+				<h4>Náčiní:</h4>
+				<small>Klikněte pro označení</small>
+				<ul>
+					<template v-for="(utencil, index) in recipe_vm.utencils">
+						<li
+							v-bind:class="
+								{
+									selected: utencil.selected.value,
+									not_selected: !utencil.selected.value,
+								}"
+							@click="utencil.selected.value = !utencil.selected.value"
+						>
+							{{ utencil.name }}
+						</li>
+					</template>
+				</ul>
+			</div>
 
 			<Button @click="open_cook_step">Vařit</Button>
 		</div>

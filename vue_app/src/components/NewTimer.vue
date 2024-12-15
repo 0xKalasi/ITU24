@@ -37,8 +37,8 @@ function create_timer() {
 					v-model="model.name.value"
 					style="width: 100%"
 				></Textarea><br>
-				<label for="time">Čas</label><br>
-				<div style="width: 100%">
+				<label>Čas (HH:MM:SS)</label>
+				<div style="margin-left: auto; width: 100%; display: flex; justify-content: center">
 					<TimeInput v-model="model.time.value" />
 				</div>
 				<br>
@@ -50,7 +50,7 @@ function create_timer() {
 					<Button
 						@click="create_timer()"
 						style="float: left; width: 50%; height: 5em"
-					>Vytvořit</Button>
+					>Spustit/Vytvořit</Button>
 				</div>
 			</form>
 		</div>

@@ -147,6 +147,19 @@ if ( user_id != 0 ) {
 	update();
 }
 
+function format_time( time ) {
+	let out = ""
+
+	const hours = Math.floor( time / 60 / 60 );
+	if ( hours > 0 )
+		out += hours + ":";
+	const minutes = Math.floor( time / 60 ) % 60;
+	const seconds = Math.floor( time % 60 );
+	out += String( minutes ).padStart( 2, '0' ) + ":" + String( seconds ).padStart( 2, '0' );
+
+	return out;
+}
+
 function next_step() {
 
 	// check if a step in state 2 exists
@@ -326,10 +339,9 @@ function like() {
 							<p>{{step.text}}</p>
 							<div v-if="step.timers.length != 0" class="step_timers">
 								<h5
-									@click="step.show_timers.value = !step.show_timers.value"
 									style="margin-bottom: 0px"
 								>Časovače</h5>
-								<!---
+								<!--- @click="step.show_timers.value = !step.show_timers.value"
 								<Button
 									v-if="!step.show_timers.value"
 									@click="step.show_timers.value = true"
@@ -346,7 +358,7 @@ function like() {
 										@click="open_step_timer( timer )"
 										class="timer_button"
 									>
-										{{ timer.description }} - {{ timer.time }}
+										{{ timer.description }} - {{ format_time( timer.time ) }}
 									</Button>
 								</div>
 							</div>
@@ -362,7 +374,7 @@ function like() {
 								<Button
 									v-if="step.state != 2"
 									@click="discard_step( step )"
-								>Zahodit krok</Button>
+								>Dočastne schovat</Button>
 							</div>
 						</div>
 					</div>

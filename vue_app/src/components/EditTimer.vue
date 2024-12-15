@@ -74,6 +74,7 @@ function delete_timer() {
 					<Button @click="update_timer" style="width: 20%">Uložit</Button>
 				</div>
 				<br>
+				<label>Čas (HH:MM:SS)</label>
 				<div style="margin-left: auto; width: 100%; display: flex; justify-content: center">
 					<TimeInput
 						v-model="model.time.value"
@@ -86,12 +87,12 @@ function delete_timer() {
 						v-if="model.state.value == 0"
 						@click="start_timer"
 						style="width: 100%"
-					><i class="pi-play" /></Button>
+					>Spustit</Button>
 					<Button
 						v-if="model.state.value == 1"
 						@click="stop_timer"
 						style="width: 100%"
-					><i class="pi-pause" /></Button>
+					>Zastavit</Button>
 				</div>
 				<div>
 					<Button style="width: 50%" @click="model.show.value = false">Zavřit</Button>
