@@ -79,7 +79,7 @@ onBeforeMount(async () => {
     v-if="isLoading"
     style="height: calc(100vh - 266px);">
     <div style="display: flex; justify-content: center;">
-      <i class="pi pi-spin pi-th-large" style="font-size: 2rem; position: absolute; margin-top: 70%;"></i>
+      <i class="pi pi-spin pi-th-large" style="font-size: 2rem; position: absolute; margin-top: calc((100vh - 266px) / 2);"></i>
     </div>
   </div>
 
