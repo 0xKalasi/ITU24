@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import {
 	readRecipe,
 } from "../../utils/api.js";
@@ -8,12 +8,13 @@ import {
 	cookStateAddStep, createCookState,
 	cookStateChangeStep,
 } from '../../utils/api_cookmode.js';
-import TimerView from '../components/timerView.vue';
+import TimerView from '../components/TimerView.vue';
 import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 import BasicPageHeader from "../components/basicPageHeader.vue";
+import NewTimer  from '../components/NewTimer.vue';
 const currentUser = useUserStore();
 
 /* check if user is logged in */
@@ -47,7 +48,13 @@ let steps_vm = {
 };
 
 let timer_view = ref( null );
-console.log( timer_view )
+
+let new_timer_model = {
+	name: ref( "" ),
+	time: ref( 0 ),
+	show: ref( false ),
+	cook_state_id: 0,
+};
 
 async function update_async() {
 	// get recipe
@@ -73,6 +80,8 @@ async function update_async() {
 		console.log( "ERROR" );
 		return;
 	}
+
+	new_timer_model.cook_state_id = cook_state.id;
 
 	// update steps
 	steps_vm.steps = [];
@@ -236,7 +245,13 @@ function discard_step( step ) {
 function open_step_timer( timer ) {
 	console.log( 'open step timer', timer )
 
-	timer_view.value.new_step_timer( timer )
+	new_timer_model.name.value = timer.description;
+	new_timer_model.time.value = timer.time;
+	new_timer_model.show.value = true;
+}
+
+function load_timers() {
+	timer_view.value.load_timers()
 }
 
 </script>
@@ -248,6 +263,12 @@ function open_step_timer( timer ) {
 	<template v-else>
 		<LoadingScreen v-if="!steps_vm.ready.value"/>
 		<div v-if="steps_vm.ready.value">
+
+			<NewTimer
+				v-model="new_timer_model"
+				@created="load_timers()"
+			/>
+
 			<BasicPageHeader :text="recipe.name"></BasicPageHeader>
 			<div class="content">
 				<div v-for="step in steps_vm.steps" class="step_container">
@@ -275,7 +296,9 @@ function open_step_timer( timer ) {
 							<div v-if="step.timers.length != 0" class="step_timers">
 								<h5
 									@click="step.show_timers.value = !step.show_timers.value"
+									style="margin-bottom: 0px"
 								>Časovače</h5>
+								<!---
 								<Button
 									v-if="!step.show_timers.value"
 									@click="step.show_timers.value = true"
@@ -284,14 +307,16 @@ function open_step_timer( timer ) {
 									v-if="step.show_timers.value"
 									@click="step.show_timers.value = false"
 								>Schovat časovače</Button>
+								--->
 								<div>
-									<p
+									<Button
 										v-if="step.show_timers.value"
 										v-for="timer in step.timers"
 										@click="open_step_timer( timer )"
+										class="timer_button"
 									>
 										{{ timer.description }} - {{ timer.time }}
-									</p>
+									</Button>
 								</div>
 							</div>
 							<div class="step_menu" v-if="step.open_menu.value" @click="step.open_menu.value = false">
@@ -348,6 +373,10 @@ function open_step_timer( timer ) {
 
 .content > * {
 	margin-bottom: 1em;
+}
+
+.timer_button {
+	width: 100%;
 }
 
 .bottom {
