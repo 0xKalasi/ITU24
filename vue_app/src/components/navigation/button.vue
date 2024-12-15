@@ -1,8 +1,10 @@
-<script setup>
-    import { useRoute } from 'vue-router';
-    const route = useRoute();
+<!-- Tomáš Bordák, xborda01 -->
 
-    import { useRouter } from 'vue-router';
+<script setup>
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
+import { useRouter } from 'vue-router';
 const router = useRouter();
 
 import { useUserStore } from '../../stores/userStore';

@@ -1,3 +1,5 @@
+/* Tomáš Bordák, xborda01 */
+
 import { createWebHistory, createRouter } from "vue-router";
 import { profilePreviewStore } from "../stores/userStore";
 import { useUserStore } from "../stores/userStore";

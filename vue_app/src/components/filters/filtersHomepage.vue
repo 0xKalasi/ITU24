@@ -1,3 +1,5 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";

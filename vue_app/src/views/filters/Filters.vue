@@ -1,9 +1,10 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 import { useFilterStore } from '@/stores/filterStore';
-import navigationButton from '@/components/navigationButton.vue';
 import { readFilters, deleteFilter } from '@utils/api';
 
 const router = useRouter();

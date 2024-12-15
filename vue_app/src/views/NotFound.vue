@@ -1,8 +1,11 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
-  import navigationButton from "../components/navigationButton.vue";
+import { useRouter } from 'vue-router';
+const router = useRouter();
 </script>
 
 <template>
   <h2>404 - NotFound</h2>
-  <navigationButton :showOnlyBackBtn="true" />
+  <Button @click="router.back" label="Zpět"/>
 </template>

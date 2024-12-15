@@ -1,3 +1,5 @@
+/* Tomáš Bordák, xborda01 */
+
 import { defineStore } from "pinia"
 import { supabase } from "../../utils/supabase";
 import { ref } from "vue";

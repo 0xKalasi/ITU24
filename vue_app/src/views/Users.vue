@@ -1,4 +1,5 @@
 <!-- Martin Jabůrek, xjabur02 -->
+<!-- Tomáš Bordák, xborda01 -->
 
 <script setup>
 import { useRouter } from "vue-router";

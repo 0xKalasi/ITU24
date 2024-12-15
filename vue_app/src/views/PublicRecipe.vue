@@ -1,3 +1,5 @@
+<!-- Tomáš Bordák, xborda01 -->
+ 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -93,9 +95,6 @@ async function deleteRecipeLocal(){
             <SpeedDial v-if="user.id" :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -8%);">
             </SpeedDial>
         </div> 
-        <!-- <div v-if="recipe.id == 1" style="margin-bottom: 8px;">
-            <Image :src="path" alt="Image" width="250"/>
-        </div> -->
 
         <div style="display: inline">
             <Tag style="margin-right: 4px;" v-for="category in recipe.RecipeCategories" >{{ category.category.name }}</Tag>

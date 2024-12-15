@@ -1,9 +1,9 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
   import { useUserStore } from '../stores/userStore';
-  import NavigationButton from "../components/navigationButton.vue";
   import { useRouter } from "vue-router";
   import { getSavedRecipes, readUsersPublicRecipe } from '../../utils/api';
-  
   
   const currentUser = useUserStore();
   const router = useRouter();
@@ -15,10 +15,7 @@
 
 <template>
   <BasicPageHeader text="Kniha receptů"></BasicPageHeader>
-  <div v-if="currentUser.id == 0">
-    Pro zobrazení vašich receptů se přihlaste
-  </div>
-  <div v-else>
+  <div>
     <Button type="button" label="Přidat recept" @click="router.push('/addnewrecipe')"></Button>
     <h3 style="margin-top: 50px;">Vaše recepty</h3>
 

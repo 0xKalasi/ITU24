@@ -1,3 +1,5 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
 import { ref } from 'vue';
 import { readAllAlergens } from '@utils/api';

@@ -1,3 +1,5 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
 import { ref, toRaw } from 'vue';
 import { useRouter } from 'vue-router';

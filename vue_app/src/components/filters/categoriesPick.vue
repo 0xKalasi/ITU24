@@ -1,3 +1,5 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
 import { ref, watch } from 'vue';
 import { readAllCategories } from '@utils/api';

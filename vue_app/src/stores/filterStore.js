@@ -1,3 +1,5 @@
+/* Tomáš Bordák, xborda01 */
+
 import { defineStore } from "pinia"
 import { ref } from "vue";
 

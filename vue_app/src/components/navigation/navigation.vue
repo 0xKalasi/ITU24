@@ -1,3 +1,5 @@
+<!-- Tomáš Bordák, xborda01 -->
+
 <script setup>
 import NavBtn from "@/components/navigation/button.vue"
 
