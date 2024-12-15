@@ -1,7 +1,6 @@
 <!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 
-import { defineProps } from 'vue';
 import TimeInput from './TimeInput.vue';
 
 const model = defineModel( { default: { show: false } } );

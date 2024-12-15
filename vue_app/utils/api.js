@@ -442,7 +442,8 @@ const selectFilter = async (userId, filterId) => {
             last_used: 1
         });
     } else {
-        if(!(filterId == lastUsed.id)){
+        if(filterId != lastUsed.id){
+            // filter to 1
             newLastUsed.push({
                 id: filterId,
                 last_used: 1
@@ -450,20 +451,21 @@ const selectFilter = async (userId, filterId) => {
 
             // there is second last used already
             if(secondLastUsed){
-                
                 // new second last used is the previous last used
+                // previous first to 2
                 newLastUsed.push({
                     id: lastUsed.id,
                     last_used: 2
                 });
                 
-                // remove previous second last used from last_used flag
-                newLastUsed.push({
-                    id: secondLastUsed.id,
-                    last_used: null
-                });
-            } else{
-                // new second last used is the previous last used
+                if(filterId != secondLastUsed.id){
+                    // previous 2 to null
+                    newLastUsed.push({
+                        id: secondLastUsed.id,
+                        last_used: null
+                    });
+                }
+            } else {
                 newLastUsed.push({
                     id: lastUsed.id,
                     last_used: 2
@@ -492,7 +494,8 @@ const getLastUsedFilters = async (userId) => {
     let lastUsed = filters.find((filter) => filter.last_used == 1);
     let secondLastUsed = filters.find((filter) => filter.last_used == 2);
 
-    // user didnt use any filter yet and there is >= 2 filters, so show first two
+    // COMMENTED TO SHOW HOW MOST USED FILTERS WORK
+     /* // user didnt use any filter yet and there is >= 2 filters, so show first two
     if(!lastUsed && filters.length >= 2){
         lastUsed = filters[0];
         secondLastUsed = filters[1];
@@ -506,7 +509,7 @@ const getLastUsedFilters = async (userId) => {
     // there is lastUsed, but secondLastUsed is not set yet -> find some user's filter that isnt lastUsed
     if(!secondLastUsed){
         secondLastUsed = filters.find((filter => filter.id != lastUsed.id));
-    }
+    }  */
 
     return { 
         first: lastUsed, 

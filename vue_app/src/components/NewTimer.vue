@@ -1,7 +1,7 @@
 <!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 
-import { defineProps, ref } from 'vue';
+import { ref } from 'vue';
 import TimeInput from './TimeInput.vue';
 import {
 	getCookTimers, createCookTimer,
