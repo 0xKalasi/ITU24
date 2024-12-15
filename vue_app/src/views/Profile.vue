@@ -16,22 +16,18 @@ import { updateUser } from "../../utils/users_api";
 import { getAllUsersLikes } from "../../utils/likes_api";
 
 
-let usersRecipes;
-let recipeCnt;
-let totalLikes;
+const usersRecipes = await readUsersPublicRecipe(currentUser.id);
+const recipeCnt = usersRecipes.length;
 
-const GetUserInfo = async () => {
-  usersRecipes = await readUsersPublicRecipe(currentUser.id);
-  recipeCnt = usersRecipes.length;
-  totalLikes = await getAllUsersLikes(currentUser.id);
-}
+let totalLikes;
 
 const isLoading = ref(false);
 
 const LoadData = async () => {
   isLoading.value = true;
-  GetUserInfo()
+  getAllUsersLikes(currentUser.id)
   .then(async (result) => {
+    totalLikes = result;
     isLoading.value = false;
   });
 }
@@ -100,162 +96,152 @@ const GoToPreview = async () => {
     :key="profileUpdatedKey">
   </Alert>
 
-  <LoadingScreen v-if="isLoading"></LoadingScreen>
+  <BasicPageHeader text="Profil" backArrow></BasicPageHeader>
+
+  <div v-if="IsLoggedOut">
+    Pro zobrazení profilu se přihlaste.
+
+    <Button
+      icon="pi pi-user"
+      label="Přepnout uživatele"
+      @click="GoToUserSelection"
+      style="margin-top: 20px;">
+    </Button>
+
+  </div>
+
+  <div v-else-if=" ! previewData.editMode">
+
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 220px);">
+      <div style="display: flex; margin-bottom: 20px; gap: 10px">
+        <Button
+          icon="pi pi-user"
+          label="Přepnout uživatele"
+          @click="GoToUserSelection">
+        </Button>
+        <Button
+          icon="pi pi-pencil"
+          label="Upravit profil"
+          @click="StartEditMode"
+          style="margin-left: auto;">
+        </Button>
+      </div>
+
+      <Divider></Divider>
+
+      <h2>
+        {{ currentUser.name }}
+      </h2>
+      <i>
+        {{ currentUser.bio }}
+      </i>
+
+      <Divider style="margin-top: 20px; margin-bottom: 20px"></Divider>
+
+      <div @click="router.push('/recipes')">
+        <Message v-if="recipeCnt >= 5"
+          severity="contrast"
+          variant="outlined"
+          size="large">
+          <b>{{ recipeCnt }}</b> veřejných receptů
+        </Message>
+        <Message v-else-if="recipeCnt >= 2"
+          severity="contrast"
+          variant="outlined"
+          size="large">
+          <b>{{ recipeCnt }}</b> veřejné recepty
+        </Message>
+        <Message v-else-if="recipeCnt == 1"
+          severity="contrast"
+          variant="outlined"
+          size="large">
+          <b>{{ recipeCnt }}</b> veřejný recept
+        </Message>
+        <Message v-else
+          severity="contrast"
+          variant="outlined"
+          size="large"> <!-- recipeCnt == 0 -->
+          Žádné veřejné recepty
+        </Message>
+      </div>
+
+      <div v-if="isLoading" style="text-align: center;">
+        <h3 class="pi pi-spin pi-th-large"></h3>
+      </div>
+
+      <div v-else>
+        <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+        <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+        <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
+        <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
+      </div>
+
+      <Divider></Divider>
+    </div>
+
+  </div>
+
+  <!-- EDIT MODE -->
 
   <div v-else>
 
-    <BasicPageHeader text="Profil" backArrow></BasicPageHeader>
-
-    <div v-if="IsLoggedOut">
-      Pro zobrazení profilu se přihlaste.
-
+    <div style="margin-bottom: 20px;">
       <Button
-        icon="pi pi-user"
-        label="Přepnout uživatele"
-        @click="GoToUserSelection"
-        style="margin-top: 20px;">
+        icon="pi pi-check"
+        @click="UpdateProfile">
       </Button>
-
+      <Button
+        icon="pi pi-times"
+        @click="ToggleEditMode"
+        severity="danger"
+        style="margin-left: 10px;">
+      </Button>
+      <Button
+        label="Zobrazit náhled" 
+        icon="pi pi-question"
+        @click="GoToPreview"
+        style="float: right">
+      </Button>
     </div>
 
-    <div v-else-if=" ! previewData.editMode">
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 280px);">
+      <Divider></Divider>
 
-      <div style="position: relative; overflow-y: auto; height: calc(100vh - 220px);">
-        <div style="display: flex; margin-bottom: 20px; gap: 10px">
-          <Button
-            icon="pi pi-user"
-            label="Přepnout uživatele"
-            @click="GoToUserSelection">
-          </Button>
-          <Button
-            icon="pi pi-pencil"
-            label="Upravit profil"
-            @click="StartEditMode"
-            style="margin-left: auto;">
-          </Button>
-        </div>
-
-        <Divider></Divider>
-
-        <h2>
-          {{ currentUser.name }}
-        </h2>
-        <i>
-          {{ currentUser.bio }}
-        </i>
-
-        <Divider style="margin-top: 20px; margin-bottom: 20px"></Divider>
-
-        <div @click="router.push('/recipes')">
-          <Message v-if="recipeCnt >= 5"
-            severity="contrast"
-            variant="outlined"
-            size="large">
-            <b>{{ recipeCnt }}</b> veřejných receptů
-          </Message>
-          <Message v-else-if="recipeCnt >= 2"
-            severity="contrast"
-            variant="outlined"
-            size="large">
-            <b>{{ recipeCnt }}</b> veřejné recepty
-          </Message>
-          <Message v-else-if="recipeCnt == 1"
-            severity="contrast"
-            variant="outlined"
-            size="large">
-            <b>{{ recipeCnt }}</b> veřejný recept
-          </Message>
-          <Message v-else
-            severity="contrast"
-            variant="outlined"
-            size="large"> <!-- recipeCnt == 0 -->
-            Žádné veřejné recepty
+      <div style="margin-bottom: 20px; margin-top: 20px;">
+        <div>
+          <InputText
+            v-model="previewData.name"
+            size="small"
+            placeholder="Uživatelské jméno"
+            :invalid="isInvalid"
+            @input="SetValid">
+          </InputText>
+          <Message
+            v-if="isInvalid"
+            variant="simple"
+            severity="error"
+            size="small">
+            Není zadáno žádné uživatelské jméno
           </Message>
         </div>
 
-        <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
-        <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
-        <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
-        <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
-
-        <Divider></Divider>
-      </div>
-
-    </div>
-
-    <!-- EDIT MODE -->
-
-    <div v-else>
-
-      <div style="margin-bottom: 20px;">
-        <Button
-          icon="pi pi-check"
-          @click="UpdateProfile">
-        </Button>
-        <Button
-          icon="pi pi-times"
-          @click="ToggleEditMode"
-          style="margin-left: 10px; background: crimson; border: 1px solid crimson;">
-        </Button>
-        <Button
-          label="Zobrazit náhled" 
-          icon="pi pi-question"
-          @click="GoToPreview"
-          style="float: right">
-        </Button>
-      </div>
-
-      <div style="position: relative; overflow-y: auto; height: calc(100vh - 280px);">
-        <Divider></Divider>
-
-        <div style="margin-bottom: 20px; margin-top: 20px;">
-          <div>
-            <InputText
-              v-model="previewData.name"
-              size="small"
-              placeholder="Uživatelské jméno"
-              :invalid="isInvalid"
-              @input="SetValid">
-            </InputText>
-            <Message
-              v-if="isInvalid"
-              variant="simple"
-              severity="error"
-              size="small">
-              Není zadáno žádné uživatelské jméno
-            </Message>
-          </div>
-
-          <div>
-            <Textarea
-              v-model="previewData.bio"
-              rows="5"
-              cols="30"
-              size="small"
-              placeholder="Popisek"
-              style="margin-top: 20px">
-            </Textarea>
-          </div>
+        <div>
+          <Textarea
+            v-model="previewData.bio"
+            rows="5"
+            cols="30"
+            size="small"
+            placeholder="Popisek"
+            style="margin-top: 20px">
+          </Textarea>
         </div>
-
-        <Divider></Divider>
-
-        <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-        <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-        <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-        <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
-
-        <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
-        <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
-        <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
-        <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
-
-        <Divider></Divider>
-
       </div>
+
+      <Divider></Divider>
 
     </div>
 
   </div>
+
 
 </template>

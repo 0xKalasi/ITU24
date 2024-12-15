@@ -15,22 +15,18 @@ import { readUsersPublicRecipe } from "../../utils/api.js";
 import { getAllUsersLikes } from "../../utils/likes_api.js";
 
 
-let usersRecipes;
-let recipeCnt;
-let totalLikes;
+const usersRecipes = await readUsersPublicRecipe(currentUser.id);
+const recipeCnt = usersRecipes.length;
 
-const GetUserInfo = async () => {
-  usersRecipes = await readUsersPublicRecipe(currentUser.id);
-  recipeCnt = usersRecipes.length;
-  totalLikes = await getAllUsersLikes(currentUser.id);
-}
+let totalLikes;
 
 const isLoading = ref(false);
 
 const LoadData = async () => {
   isLoading.value = true;
-  GetUserInfo()
+  getAllUsersLikes(currentUser.id)
   .then(async (result) => {
+    totalLikes = result;
     isLoading.value = false;
   });
 }
@@ -42,55 +38,56 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <LoadingScreen v-if="isLoading"></LoadingScreen>
+  <div style="color: aquamarine; display: flex; justify-content: center;">
+    Takto Vás uvidí ostatní uživatelé
+  </div>
 
-  <div v-else>
+  <Divider></Divider>
+  
+  <BasicPageHeader text="Náhled profilu" backArrow></BasicPageHeader>
 
-    <div style="color: aquamarine; display: flex; justify-content: center;">
-      Takto Vás uvidí ostatní uživatelé
+  <div style="position: relative; overflow-y: auto; height: calc(100vh - 235px);">
+    <div style="margin-bottom: 20px;">
+      <h2>
+        {{ previewData.name }}
+      </h2>
+      <i>
+        {{ previewData.bio }}
+      </i>
     </div>
 
     <Divider></Divider>
-    
-    <BasicPageHeader text="Náhled profilu" backArrow></BasicPageHeader>
 
-    <div style="position: relative; overflow-y: auto; height: calc(100vh - 235px);">
-      <div style="margin-bottom: 20px;">
-        <h2>
-          {{ previewData.name }}
-        </h2>
-        <i>
-          {{ previewData.bio }}
-        </i>
-      </div>
+    <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+    <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+    <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
+    <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
-      <Divider></Divider>
+    <div v-if="isLoading" style="text-align: center;">
+      <h3 class="pi pi-spin pi-th-large"></h3>
+    </div>
 
-      <h3 v-if="recipeCnt >= 5">{{ usersRecipes.length }} veřejných receptů</h3>
-      <h3 v-else-if="recipeCnt >= 2">{{ usersRecipes.length }} veřejné recepty</h3>
-      <h3 v-else-if="recipeCnt == 1">{{ usersRecipes.length }} veřejný recept</h3>
-      <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
-
+    <div v-else>
       <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
       <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
       <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
       <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
+    </div>
 
-      <Divider></Divider>
+    <Divider></Divider>
 
-      <h2>Recepty</h2>
+    <h2>Recepty</h2>
 
-      <div v-for="recipe in usersRecipes">
-        <!-- This is a preview, so click functionality is disabled -->
-        <Message
-          severity="success"
-          icon="pi pi-play-circle">
-          {{ recipe.name }}
-        </Message>
-      </div>
-
+    <div v-for="recipe in usersRecipes">
+      <!-- This is a preview, so click functionality is disabled -->
+      <Message
+        severity="success"
+        icon="pi pi-play-circle">
+        {{ recipe.name }}
+      </Message>
     </div>
 
   </div>
+
 
 </template>

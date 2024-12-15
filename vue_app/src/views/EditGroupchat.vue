@@ -213,7 +213,7 @@ const DeleteGroupchat = async () => {
           label="Odstranit skupinu"
           icon="pi pi-exclamation-circle"
           @click="ConfirmDelGroup"
-          style="background: crimson; border: 1px solid crimson;">
+          severity="danger">
         </Button>
 
       </div>
@@ -250,7 +250,7 @@ const DeleteGroupchat = async () => {
               <Button
                 v-if="member.id != currentUser.id"
                 icon="pi pi-minus"
-                style="background: crimson; border: 1px solid crimson;"
+                severity="danger"
                 @click="RemoveUser(member.id)">
               </Button>
               <Button

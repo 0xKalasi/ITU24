@@ -4,7 +4,7 @@ LOGIN = xlogin00
 # PRED ODEVZDANIM SI NASTAVTE VLASTNI LOGIN !!!
 
 SRC = 02_final.tex
-OUT = 02_$(LOGIN)_navrh
+OUT = 02_$(LOGIN)_final
 BUILD_DIR = build
 
 all: $(OUT)

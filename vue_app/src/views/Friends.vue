@@ -272,7 +272,8 @@ const ToggleMenu = (event) => {
               raised
               size="large"
               @click="CancelCreatingGroupchat"
-              style="width: 50px; background: crimson; border: 1px solid crimson;">
+              severity="danger"
+              style="width: 50px">
             </Button>
 
           </ButtonGroup>
