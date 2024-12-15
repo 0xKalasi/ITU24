@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onMounted, onUnmounted, onUpdated } from 'vue';
+import { ref, onMounted, onUnmounted, onUpdated, onBeforeMount } from 'vue';
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -41,7 +41,6 @@ const messages = ref([]);
 
 let messageChanges;
 onMounted(async () => {
-  messages.value = await readChat(currentUser.id, peerUser.id);
   scrollDown();
 
   messageChanges = await createSubscription("*", "Message", async () => {
@@ -56,38 +55,62 @@ onUpdated(() => {
   scrollDown();
 });
 
+
+const isLoading = ref(false);
+
+const InitialLoad = async () => {
+  isLoading.value = true;
+
+  readChat(currentUser.id, peerUser.id)
+  .then(async (result) => {
+    messages.value = result;
+    isLoading.value = false;
+  });
+}
+
+onBeforeMount(async () => {
+  await InitialLoad();
+});
+
 </script>
 
 <template>
-  <div
-    ref="container"
-    style="overflow-y: auto; height: calc(100vh - 266px);">
-    <div v-if="messages.length == 0" style="margin-top: 20px;">
-      Chat je dosud prázdný.
-    </div>
-
-    <div v-for="message in messages">
-      <MessageComp :message="message"></MessageComp>
-    </div>
+  <div v-if="isLoading" style="display: flex; justify-content: center; margin-top: 50px;">
+    <i class="pi pi-spin pi-th-large" style="font-size: 2rem;"></i>
   </div>
 
-  <!-- Entry field -->
-  <Divider></Divider>
+  <div v-else>
+    <div
+      ref="container"
+      style="overflow-y: auto; height: calc(100vh - 266px);">
+      <div v-if="messages.length == 0" style="margin-top: 20px;">
+        Chat je dosud prázdný.
+      </div>
 
-  <div class="entry-field">
-    <InputText
-      v-model="textMessage"
-      size="large"
-      placeholder="Vaše zpráva"
-      @keydown.enter="HandleSending"
-      style="width: 90%">
-    </InputText>
+      <div v-for="message in messages">
+        <MessageComp :message="message"></MessageComp>
+      </div>
+    </div>
 
-    <Button
-      icon="pi pi-send"
-      @click="HandleSending"
-      style="min-width: 43px;">
-    </Button>
+    <!-- Entry field -->
+    <Divider></Divider>
+
+    <div class="entry-field">
+      <InputText
+        v-model="textMessage"
+        size="large"
+        placeholder="Vaše zpráva"
+        @keydown.enter="HandleSending"
+        style="width: 90%">
+      </InputText>
+
+      <Button
+        icon="pi pi-send"
+        @click="HandleSending"
+        style="min-width: 43px;">
+      </Button>
+    </div>
+
   </div>
 
 </template>
