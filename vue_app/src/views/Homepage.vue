@@ -7,7 +7,7 @@ import filters from "@/components/filters/filtersHomepage.vue"
 import { readPublicRecipes, readPublicRecipesFilterName, readFilters, getRecipeImage } from "../../utils/api";
 
 import { useUserStore } from '../stores/userStore';
-const currentUser = useUserStore();
+const user = useUserStore();
 
 const router = useRouter();
 const searchValue = ref("");
@@ -36,8 +36,11 @@ const search = async () => {
   })
 }
 
-const path = ref();
+// FILTERS
+const userFilters = ref(await readFilters(user.id));
+console.log(userFilters.value);
 
+const path = ref();
 onBeforeMount(async () => {
   search();
   path.value = await getRecipeImage(1);

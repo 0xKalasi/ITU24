@@ -5,7 +5,7 @@ import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 import { useFilterStore } from '@/stores/filterStore';
-import { readFilters, deleteFilter } from '@utils/api';
+import { readFilters, deleteFilter, selectFilter } from '@utils/api';
 
 const router = useRouter();
 const user = useUserStore();
@@ -19,21 +19,25 @@ const showOptionsOnFilter = ref(null);
 const startTime = ref(null);
 const endTime = ref(null);
 
-const touchStart = () => {
-    startTime.value = Date.now(); 
+let timer = null;
+const touchStart = (id) => {
+    startTime.value = Date.now();
+
+    timer = setTimeout(() => {
+        showOptionsOnFilter.value = id;
+    }, 500);
 }
 
 const touchEnd = (id, event) => {
+    clearTimeout(timer);
     endTime.value = Date.now();
-
-    // holds atleast for 0.5 sec
-    if(endTime.value - startTime.value >= 500){
-        showOptionsOnFilter.value = id;
-    } 
-    else{
-        // TODO: emit search with this filter (id)
+    
+    // hold is less than 500ms -> its a click
+    if(endTime.value - startTime.value < 500){
         if(event.target.tagName === 'DIV'){
             // clicked on message, not on span with buttons
+            
+            // TODO: emit search with this filter (id)
             console.log("selected filter with id:", id)
         }
     } 
@@ -122,13 +126,13 @@ onUnmounted(() => { document.removeEventListener('click', closeOptions) })
             <div v-for="filter in filters" :key="filter.id">
                 <Message 
                     :id="filter.id"
-                    @touchstart="touchStart()" @touchend="touchEnd(filter.id, $event)" 
-                    @mousedown="touchStart()" @mouseup="touchEnd(filter.id, $event)"
+                    @touchstart="touchStart(filter.id)" @touchend="touchEnd(filter.id, $event)" 
+                    @mousedown="touchStart(filter.id)" @mouseup="touchEnd(filter.id, $event)"
                     severity="secondary"
                     style="position: relative; margin-top: 10px; cursor: pointer;">
-                    <span class="noSelect">{{ filter.name }}</span>
+                    <div class="noSelect">{{ filter.name }}</div>
                     
-                    <span v-if="showOptionsOnFilter == filter.id" style="display: flex; position: absolute; right: 8px; gap: 8px; bottom: 50%; transform: translateY(50%); z-index: 10">
+                    <span v-if="showOptionsOnFilter == filter.id" style="display: flex; position: absolute; right: 6px; gap: 8px; bottom: 50%; transform: translateY(50%); z-index: 10">
                         <Button :label="showSureDeleteMsg ? '' : 'Upravit'" @click.stop="router.push(`/filter/edit/${filter.id}`)" icon="pi pi-pencil" severity="" size="small"/>
                         <Button :label="showSureDeleteMsg ? 'Jste jsi jisti?' : ''" @click.stop="tryDelete(filter.id)" :icon="delLoading ? 'pi pi-spin pi-spinner': 'pi pi-trash'" severity="danger" size="small"/>
                     </span>

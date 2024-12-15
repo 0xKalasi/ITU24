@@ -16,7 +16,6 @@ const users = await readAllUsers();
 
 const SwitchUser = async (id) => {
   await user.login(id);
-  router.push("/profile");
 }
 
 const GoToProfile = async (id) => {

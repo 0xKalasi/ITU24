@@ -426,6 +426,18 @@ const editFilter = async (filterId, name, alergenArr, categoriesArr, keyword) =>
     }
 }
 
+const selectFilter = async (usedId, filterId) => {
+    const filters = await readFilters(userId);
+    console.log(filters);
+
+    const lastUsed = filters.find((filter) => filter.last_used == 1);
+    const secondLastUsed = filters.find((filter) => filter.last_used == 2);
+
+    console.log("last used: ", lastUsed);
+    console.log("second last used: ", secondLastUsed);
+
+}
+
 export { 
     readAllRecipes,
     readPublicRecipesFilterName,
@@ -445,5 +457,6 @@ export {
     readFilterById,
     readFilterAlergens,
     readFilterCategories,
-    editFilter
+    editFilter,
+    selectFilter
 };

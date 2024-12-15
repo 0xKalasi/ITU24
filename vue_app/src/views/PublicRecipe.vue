@@ -70,18 +70,6 @@ const actionButtons = ref([
         }
     },  
 ])
-
-var delete_recipe = false;
-async function deleteRecipeLocal(){
-    if (!delete_recipe){
-        showAlertMessage("warn","Naozaj chcete smazat recept?")
-        delete_recipe = true;
-    } else {
-        await deleteRecipe(recipe);
-        router.replace(`/recipes`)
-    }
-}
-
 </script>
 
 <template>
@@ -93,7 +81,7 @@ async function deleteRecipeLocal(){
         <div style="position: relative; display: flex; align-items: center; min-width: 320px">
             <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
             <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
-            <SpeedDial v-if="user.id" :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -8%);">
+            <SpeedDial v-if="user.id" :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -11%);">
             </SpeedDial>
         </div> 
 
@@ -109,17 +97,13 @@ async function deleteRecipeLocal(){
             </Tag> 
         </div>
 
-
         <h3>Alergeny</h3>
         <Tag severity="danger" style="margin-right: 4px" v-for="(alergen, index) in recipe.RecipeAlergens" :key="alergen.alergen.id">
             {{ alergen.alergen.name }} ({{ alergen.alergen.id }})
         </Tag>
     
-
-        
         <h3>Nutné náčiní</h3>
         <Tag severity="info" style="margin-right: 4px;" v-for="utencil in recipe.Utencils">{{ utencil.name }}</Tag>
-       
 
         <h3>Ingredience</h3>
         <ul>
@@ -134,12 +118,6 @@ async function deleteRecipeLocal(){
             <b>{{ step.name }}</b>
             <div class="stepText">{{ step.text }}</div>
         </div>
-
-        <!-- TODO: move this functionality to /recipes -->
-       <!--  <div v-if="user.id == recipe.creator">
-            <Button class="p-button-danger" @click="deleteRecipeLocal">Zmaž recept</Button>
-            <Button class="p-button-warn" @click="router.push(`/edit-recipe/${recipe.id}`)">Uprav recept</Button>
-        </div> -->
 
         <div style="text-align: center; margin-top: 16px;">
             <Button label="Spustit režim vaření" icon="pi pi-play" @click="router.push(`/cookmode/${recipe.id}`)" />
