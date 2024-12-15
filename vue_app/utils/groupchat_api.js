@@ -236,6 +236,7 @@ const getUnseenGroupchatMessageCount = async (groupchatId, userId) => {
   .select('count')
   .eq('groupchat_id', groupchatId)
   .gt('created_at', lastTimeViewed)
+  .neq('person_posted', userId) // needed in case we shared a recipe
 
   if (err2) {
     console.log(err2);

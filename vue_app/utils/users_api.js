@@ -419,6 +419,7 @@ const getUnseenMessageCount = async (user, peer) => {
   .select('count')
   .eq('chat_id', chat.id)
   .gt('created_at', lastTimeOpened)
+  .neq('person_posted', user) // needed in case we shared a recipe
   
   if (err2) {
     console.log(err2);
