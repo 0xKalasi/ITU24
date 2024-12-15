@@ -1,7 +1,7 @@
 <script setup>
-import { onBeforeMount, ref } from "vue";
-import { switchUser } from "../../utils/users_api.js";
+import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import filters from "@/components/filters/filtersHomepage.vue"
 import { readPublicRecipes, readPublicRecipesFilterName, readFilters, getRecipeImage } from "../../utils/api";
 
 import { useUserStore } from '../stores/userStore';
@@ -11,7 +11,17 @@ const router = useRouter();
 const searchValue = ref("");
 
 const publicRecipes = ref();
-const filters = ref();
+
+// SEARCH FIELD - DYNAMIC PLACEHOLDER
+const texts = [
+    "Vyhledejte recept",
+    "Podle ingrediencií",
+    "Podle kategorií",
+    "Zkuste něco nové",
+    "Vyskoušejte filtry"
+];
+let textsIndex = 0;
+const dynamicPlaceHolder = ref(texts[textsIndex]);
 
 const isLoading = ref(false);
 
@@ -29,10 +39,20 @@ const path = ref();
 onBeforeMount(async () => {
   search();
   path.value = await getRecipeImage(1);
-
-  if(currentUser.id)
-    filters.value = await readFilters(currentUser.id)
 }) 
+
+let interval;
+onMounted(() => {
+  interval = setInterval(() => {
+    textsIndex = (textsIndex + 1) % texts.length; // loop trough texts
+    dynamicPlaceHolder.value = texts[textsIndex];
+  }, 3000);
+})
+
+onUnmounted(() => {
+  clearInterval(interval);
+})
+
 </script>
 
 <template>
@@ -42,15 +62,12 @@ onBeforeMount(async () => {
     <div style="display: flex; justify-content: center;">
       <IconField>
         <InputIcon class="pi pi-search" />
-        <InputText v-model="searchValue" size="large" @keyup.enter="search"/>
+        <InputText v-model="searchValue" size="large" @keyup.enter="search" :placeholder="dynamicPlaceHolder"/>
       </IconField>
     </div>
- 
-    <div class="filters" style="display: flex; justify-content: center">
-      <Tag value="Filter 1"/>
-      <Tag value="Filter 2"/>
-      <Tag value="Filtry" severity="warn" icon="pi pi-search" @click="router.push('/filters')"/>
-    </div>
+    
+    <!-- at most 2 last used filters and all filters button -->
+    <filters />
 
     <div v-for="(recipe, index) in publicRecipes" :key="recipe.id" @click="router.push(`/recipe/public/${recipe.id}`)"> 
       <div>

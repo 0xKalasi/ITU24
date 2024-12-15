@@ -1,7 +1,5 @@
 import { supabase } from "./supabase";
 
-// TODO: add checks for recipes being public !!!
-
 const readAllRecipes = async () => {
     const { data: recipes, error } = await supabase
     .from('Recipe')
@@ -132,21 +130,6 @@ const readAlergen = async (id) => {
     }
 }
 
-const readFilters = async (id) => {
-    const { data: filters, error } = await supabase
-    .from('Filter')
-    .select('*')
-    .eq('user', id)
-
-    if(!error)
-        return filters;
-    else {
-        console.log(error);
-        return null;
-    }
-}
-
-
 // set Array to null, if there isnt any
 var recipeDataObj = {
     name: String,
@@ -250,36 +233,197 @@ const getSavedRecipes = async (user_id) => {
     } 
 }
 
-const createFilter = async (user_id, name, allergenIds) => {
+// function for mapping filter id with alergen id from alergen arrray
+const createFilterAlergens = (id, alergenArr) => {
+    return alergenArr.map(alergenId => ({
+        filter: id,
+        alergen: alergenId,
+    }));
+}
+
+// function for mapping filter id with category id from category array
+const createFilterCategories = (id, categoryArr) => {
+    return categoryArr.map(catId => ({
+        filter: id,
+        category: catId,
+    }));  
+}
+
+const createFilter = async (user_id, name, alergenArr, categoriesArr, keyword) => {
+    try{
+        const { data: filter } = await supabase
+        .from('Filter')
+        .insert([
+          { 
+            name: name,
+            user: user_id,
+            key_word: keyword
+          }
+        ]) 
+        .select()
+        .single(); // this is the same as filter[0] 
+
+        // bulk inserts to FilterAlergens and FilterCategories
+        const filterAlergens = createFilterAlergens(filter.id, alergenArr);
+        await supabase.from('FilterAlergens').insert(filterAlergens);
+
+        const filterCategories = createFilterCategories(filter.id, categoriesArr);
+        await supabase.from('FilterCategories').insert(filterCategories);
+    }
+    catch(error){
+        console.log(error);
+        return false;
+    }
+}
+
+const readFilters = async (id) => {
+    const { data: filters, error } = await supabase
+    .from('Filter')
+    .select('*')
+    .eq('user', id)
+
+    if(!error){
+        return filters;
+    }
+    else {
+        console.log(error);
+        return null;
+    }
+}
+
+const deleteFilter = async (id) => {
+    try{
+        // this could be done by only setting cascading in database on foreign key filter in FilterAlergens and FilterCategories 
+        // delete FilterAlergens rows where column filter is id
+        await supabase
+        .from('FilterAlergens')
+        .delete()
+        .eq('filter', id);
+
+        // delete FilterCategories rows where column filter is id
+        await supabase
+        .from('FilterCategories')
+        .delete()
+        .eq('filter', id);
+        
+        // delete Filter after its foreign key rows have been deleted
+        await supabase
+        .from('Filter')
+        .delete()
+        .eq('id', id);
+
+        return true;
+    }
+    catch(error) {
+        // catch error from all 3 supa calls
+        console.log(error);
+        return false;
+    }
+}
+
+const readFilterById = async (filterId) => {
     const { data: filter, error } = await supabase
     .from('Filter')
-    .insert([
-      { 
-        name: name,
-        user: user_id,
-      }
-    ])
-    .select()
-    .single(); /* this is the same as filter[0] */
+    .select('*')
+    .eq('id', filterId)
+    .single();
 
-  if (error) 
-    return null;
+    if(!error){
+        return filter;
+    }
+    else {
+        console.log(error);
+        return null;
+    }
+}
 
-  /* bulk insert */
-  const filterAlergensData = allergenIds.map(alergenId => ({
-    filter: filter.id, /* id from filter insert */
-    alergen: alergenId,
-  }));
-  console.log(filterAlergensData);
-
-  const { data: filterAlergens, filterAlergensErr } = await supabase
+const readFilterAlergens = async (filterId) => {
+    const { data: alergens, error } = await supabase
     .from('FilterAlergens')
-    .insert(filterAlergensData);
+    .select('*')
+    .eq('filter', filterId);
 
-  if (filterAlergensErr) 
-    return null
-   else 
-    return 1;
+    if(!error)
+        return alergens;
+    else {
+        console.log(error);
+        return null;
+    } 
+}
+
+const readFilterCategories = async (filterId) => {
+    const { data: categories, error } = await supabase
+    .from('FilterCategories')
+    .select('*')
+    .eq('filter', filterId);
+
+    if(!error)
+        return categories;
+    else {
+        console.log(error);
+        return null;
+    } 
+} 
+
+const deleteAndInsertAlergens = async (filterId, filterAlergens) => {
+    try{
+        // delete filter's alergens
+        await supabase
+        .from('FilterAlergens')
+        .delete()
+        .eq('filter', filterId);
+
+        // insert new 
+        await supabase.from('FilterAlergens').insert(filterAlergens);
+    }
+    catch(error){
+        console.log(error);
+        return null;
+    }
+}
+
+const deleteAndInsertCategories = async (filterId, filterCategories) => {
+    try{
+        // delete filter's categories
+        await supabase
+        .from('FilterCategories')
+        .delete()
+        .eq('filter', filterId);
+
+        // insert new 
+        await supabase.from('FilterCategories').insert(filterCategories);
+    }
+    catch(error){
+        console.log(error);
+        return null;
+    }
+}
+
+const editFilter = async (filterId, name, alergenArr, categoriesArr, keyword) => {
+    try{
+        const { data: filter } = await supabase
+        .from('Filter')
+        .update([
+          { 
+            name: name,
+            key_word: keyword
+          }
+        ]) 
+        .eq('id', filterId)
+        .select()
+        .single(); // this is the same as filter[0] 
+
+        // bulk delete and insert to FilterAlergens and FilterCategories
+        const filterAlergens = createFilterAlergens(filter.id, alergenArr);
+        await deleteAndInsertAlergens(filter.id, filterAlergens);
+
+        const filterCategories = createFilterCategories(filter.id, categoriesArr);
+        await deleteAndInsertCategories(filter.id, filterCategories);
+    }
+    catch(error){
+        console.log(error);
+        return false;
+    }
 }
 
 export { 
@@ -290,11 +434,16 @@ export {
     readAlergen,
 	readRecipe,
     readUsersPublicRecipe,
-    readFilters,
     readAllAlergens,
     readAllCategories,
     saveRecipe,
     getRecipeImage,
     getSavedRecipes,
-    createFilter
+    createFilter,
+    readFilters,
+    deleteFilter,
+    readFilterById,
+    readFilterAlergens,
+    readFilterCategories,
+    editFilter
 };

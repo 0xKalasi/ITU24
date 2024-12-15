@@ -43,14 +43,6 @@ const actionButtons = ref([
         },
     },
     {
-        label: 'Cook mode',
-        icon: 'pi pi-play',
-        command: () => {
-            console.log("SpeedDial: Cook")
-            router.push(`/cookmode/${recipe.id}`)
-        }
-    },
-    {
         label: 'Save',
         icon: 'pi pi-bookmark',
         command: () => {
@@ -86,7 +78,6 @@ async function deleteRecipeLocal(){
         await deleteRecipe(recipe);
         router.replace(`/recipes`)
     }
-
 }
 </script>
 
@@ -110,44 +101,48 @@ async function deleteRecipeLocal(){
             <Tag style="margin-right: 4px;" v-for="category in recipe.RecipeCategories" >{{ category.category.name }}</Tag>
         </div>
     
-    <div style="margin: 8px 0px;">
-        <Tag severity="warn" icon="pi pi-clock" style="margin-right: 4px">{{ recipe.time_to_cook / 60 }} minut</Tag>
-        <Tag severity="warn"> {{ recipe.portions }} 
-            <span v-if="recipe.portions < 5">porce</span>
-            <span v-else>porcí</span> 
-        </Tag> 
-    </div>
+        <div style="margin: 8px 0px;">
+            <Tag severity="warn" icon="pi pi-clock" style="margin-right: 4px">{{ recipe.time_to_cook / 60 }} minut</Tag>
+            <Tag severity="warn"> {{ recipe.portions }} 
+                <span v-if="recipe.portions < 5">porce</span>
+                <span v-else>porcí</span> 
+            </Tag> 
+        </div>
 
 
-    <div>
-        <h4>Alergeny</h4>
+        <h3>Alergeny</h3>
         <Tag severity="danger" style="margin-right: 4px" v-for="(alergen, index) in recipe.RecipeAlergens" :key="alergen.alergen.id">
             {{ alergen.alergen.name }} ({{ alergen.alergen.id }})
         </Tag>
-    </div>
+    
 
-    <div>
-        <h4>Nutné náčiní</h4>
+        
+        <h3>Nutné náčiní</h3>
         <Tag severity="info" style="margin-right: 4px;" v-for="utencil in recipe.Utencils">{{ utencil.name }}</Tag>
-    </div>
+       
 
-    <h4>Ingredience</h4>
-    <ul>
-        <li v-for="ingredient in recipe.Ingredients">
-            {{ ingredient.name }} {{ ingredient.quantity }} {{ ingredient.unit }}
-            <Tag v-if="ingredient.notes" style="padding: 0.5px 4px">{{ ingredient.notes }}</Tag>
-        </li>
-    </ul>
+        <h3>Ingredience</h3>
+        <ul>
+            <li v-for="ingredient in recipe.Ingredients">
+                {{ ingredient.name }} {{ ingredient.quantity }} {{ ingredient.unit }}
+                <Tag v-if="ingredient.notes" style="padding: 0.5px 4px">{{ ingredient.notes }}</Tag>
+            </li>
+        </ul>
 
-    <h4>Kroky</h4>
+        <h3>Postup</h3>
         <div v-for="step in recipe.Step">
-            <b>{{ step.number }}. {{ step.name }}</b>
+            <b>{{ step.name }}</b>
             <div class="stepText">{{ step.text }}</div>
         </div>
-        
-        <div v-if="user.id == recipe.creator">
+
+        <!-- TODO: move this functionality to /recipes -->
+       <!--  <div v-if="user.id == recipe.creator">
             <Button class="p-button-danger" @click="deleteRecipeLocal">Zmaž recept</Button>
-            <Button class="p-button-warn" @click="router.replace(`/edit-recipe/${recipe.id}`)">Uprav recept</Button>
+            <Button class="p-button-warn" @click="router.push(`/edit-recipe/${recipe.id}`)">Uprav recept</Button>
+        </div> -->
+
+        <div style="text-align: center; margin-top: 16px;">
+            <Button label="Spustit režim vaření" icon="pi pi-play" @click="router.push(`/cookmode/${recipe.id}`)" />
         </div>
     </div>
 </template>
@@ -158,7 +153,8 @@ async function deleteRecipeLocal(){
     margin-bottom: 10px;
 }
 
-h4 {
-    margin-bottom: 8px;
+h3 {
+    margin-bottom: 12px;
+    font-size: 20px;
 }
 </style>

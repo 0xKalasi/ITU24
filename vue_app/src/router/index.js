@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { profilePreviewStore } from "../stores/userStore";
 import { useUserStore } from "../stores/userStore";
+import { readFilters } from "@utils/api";
 
 import Users from "../views/Users.vue";
 import Homepage from "../views/Homepage.vue";
@@ -12,9 +13,12 @@ import CookModeStep from "../views/CookModeStep.vue";
 import PublicRecipe from "../views/PublicRecipe.vue";
 import Friends from "../views/Friends.vue";
 import Chat from "../views/Chat.vue";
-import Filters from "../views/Filters.vue";
+import Requests from "../views/Requests.vue";
+import Blocked from "../views/Blocked.vue";
+import Filters from "../views/filters/Filters.vue";
 import Recipes from "../views/MyRecipes.vue";
-import CreateFilter from "../views/CreateFilter.vue"
+import CreateFilter from "../views/filters/CreateFilter.vue"
+import EditFilter from "@/views/filters/EditFilter.vue"
 import Share from "../views/Share.vue";
 import ProfilePreview from "../views/ProfilePreview.vue";
 import Groupchat from "../views/Groupchat.vue";
@@ -28,7 +32,16 @@ const routes = [
   { path: "/chats", component: Friends},
   { path: "/chats/:user_id", component: Chat }, // Chat with currently logged in and "user_id" user
   { path: "/filters", component: Filters},
-  { path: "/filters/create", component: CreateFilter },
+  { path: "/filter/create", component: CreateFilter },
+  { path: "/filter/edit/:filter_id", component: EditFilter, 
+    beforeEnter: async (to, from) => {
+      const user = useUserStore();
+      const filters = await readFilters(user.id);
+
+      // return true if filter, that user wants to edit, belongs to the user. Otherwise return false
+      return filters.some(filter => filter.id == to.params.filter_id);
+    }
+  },
   { path: "/recipe/public/:recipe_id", component: PublicRecipe, meta: { public: true }  },
   { path: "/edit-recipe/:recipe_id", component: RecipeView },   //, props:{editMode:true}
   { path: "/users", component: Users, meta: { public: true } },
@@ -67,11 +80,11 @@ const router = createRouter({
 // NAVIGATION GUARDS 
 router.beforeEach(async (to, from) => {
   const user = useUserStore();
+
+  // get user from localStorage 
   if(user.id == null){
     await user.tryLoginFromLocSt();
   }
-
-  //console.log(user.id);
 
   // if user is not signed he can only go to public routes
   // to.path !== '/users' is there to avoid infinite redirect 

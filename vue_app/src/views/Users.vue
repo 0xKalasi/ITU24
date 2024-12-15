@@ -24,34 +24,26 @@ const GoToProfile = async (id) => {
 </script>
 
 <template>
-  <BasicPageHeader text="Uživatelé"></BasicPageHeader>
+  <BasicPageHeader text="Uživatelé" backArrow />
 
-  <div style="position: relative; overflow-y: auto; height: calc(100vh - 210px);">
-    <table>
-      <div
-        v-for="user in users"
-        style="display: flex; width: 100%; gap: 10px; margin-bottom: 5px">
-        <Message
-          severity="secondary"
-          @click="GoToProfile(user.id)"
-          style="flex-grow: 1;">
-          {{ user.name }}
-        </Message>
-
-        <Button 
-          label="Přihlásit"
-          @click="SwitchUser(user.id)">
+  <div style="display: flex;flex-direction: column;justify-content: space-between; gap: 10px;">
+    <div v-for="u in users">
+      <Message
+        severity="secondary"
+        @click="GoToProfile(u.id)"
+        style="width: 100%; position: relative; cursor: pointer;">
+        {{ u.name }}
+        <Button @click="SwitchUser(u.id)" style="position: absolute; right: 2px; bottom: 50%; transform: translateY(50%);">
+          Přihlásit
         </Button>
-      </div>
-    </table>
+      </Message>
 
-    <br/>
+    </div>
+  </div>
 
-    <Button 
-      v-if="user.id" 
-      label="Odhlásit"
-      @click="user.logout">
-    </Button>
+  <Button v-if="user.id" @click="user.logout" severity="danger" style="margin-top: 16px;">
+    Odhlásit
+  </Button>
 
   </div>
 
