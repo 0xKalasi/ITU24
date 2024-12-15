@@ -68,7 +68,7 @@ const actionButtons = ref([
         command: () => {
             router.push(`/share/${recipe.id}`);
         }
-    },
+    },  
 ])
 
 var delete_recipe = false;
@@ -81,6 +81,7 @@ async function deleteRecipeLocal(){
         router.replace(`/recipes`)
     }
 }
+
 </script>
 
 <template>

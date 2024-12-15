@@ -15,6 +15,9 @@
   import addUtencils from '../components/addUtencils.vue';
   import addSteps from '../components/addSteps.vue';
   import addIngredient from '../components/addIngredient.vue';
+  import alergensPick from '../components/filters/alergensPick.vue';
+  import categoriesPick from '../components/filters/categoriesPick.vue';
+  import { readFilterAlergens } from '../../utils/api';
   
   const currentUser = useUserStore();
   const router = useRouter();
@@ -46,12 +49,26 @@
   
   const checked= ref();
 
+  // Alert utilities
+  function showAlertMessage(type, text) {
+    alertType.value = type;
+    alertText.value = text;
+    showAlert.value = true;
+    alertKey.value++;
+    }
+
   onBeforeMount(async () => {
     if(recipeId){
       readPublicRecipe(recipeId).then(async (result) => {
       isLoading.value = false;
-      Object.assign(recipe.value, result); 
-      console.log("recipe:",recipe.value);
+      Object.assign(recipe.value, result);
+      let aler = [];
+      for(const a of recipe.value.RecipeAlergens){
+        aler.push(a.alergen.id);
+      }
+      recipe.value.RecipeAlergens = aler;
+      console.log("alergens:", aler);
+      console.log("recipe:", recipe.value);
     })
     } else {
       isLoading.value = false;
@@ -63,11 +80,8 @@
     var delete_recipe = false;
     async function cancelEditing(){
         if (!delete_recipe){
-            alertType.value = "warn";
-            alertText.value = "Naozaj chcete smazat vaše úpravy?";
-            showAlert.value = true;
-            alertKey.value++;
-            delete_recipe = true;
+          showAlertMessage("warn","Naozaj chcete smazat vaše úpravy?");
+          delete_recipe = true;
         } else {
             //await deleteRecipe(recipe);
             if(recipeId){
@@ -79,14 +93,6 @@
 
         }
 
-    }
-
-    // Alert utilities
-    function showAlertMessage(type, text) {
-    alertType.value = type;
-    alertText.value = text;
-    showAlert.value = true;
-    alertKey.value++;
     }
 
     // Functions for handling edits
@@ -239,33 +245,38 @@ const deleteRecipePhoto = () => {
   </div>
 
   <!-- Portion Input -->
-  <div class="info-row">
-    <h3>Počet porcí</h3>
-    <div class="input-wrapper">
-      <InputNumber 
-        v-model="recipe.portions" 
-        mode="decimal" 
-        showButtons 
-        :min="1" 
-        :max="100" 
-        buttonLayout="horizontal" 
-        class="responsive-input"
-      >
-        <template #incrementicon>
-          <span class="pi pi-plus" />
-        </template>
-        <template #decrementicon>
-          <span class="pi pi-minus" />
-        </template>
-      </InputNumber>
+    <div class="info-row">
+      <h3>Počet porcí</h3>
+      <div class="input-wrapper">
+        <InputNumber 
+          v-model="recipe.portions" 
+          mode="decimal" 
+          showButtons 
+          :min="1" 
+          :max="100" 
+          buttonLayout="horizontal" 
+          class="responsive-input"
+          >
+          <template #incrementicon>
+            <span class="pi pi-plus" />
+          </template>
+          <template #decrementicon>
+            <span class="pi pi-minus" />
+            </template>
+          </InputNumber>
+      </div>
     </div>
-  </div>
 
-  <h3>Předpokládaný čas vaření</h3>
-  <TimePicker v-model="recipe.time_to_cook" ></TimePicker>
+    <h3>Předpokládaný čas vaření</h3>
+    <TimePicker v-model="recipe.time_to_cook" ></TimePicker>
 
+    <h3>Zvolte alergeny v receptu</h3>
+    <alergensPick v-model="recipe.RecipeAlergens"></alergensPick>
+
+    <h3>Vyberte kategorie</h3>  
+    <categoriesPick v-model="recipe.categories"></categoriesPick>
  
-</div>
+    </div>
 
 
     <!-- Create, Delete Button -->
@@ -279,7 +290,6 @@ const deleteRecipePhoto = () => {
         <Button label="Zrušit" class="wide-button p-button-danger" @click='cancelEditing();'></Button>
         <Button label="Vytvořit" class="wide-button p-button-ok" @click='createRecipe();'></Button>
       </div>
-
     </div>
   </div>
 </template>
@@ -409,11 +419,6 @@ h2::after {
 
 .input-wrapper {
   width: 100%; 
-}
-
-.responsive-input {
-  width: 100%; 
-  max-width: 100px; 
 }
 
 .info-row h3 {

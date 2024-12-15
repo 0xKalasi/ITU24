@@ -190,15 +190,17 @@ async function insertRecipe(recipeData) {
     }
   }
 
-  async function deleteRecipe(Recipe) {
+  async function deleteRecipe(RecipeID) {
     const {data, error}  = await supabase
     .from( "Recipe" )
     .delete()
-    .eq( 'id', Recipe.id );
+    .eq( 'id', RecipeID );
     if (error) {
       console.error("Error deleting recipe:", error);
+      return 0;
     } else {
       console.log("Deleted everything aight");
+      return 1;
     }
   }
 
