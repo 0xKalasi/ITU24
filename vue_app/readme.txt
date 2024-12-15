@@ -31,7 +31,7 @@ vue_app
 ├── package-lock.json
 ├── public
 │   └── vite.svg
-├── readme.txt (xjabur02, xborda01, )
+├── readme.txt (všichni)
 ├── shell.nix
 ├── src
 │   ├── App.vue (xborda01)
@@ -44,7 +44,6 @@ vue_app
 │   │   ├── ConvSelect.vue (xjabur02)
 │   │   ├── Divider.vue (xjabur02)
 │   │   ├── EditTimer.vue (xsatin03)
-│   │   ├── Divider.vue (xjabur02)
 │   │   ├── filters
 │   │   │   ├── alergensPick.vue (xborda01)
 │   │   │   ├── categoriesPick.vue (xborda01)
@@ -61,16 +60,10 @@ vue_app
 │   │   │   └── navigation.vue (xborda01)
 │   │   ├── NewTimer.vue (xsatin03)
 │   │   ├── photoUploader.vue (xtomcs00)
-│   │   ├── TimeInput.vue (xsatin03)
-│   │   │   ├── button.vue (xborda01)
-│   │   │   └── navigation.vue (xborda01)
-│   │   ├── NewTimer.vue
-│   │   ├── photoUploader.vue
-│   │   ├── TimeInput.vue
-│   │   ├── timePicker.vue
+│   │   ├── TimeInput.vue (xtomcs00)
+│   │   ├── timePicker.vue (xtomcs00)
 │   │   ├── TimerView.vue (xsatin03)
 │   │   └── UnblockEntry.vue (xjabur02)
-│   ├── main.js (xborda01)
 │   ├── router 
 │   │   └── index.js (xborda01)
 │   ├── stores !!! DATA PERZISTIVNÍ MEZI STRÁNKAMI APLIKACE
@@ -78,13 +71,7 @@ vue_app
 │   │   ├── recipeStore.js (xtomcs00)
 │   │   └── userStore.js (xborda01, xjabur02)
 │   ├── main.js (xborda01)
-│   ├── router 
-│   │   └── index.js (xborda01)
-│   ├── stores !!! SPRÁVA VNITŘNÍHO STAVU APLIKACE
-│   │   ├── filterStore.js (xborda01)
-│   │   ├── recipeStore.js
-│   │   └── userStore.js (xborda01, xjabur02)
-│   ├── style.css
+│   ├── style.css (všichni)
 │   └── views !!! JEDNOTLIVÉ STRÁNKY APLIKACE
 │       ├── AddGroupchatMember.vue (xjabur02)
 │       ├── CookModeStep.vue (xsatin03)
@@ -105,8 +92,6 @@ vue_app
 │       ├── Profile.vue (xjabur02)
 │       ├── PublicRecipe.vue (xborda01)
 │       ├── RecipeFormView.vue (xtomcs00)
-│       ├── PublicRecipe.vue (xborda01)
-│       ├── RecipeFormView.vue
 │       ├── Share.vue (xjabur02)
 │       └── Users.vue (xjabur02, xborda01)
 ├── utils
