@@ -13,8 +13,6 @@ import CookModeStep from "../views/CookModeStep.vue";
 import PublicRecipe from "../views/PublicRecipe.vue";
 import Friends from "../views/Friends.vue";
 import Chat from "../views/Chat.vue";
-import Requests from "../views/Requests.vue";
-import Blocked from "../views/Blocked.vue";
 import Filters from "../views/filters/Filters.vue";
 import Recipes from "../views/MyRecipes.vue";
 import CreateFilter from "../views/filters/CreateFilter.vue"

@@ -45,6 +45,4 @@ const GoToProfile = async (id) => {
     Odhlásit
   </Button>
 
-  </div>
-
 </template>
