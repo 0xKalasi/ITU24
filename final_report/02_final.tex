@@ -114,6 +114,8 @@ Bohužel se nepodařilo implementovat veškerou kýženou funkcionalitu, přesn�
     \item Postupné načítání zpráv chatu (ačkoli zprávy by nejlépe byly donačítány postupně,
         při uživatelském testování uživatelům tento způsob vyhovoval, zejména protože
         jsou na stahování zpráv upozorněni načítáním)
+    \item Pri vytváření receptu není možné přidat časovače ke jednotlivým krokům
+    \item 
     \item \todo
 \end{itemize}
 
@@ -194,6 +196,31 @@ Jednotlivé prvky implementace jsou v projektu umístěny následovně:
 
 \subsection{Část Tomáše T.}
 \todo
+Mým úkolem bylo implementovat vkládání, mazání a úpravy receptů. Inspiroval jsem se především 
+aplikací samsung foods, která mi při počátečním průzkumu přišla uživatelsky nejpřívětivější. Odklon od této aplikace je na
+zadávání ingrediencí, mají na to jediné zaškrtávací políčko a jakousi funkci, která určuje, co ze zadaných ingrediencí je název pokrmu.
+složky, jaké je množství a jaká je jednotka. Protože jsem nevěděl, jak takovou funkci implementovat, mám pro zjednodušení
+Tento vstup jsem rozdělil na několik vstupů. Při úpravě receptu se zobrazí stejná stránka jako při jeho vytváření, ale
+samotné údaje o receptu budou předvyplněny. Toto rozhodnutí bylo nejpřijatelnější, protože by mělo uživatele nejméně mást
+díky jednotnosti. Existují dvě místa pro odstranění receptu, a to z důvodu variability naší uživatelské základny.
+Prvním místem je při prohlížení receptů, kdy dlouhé podržení receptu vyvolá možnost odstranění. Druhé místo 
+místo je při prohlížení samotné stránky s recepty, kdy kliknete na skrytou nabídku v pravém horním rohu a uvidíte zde kromě
+Tato možnost se také zobrazí.
+
+\begin{itemize}
+    \item \t{/vue\_app/src/components/} obsahující vytvořené komponenty
+        \begin{itemize}
+            \item \t{addIngredient.vue}\,--\,komponenta pro zadávání ingrediencí
+            \item \t{addSteps.vue}\,--\,komponenta pro zadávání kroků
+            \item \t{addUtencils.vue}\,--\,komponenta pro zadávání pomůcek pro vaření
+            \item \t{timePicker.vue}\,--\,komponenta pro zadání doby vaření
+            \item \t{photoUploader.vue}\,--\,komponenta pro přidávání fotografií
+        \end{itemize}
+    \item \t{/vue\_app/src/views/} obsahující implementace jednotlivých stránek
+        \begin{itemize}
+            \item \t{RecipeFormView.vue}\,--\,stránka pro přidání a úpravu receptu
+        \end{itemize}
+\end{itemize}
 
 \section{Zpracování připomínek z kontrolní prezentace}
 
@@ -331,7 +358,50 @@ Testování zde probíhalo opět pomocí vzdáleného přístupu a zadáváním 
 \todo
 
 \subsection{Testování Tomáše T.}
-\todo
+Testování bylo provedeno vzdáleně pomocí programu TeamViewer, který umožňuje vzdálený přístup k počítači. Uživatelé
+byla moje matka, která byla zároveň uživatelem vstupního dotazníku. Druhým uživatelem byl můj přítel, který
+patří k mé generaci. 
+
+\noindent\textbf{Mama Tomáša T} \\[-1em]
+\begin{itemize}
+    \item 50-60 let
+    \item Je učitelkou informatiky, ale s mobilními aplikacemi nemá mnoho zkušeností.
+\end{itemize}
+
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Při vytváření receptu měla problém s přeskupováním keřů, v té době tomu nic nenasvědčovalo,
+    že je možné kroky přesouvat, a neexistoval způsob, jak vkládat kroky mezi stávající kroky, což bylo později implementováno.
+    právě kvůli jejím připomínkám.
+
+
+    \item Pri upravovaní receptu sa jej napáčilo, že potvrdzujúce tlačítka boli až na spodku pre to boli pridané aj na vrchol
+    pri upravovaní.
+
+    \item Při úpravě receptu se jí líbilo, že potvrzovací tlačítka byla dole, protože byla přidána i nahoře.
+    při úpravách.
+
+\end{itemize}
+
+\noindent\textbf{Priateľka Tomáša T} \\[-1em]
+\begin{itemize}
+    \item 22
+    \item Je studentkou informatiky a má bohaté zkušenosti s mobilními aplikacemi a sociálními sítěmi. 
+\end{itemize}
+
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Ne všechny funkce byly vidět na první pohled, ale vše pochopila velmi rychle, především díky
+    její znalosti sociálních sítí
+
+    \item Rozhraní se jí zdálo obecně přívětivé a uměla se v něm orientovat.
+
+    \item Tlačítko pro přidání receptu se jí zdálo trochu skryté, ale nepřišlo jí nepřijatelné a zpětně to chápe. 
+    proč je tam, kde je.
+
+\end{itemize}
 
 % popis uživatele (věkpvá skupina, pohlaví, technická zdatnost, pracovní zaměření)
 % průběh testu/ů
