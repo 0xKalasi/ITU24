@@ -156,7 +156,37 @@ V následujících podsekcích jsou uvedeny podrobnosti o zpracování jednotliv
 
 \subsection{Část Tomáše B.}
 
-Implementace mojí části aplikace se nacházi 
+Implementace mojí části aplikace se nacházi v těchto souborech:
+\begin{itemize}
+    \item \t{vue\_app/src/components/filters} obsahující vytvořené komponenty pro filtry
+        \begin{itemize}
+            \item \t{alergensPick.vue}\,--\,komponent pro výběr alergenů
+            \item \t{categoriesPick.vue}\,--\,komponent pro výběr kategorií
+            \item \t{filtersHomepage.vue}\,--\,zobrazení filtrů na domovské stránce
+        \end{itemize}
+    \item \t{vue\_app/src/components/navigation} obsahující vytvořené komponenty pro navigaci
+        \begin{itemize}
+            \item \t{button.vue}\,--\,tlačítko pro navigaci
+            \item \t{navigation.vue}\,--\,komponent implementující navigaci v aplikaci
+        \end{itemize}
+    \item \t{vue\_app/src/components} obsahující implementace ostatních menších komponentů
+        \begin{itemize}
+            \item \t{alert.vue}\,--\,notifikace uživatele
+            \item \t{basicPageHeader.vue}\,--\,pojměnování stránky a tlačítko jít zpět 
+            \item \t{loadingScreen.vue}\,--\,komponent pro zobrazení načítavaní 
+        \end{itemize}
+    \item \t{vue\_app/src/views/filters} obsahující implementace jednotlivých stránek pro filtry
+        \begin{itemize}
+            \item \t{Filters.vue}\,--\, stránka zobrazujíci uživatelove filtry s možností vytvoření nového, upravení a zmazání
+            \item \t{CreateFilter.vue}\,--\, stránka pro vytvoření filtru
+            \item \t{EditFilter.vue}\,--\, stránka pro upravení filtru
+        \end{itemize}
+    \item \t{vue\_app/src/views} obsahující implementace ostatních stránek 
+        \begin{itemize}
+            \item \t{Homepage.vue}\,--\, domovská stránka
+            \item \t{PublicRecipe.vue}\,--\, zobrazení určitého receptu
+        \end{itemize}
+\end{itemize}
 
 \subsection{Část Martina}
 Jak bylo uvedeno, implementovány byly skupinové a osobní chaty s možností sdílené nejen zpráv, ale i receptů.
@@ -275,7 +305,65 @@ Každý člen testování provedl sám a to nejen pro svoji část, ale i ty ost
 Zjištění z testování jsou pro každého člena týmu podrobně popsána v podsekcích níže.
 
 \subsection{Testování Tomáše B.}
-\todo
+\noindent\textbf{Mamina} \\[-1em]
+\begin{itemize}
+    \item jak mínus vnímá chybějící fotky k receptům
+    \item uvítala by, kdyb kromě ikon v navigaci byl uveden i popis
+    \item líbí se jí načítací stránka, očekává jí podle ostatních webových aplikací
+    \item najít možnost jít zpět při názvu stránky jí chvíli trvalo, nejprve tuto funkcionalitu obešla a využila šipku zpět v prohlížeči
+    \item vytváření filtru
+        \begin{itemize}
+            \item výběr alergenů v pohode, neměla problém s přidávaním a odebíraním vybraných alergenů, líbí se ji změna barvy při výběru
+            \item výběr kategorií je intuitivní, narazila na limit 3 kategorií. Podle upozornění pochopila, že si může vybrat jenom 3, takže odstranila tu, kterou předtím vybrala a vybrala jinou
+            \item ocenila, že tlačítko pro uložení má také text a ne jen ikonu
+            \item líbil se jí spůsob oznamovaní co se aktuálne provedlo
+        \end{itemize}
+    \item upravit filter
+        \begin{itemize}
+            \item upravení filtru je podle její představ
+            \item v tomto případe nebyla úprava úspěšná, očekávala by aby nebyla vrácena zpět a tam se jí zobrazila informace, ale aby se jí zobrazila rovno při uložení úprav
+        \end{itemize}
+    \item zobrazení receptu
+        \begin{itemize}
+            \item libí se ji farebnost, hlavní údaje na začátku receptu se lahko "skenují" očima
+            \item ocenila, že alergen mají také číslo, které se používa i v restauracích na jídelním lístku
+        \end{itemize}
+
+    \textbf{Zjištění:}
+        \begin{itemize}
+            \item spůsob, kterým se uživatelovi zobrazují informace co se aktuálne dejě, je správný
+            \item navigace by mnela obsahovat i název stránek
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{Janka} \\[-1em]
+\begin{itemize}
+    \item našla recept bez problémů, líbí se jí, že je barevný, hierarchie textu, oddelěné části
+    \item když klikne znova v navigaci na domovskou stránku a na ní aktuálně je, čeká že se vyhledávaní resetuje a zobrazí se znova všechny recepty
+    \item vytváření filtru
+        \begin{itemize}
+            \item namísto zadejte název, by raději zvolila vytvořte název 
+            \item výběr alergenů intuitivní, farba zdůrazňuje, že tento alergen nebude recept po vyhledání obsahovat
+            \item výběr kategorií taktéž se ji líbí
+            \item podle ní 3 kategorie stačí, více by si nevědela vybrat
+        \end{itemize}
+    \item upravit filter
+        \begin{itemize}
+            \item je nutné zobrazit informaci o podržení filtru pro úpravu nebo smazání
+            \item při dlouhem podržení se na mobile zobrazí okénko s možností kopírovat
+        \end{itemize}
+    \item zobrazení receptu
+        \begin{itemize}
+            \item všechny funkcionality našla ihned
+        \end{itemize}
+
+    \textbf{Zjištění:}
+        \begin{itemize}
+            \item nutnost uživatele informovat o možnosti podržet filter, tím ho může upravit nebo odstranit
+            \item 3 kategorie uživatelovi stačí
+            \item změnit zadejte název na vytvořte název filtru
+    \end{itemize}
+\end{itemize}
 
 \subsection{Testování Martina}
 
