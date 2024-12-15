@@ -15,6 +15,7 @@ const router = useRouter();
 import { useUserStore } from '../stores/userStore';
 import BasicPageHeader from "../components/basicPageHeader.vue";
 import NewTimer  from '../components/NewTimer.vue';
+import { likeRecipe } from '../../utils/likes_api.js';
 const currentUser = useUserStore();
 
 /* check if user is logged in */
@@ -184,6 +185,14 @@ function goto_recipe() {
 	router.replace( '/cookmode/' + recipe_id );
 }
 
+let rating_model = {
+	show: ref( false ),
+};
+
+function show_rating() {
+	rating_model.show.value = true;
+}
+
 function finish() {
 	router.back();
 
@@ -254,6 +263,10 @@ function load_timers() {
 	timer_view.value.load_timers()
 }
 
+function like() {
+	likeRecipe( recipe_id, user_id );
+}
+
 </script>
 
 <template>
@@ -263,13 +276,30 @@ function load_timers() {
 	<template v-else>
 		<LoadingScreen v-if="!steps_vm.ready.value"/>
 		<div v-if="steps_vm.ready.value">
+			<Teleport to="body">
+
+				<div v-if="rating_model.show.value" class="modal_background" @click="finish()" />
+				<div v-if="rating_model.show.value" class="modal">
+					<div style="text-align: center;"><h2>Hodnotit recept</h2></div>
+					<div>
+						<Button
+							@click="like(); finish()"
+							style="float: left; width: 50%; height: 5em"
+						>Like</Button>
+						<Button
+							@click="finish()"
+							style="float: left; width: 50%; height: 5em"
+						>Přeskočit</Button>
+					</div>
+				</div>
+			</Teleport>
 
 			<NewTimer
 				v-model="new_timer_model"
 				@created="load_timers()"
 			/>
 
-			<BasicPageHeader :text="recipe.name"></BasicPageHeader>
+			<BasicPageHeader backArrow :text="recipe.name"></BasicPageHeader>
 			<div class="content">
 				<div v-for="step in steps_vm.steps" class="step_container">
 					<div
@@ -347,7 +377,7 @@ function load_timers() {
 
 				<Button @click="goto_recipe">Recept</Button>
 
-				<Button v-if="recipe_finished" @click="finish">Hotovo</Button>
+				<Button v-if="recipe_finished" @click="show_rating">Hotovo</Button>
 				<Button
 					v-if="show_archived_steps == false"
 					@click="show_archived_steps = true"
@@ -439,5 +469,28 @@ function load_timers() {
 	width: 100%;
 	height: 4em;
 	font-weight: bold;
+}
+
+.modal {
+	position: fixed;
+	background-color: var(--p-primary-900);
+	z-index: 999;
+	left: 15%;
+	width: 70%;
+	max-width: 1280px;
+	margin-left: 0%;
+	padding: 1em;
+	border-radius: var(--p-button-border-radius);
+}
+
+.modal_background {
+	position: fixed;
+	background-color: #000000cc;
+	z-index: 998;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	margin-left: 0%;
 }
 </style>

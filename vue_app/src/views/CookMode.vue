@@ -72,7 +72,7 @@ function open_cook_step() {
 	<template v-else>
   		<LoadingScreen v-if="!recipe_vm.ready.value"></LoadingScreen>
 		<div v-if="recipe_vm.ready.value">
-			<BasicPageHeader :text="recipe_vm.name.value"></BasicPageHeader>
+			<BasicPageHeader backArrow :text="recipe_vm.name.value"></BasicPageHeader>
 
 			<h4>Porce:</h4> {{ recipe_vm.portion_count }}
 			<h4>Očekávaný čas:</h4> {{ recipe_vm.time_to_cook.value / 60 }} minut
