@@ -192,7 +192,29 @@ Jednotlivé prvky implementace GUI jsou v projektu umístěny následovně:
 \end{itemize}
 
 \subsection{Část Ondřeje}
-\todo
+
+Implementoval jsem
+	zaprvé stránku pro rekapitulaci receptu
+		s možností zaznamenat připravené suroviny a náčíní
+	a zadruhé samostatné procházení receptů.
+Procházení kroků umožuje uživateli zobrazit libovolný počet kroků pod sebou,
+	vytvářet a ovládat vlastní časovače a nebo použít předem připravené.
+
+Jednotlivé prvky implementace jsou v projektu umístěny následovně:
+\begin{itemize}
+    \item \t{/vue\_app/src/components/} obsahující vytvořené komponenty
+        \begin{itemize}
+            \item \t{EditTimer.vue}\,--\,komponenta pro editaci časovačů
+            \item \t{TimerView.vue}\,--\,komponenta pro zobrazení existujicích časovačů
+			\item \t{TimeInput.vue}\,--\,komponenta pro vložení času (hodnoty)
+            \item \t{NewTimer.vue}\,--\,komponenta pro vytvoření nového časovače
+        \end{itemize}
+    \item \t{/vue\_app/src/views/} obsahující implementace jednotlivých stránek
+        \begin{itemize}
+            \item \t{CookMode.vue}\,--\,stránka pro asistenci pro přípravu na vaření
+            \item \t{CookModeStep.vue}\,--\,stránka pro zobrazení kroků receptu a práci s časovači
+        \end{itemize}
+\end{itemize}
 
 \subsection{Část Tomáše T.}
 
@@ -357,7 +379,48 @@ Testování zde probíhalo opět pomocí vzdáleného přístupu a zadáváním 
 
 
 \subsection{Testování Ondřeje}
-\todo
+
+\noindent\textbf{Otec} \\[-1em]
+\begin{itemize}
+    \item 50-60 let
+	\item informatik
+\end{itemize}
+
+Testování probíhalo osobně na tabletu. Nejdříve volné procházení aplikací a poté zadávané úkoly. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+	\item Ze začátku neviděl podstatu označování ingrediencí a náčiní. Po vysvětlení uznal užitečnost pro některé případy (složité recepty).
+	\item Některé části se nezdáli intuitivní ale po pár minutách byli pochopeny.
+\end{itemize}
+
+\noindent\textbf{Matka} \\[-1em]
+\begin{itemize}
+    \item 50-60 let
+	\item učitelka informatiky
+\end{itemize}
+
+Testování probíhalo osobně na tabletu. Nejdříve volné procházení aplikací a poté zadávané úkoly. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Chybí změna ingrediencí podle počtu porcí.
+	\item Dokončení receptu nepřišlo intuitivní. (Je potřeba dokončit všechny kroky)
+\end{itemize}
+
+\noindent\textbf{Bratr} \\[-1em]
+\begin{itemize}
+    \item 18-21 let
+	\item student, běžně technicky znalý
+\end{itemize}
+
+Testování probíhalo osobně na vlastním telefonu. Nejdříve volné procházení aplikací a poté zadávané úkoly. \\
+
+\textbf{Zjištění:}
+\begin{itemize}
+    \item Vyhovuje mu interaktivní procházení receptem.
+	\item Navigace aplikací v některých místech přisla zmatená.
+\end{itemize}
 
 \subsection{Testování Tomáše T.}
 Testování bylo provedeno vzdáleně pomocí programu TeamViewer, který umožňuje vzdálený přístup k počítači. Uživatelé
