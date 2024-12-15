@@ -5,8 +5,10 @@ import { ref } from "vue";
 
 export const useFilterStore = defineStore("filterStore", () => {
     const filterAddSuccess = ref(false);
+    const filterAddError = ref(false);
     const filterEditSuccess = ref(false);
-
-    return { filterAddSuccess, filterEditSuccess };
+    const filterEditError = ref(false);
+    
+    return { filterAddSuccess, filterAddError, filterEditSuccess, filterEditError };
 });
   

@@ -39,11 +39,16 @@ const createFilterFunc = async () => {
         toRaw(selectedCategories.value),
         keyword.value
     )
-    .then(() => {
+    .then((result) => {
         savingFilter.value = false;
+
+        // show result in /filters
+        if(result === false){
+            filterStore.filterAddError = true;
+        } else{
+            filterStore.filterAddSuccess = true;
+        }
         
-        // send success msg to /filters, where new filter will show in list of filters
-        filterStore.filterAddSuccess = true;
         router.back();
     })
 };
@@ -60,7 +65,7 @@ const filterNameInput = () => {
     <!-- NAME -->
     <h3>Název *</h3>
     <div style="margin: 0 16px;">
-        <InputText id="filter_name" v-model="filterName" @input="filterNameInput" placeholder="Zadejte název" :invalid="showWarnMsg" style="width: 100%;" />
+        <InputText id="filter_name" v-model="filterName" @input="filterNameInput" placeholder="Vytvořte název filtru" :invalid="showWarnMsg" style="width: 100%;" />
        
         <!-- ERORR MESSAGE FOR EMPTY NAME -->
         <Message 

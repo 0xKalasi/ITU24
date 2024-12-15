@@ -70,9 +70,15 @@ const editFilterFunc = async () => {
         toRaw(selectedAlergens.value),
         toRaw(selectedCategories.value),
         keyword.value
-    ).then(() => {
+    ).then((result) => {
         savingFilter.value = false;
-        filterStore.filterEditSuccess = true;
+
+        // to show result of edit in /filters
+        if(result === false){
+            filterStore.filterEditError = true;
+        }else {
+            filterStore.filterEditSuccess = true;
+        }
         
         router.back();
     })

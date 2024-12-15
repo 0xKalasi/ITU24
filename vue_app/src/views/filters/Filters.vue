@@ -150,14 +150,23 @@ onUnmounted(() => { document.removeEventListener('click', closeOptions) })
         
         <div style="margin-top: 4px">
             <!-- error / success messages to inform user -->
-            <div v-if="delError || delSuccess || filterStore.filterAddSuccess || filterStore.filterEditSuccess">
-                <Message v-if="delError" severity="error" icon="pi pi-exclamation-triangle" variant="simple" size="small">Došlo k chybě, zkuste to prosím znovu.</Message>
+            <div v-if=" delError || delSuccess || 
+                        filterStore.filterAddSuccess || filterStore.filterEditSuccess ||
+                        filterStore.filterAddError   || filterStore.filterEditError ">
+                <!-- success -->
                 <Message v-if="delSuccess" severity="success" icon="pi pi-check" variant="simple" size="small">Filtr byl uspěšně smazán.</Message>
                 <Message v-if="filterStore.filterAddSuccess" severity="success" icon="pi pi-check" variant="simple" size="small">Filter byl úspěšně vytvořen.</Message>
                 <Message v-if="filterStore.filterEditSuccess" severity="success" icon="pi pi-check" variant="simple" size="small">Filter byl úspěšně upraven.</Message>
+                
+                <!-- error -->
+                <Message v-if="delError" severity="error" icon="pi pi-exclamation-triangle" variant="simple" size="small">Došlo k chybě, zkuste to prosím znovu.</Message>
+                <Message v-if="filterStore.filterAddError" severity="error" icon="pi pi-exclamation-triangle" variant="simple" size="small">Došlo k chybě při vytváření filtru. Prosím skuste to znovu.</Message>
+                <Message v-if="filterStore.filterEditError" severity="error" icon="pi pi-exclamation-triangle" variant="simple" size="small">Došlo k chybě při úpravě filtru. Prosím skuste to znovu.</Message>                
             </div>
             <!-- just to inform user how to edit or remove filter -->
-            <Message v-else severity="secondary" icon="pi pi-info-circle" variant="simple" size="small">Podržte filter pro úpravu nebo smazání.</Message>
+            <div v-else>
+                <Message v-if="filters.length" severity="secondary" icon="pi pi-info-circle" variant="simple" size="small">Podržte filter pro úpravu nebo smazání.</Message>
+            </div>
         </div>
     
 

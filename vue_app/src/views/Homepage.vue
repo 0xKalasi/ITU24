@@ -1,14 +1,15 @@
 <!-- Tomáš Bordák, xborda01 -->
 
 <script setup>
-import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { onBeforeMount, onMounted, onUnmounted, ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import filters from "@/components/filters/filtersHomepage.vue"
 import { readPublicRecipes, readPublicRecipesFilterName, readFilters, getRecipeImage, getLastUsedFilters } from "@utils/api";
 
 import { useUserStore } from '../stores/userStore';
 const user = useUserStore();
 
+const route = useRoute();
 const router = useRouter();
 const searchValue = ref("");
 
