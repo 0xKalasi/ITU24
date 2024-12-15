@@ -32,6 +32,7 @@ const LoadData = async () => {
   isLoading.value = true;
   getAllUsersLikes(viewedUser.id)
   .then(async (result) => {
+    totalLikes = result
     isLoading.value = false;
   });
 }
@@ -192,21 +193,21 @@ const Unblock = async () => {
     <div v-if="currentFriendshipState != ForeignUserRelation.BLOCKED_BY_THEM">
       <!-- Statistics are shown only when not blocked -->
 
+      <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
+      <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
+      <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
+      <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+
       <div v-if="isLoading" style="text-align: center;">
         <h3 class="pi pi-spin pi-th-large"></h3>
       </div>
 
       <div v-else>
-        <h3 v-if="recipeCnt >= 5">{{ recipeCnt }} veřejných receptů</h3>
-        <h3 v-else-if="recipeCnt >= 2">{{ recipeCnt }} veřejné recepty</h3>
-        <h3 v-else-if="recipeCnt == 1">{{ recipeCnt }} veřejný recept</h3>
-        <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+        <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+        <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+        <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
+        <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
       </div>
-
-      <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
-      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
-      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
-      <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLikes == 0 -->
 
       <Divider></Divider>
 
