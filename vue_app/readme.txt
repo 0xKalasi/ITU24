@@ -65,7 +65,7 @@ vue_app
 │   │   ├── TimerView.vue (xsatin03)
 │   │   └── UnblockEntry.vue (xjabur02)
 │   ├── router 
-│   │   └── index.js (xborda01)
+│   │   └── index.js (xborda01, xtomcs00)
 │   ├── stores !!! DATA PERZISTIVNÍ MEZI STRÁNKAMI APLIKACE
 │   │   ├── filterStore.js (xborda01)
 │   │   ├── recipeStore.js (xtomcs00)
@@ -90,7 +90,7 @@ vue_app
 │       ├── NotFound.vue (xborda01)
 │       ├── ProfilePreview.vue (xjabur02)
 │       ├── Profile.vue (xjabur02)
-│       ├── PublicRecipe.vue (xborda01)
+│       ├── PublicRecipe.vue (xborda01, xtomcs00)
 │       ├── RecipeFormView.vue (xtomcs00)
 │       ├── Share.vue (xjabur02)
 │       └── Users.vue (xjabur02, xborda01)
