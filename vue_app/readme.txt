@@ -60,7 +60,7 @@ vue_app
 │   │   │   └── navigation.vue (xborda01)
 │   │   ├── NewTimer.vue (xsatin03)
 │   │   ├── photoUploader.vue (xtomcs00)
-│   │   ├── TimeInput.vue (xtomcs00)
+│   │   ├── TimeInput.vue (xsatin03)
 │   │   ├── timePicker.vue (xtomcs00)
 │   │   ├── TimerView.vue (xsatin03)
 │   │   └── UnblockEntry.vue (xjabur02)
@@ -77,7 +77,7 @@ vue_app
 │       ├── CookModeStep.vue (xsatin03)
 │       ├── CookMode.vue (xsatin03)
 │       ├── EditGroupchat.vue (xjabur02)
-│       ├── filters 
+│       ├── filters
 │       │   ├── CreateFilter.vue (xborda01)
 │       │   ├── EditFilter.vue (xborda01)
 │       │   └── Filters.vue (xborda01)
