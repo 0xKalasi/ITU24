@@ -1,15 +1,19 @@
-<!-- Martin Jabůrek, xjabur02 -->
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       Users.vue
+    AUTHORS:    Martin Jabůrek (xjabur02), Tomáš Bordák (xborda01)
+    DATE:       15.12.2024
+    INFO:       View to log in as some user or to log out. If user is not logged in - log out button is not present.
+-->
 
 <script setup>
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-import { useUserStore } from '../stores/userStore';
+import { useUserStore } from '@/stores/userStore';
 const user = useUserStore();
 
 
-import { readAllUsers } from "../../utils/users_api.js";
+import { readAllUsers } from "@utils/users_api.js";
 
 
 const users = await readAllUsers();

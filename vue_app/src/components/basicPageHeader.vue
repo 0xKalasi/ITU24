@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       basicPageHeader.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Page header that goes to top of every page. Can have back button (arrow) to go back in app routing. 
+-->
 
 <script setup>
 import { useRouter } from 'vue-router';

@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       button.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Navigation button
+-->
 
 <script setup>
 import { useRoute } from 'vue-router';

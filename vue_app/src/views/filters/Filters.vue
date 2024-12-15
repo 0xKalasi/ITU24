@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       Filters.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       View showing all user's filters. On click user selects the filter for search in recipes. By holding down the filter, options edit and remove are presented.
+-->
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';

@@ -1,4 +1,10 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       filtersHomepage.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Component showing last used and second last used filter. There can be also none last used or second last used filter.
+                After that 2 filters there is button for going to user's filters view.
+-->
 
 <script setup>
 import { ref } from "vue";

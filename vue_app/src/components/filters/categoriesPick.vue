@@ -1,4 +1,10 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       categoriesPick.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Component for picking categories, works based on v-model (defineModel) value,
+                because data can come to and also go out of component (array of selected categories)
+-->
 
 <script setup>
 import { ref, watch } from 'vue';

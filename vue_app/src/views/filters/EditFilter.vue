@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       EditFilter.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       View for editing filter.
+-->
 
 <script setup>
 import { ref, toRaw, onBeforeMount } from 'vue';

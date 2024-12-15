@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       Homepage.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Homepage of our app, shows all public recipes which can be viewed on click. User can search between recipes by name
+-->
 
 <script setup>
 import { onBeforeMount, onMounted, onUnmounted, ref, watch } from "vue";
@@ -69,7 +74,7 @@ onUnmounted(() => {
     </div>
     
     <!-- at most 2 last used filters and all filters button -->
-    <filters />
+    <filters v-if="user.id"/>
 
     <div v-for="(recipe, index) in publicRecipes" :key="recipe.id" @click="router.push(`/recipe/public/${recipe.id}`)"> 
       <div>

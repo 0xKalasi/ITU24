@@ -1,4 +1,12 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       PublicRecipe.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       View for recipe with functionality that this view just connects, it doesnt implement them (for example: editing recipe if user is creator).
+                If user is creator there is share, edit and remove options.
+                If user is not creator there is creators profile, save and share options.
+                Logged in user can start cook mode for the recipe shown. 
+-->
  
 <script setup>
 import { ref } from 'vue';
@@ -161,7 +169,7 @@ const path = await getRecipeImage(1);
             <div class="stepText">{{ step.text }}</div>
         </div>
 
-        <div style="text-align: center; margin-top: 16px;">
+        <div v-if="user.id" style="text-align: center; margin-top: 16px;">
             <Button label="Spustit režim vaření" icon="pi pi-play" @click="router.push(`/cookmode/${recipe.id}`)" />
         </div>
     </div>

@@ -1,4 +1,10 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       navigation.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Navigation bar that is fixed to bottom. Overlays all views. Uses navigation button to move around app.
+                There is diferent nav. bar for logged in user and for NOT logged in user.
+-->
 
 <script setup>
 import NavBtn from "@/components/navigation/button.vue"

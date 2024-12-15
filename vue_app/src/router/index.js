@@ -1,4 +1,9 @@
-/* Tomáš Bordák, xborda01 */
+/*
+    FILE:       index.js
+    AUTHORS:    Tomáš Bordák (xborda01), whole team added some lines also 
+    DATE:       15.12.2024
+    INFO:       Router for app routing, history and secures routes with navigation guards.
+*/
 
 import { createWebHistory, createRouter } from "vue-router";
 import { profilePreviewStore } from "../stores/userStore";

@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       CreateFilter.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       View for creating filter.
+-->
 
 <script setup>
 import { ref, toRaw } from 'vue';

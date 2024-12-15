@@ -1,4 +1,9 @@
-/* Tomáš Bordák, xborda01 */
+/*
+    FILE:       alergensPick.vue
+    AUTHORS:    Tomáš Bordák (xborda01), Martin Jabůrek (xjabur02) 
+    DATE:       15.12.2024
+    INFO:       Store for user detail data. Executes storing to browser's local storage.
+*/
 
 import { defineStore } from "pinia"
 import { supabase } from "../../utils/supabase";

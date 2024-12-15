@@ -1,4 +1,9 @@
-<!-- Tomáš Bordák, xborda01 -->
+<!-- 
+    FILE:       alert.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Alert that will show for 3 seconds. Is fixed to top of page and has green color for success, red color for error and orange for warning alert.
+-->
 
 <script setup>
 defineProps({

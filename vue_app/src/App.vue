@@ -1,11 +1,13 @@
+<!-- 
+    FILE:       App.vue
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Main view of app that uses router (routerView) to change view of app. Always shows navigation on top of each view.
+-->
+
 <script setup>
-import Button from 'primevue/button';
-import { useUserStore } from './stores/userStore';
 import { computed } from 'vue';
-import navigation from './components/navigation/navigation.vue';
-
-const user = useUserStore();
-
+import navigation from '@/components/navigation/navigation.vue';
 </script>
 
 <template>

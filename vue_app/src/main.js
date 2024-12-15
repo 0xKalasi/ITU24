@@ -1,3 +1,10 @@
+/*
+    FILE:       main.js
+    AUTHOR:     Tomáš Bordák, xborda01 
+    DATE:       15.12.2024
+    INFO:       Creates vue app. Registers global components.
+*/
+
 /* VUE MAIN IMPORTS */
 import { createApp } from "vue";
 import router from "./router/index";
