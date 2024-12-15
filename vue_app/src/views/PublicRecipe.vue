@@ -3,10 +3,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { readPublicRecipe, saveRecipe, getRecipeImage } from '../../utils/api';
-import { useUserStore } from '../stores/userStore'
-import { deleteRecipe } from '../../utils/add_recipe_api'
-import { likeRecipe, unLikeRecipe, getRecipeLikeCount } from '../../utils/likes_api';
+import { readPublicRecipe, saveRecipe, getRecipeImage } from '@utils/api';
+import { useUserStore } from '@/stores/userStore'
+import { deleteRecipe } from '@utils/add_recipe_api'
 
 const router = useRouter();
 const recipeId = router.currentRoute.value.params.recipe_id;
@@ -15,26 +14,6 @@ const user = useUserStore();
 
 let recipe = '';
 const isLoading = ref(true); 
-
-readPublicRecipe(recipeId).then(async (result) => {
-    recipe = result;
-    isLoading.value = false;
-    console.log(recipe);
-})
-
-const showAlert = ref(false);
-const alertKey = ref(0);
-const alertType = ref("");
-const alertText = ref("");
-
-function showAlertMessage(type, text) {
-    alertType.value = type;
-    alertText.value = text;
-    showAlert.value = true;
-    alertKey.value++;
-    }
-
-const path = await getRecipeImage(1);
 
 const actionButtons = ref([
     {
@@ -70,6 +49,69 @@ const actionButtons = ref([
         }
     },  
 ])
+
+// if delete is loading set
+const deletingFlag = ref(false);
+
+const deleteRecipeFunc = (id) => {
+    deletingFlag.value = true;
+
+    const buttonToChange = actionButtons.value.find((deleteBtn) => deleteBtn.label == 'Remove');
+    buttonToChange.icon = 'pi pi-spin pi-spinner';
+
+    deleteRecipe(id).then(() => {
+        router.back();
+        deletingFlag.value = false;
+    })
+}
+
+readPublicRecipe(recipeId).then(async (result) => {
+    recipe = result;
+    
+    if(recipe.creator == user.id){
+        // show other functionality for creator
+        actionButtons.value = [];
+        actionButtons.value.push(
+            {
+                label: 'Send',
+                icon: 'pi pi-send',
+                command: () => {
+                    router.push(`/share/${recipe.id}`);
+                }
+            }, 
+            {
+                label: 'Edit',
+                icon: 'pi pi-pencil',
+                command: () => {
+                    router.push(`/edit-recipe/${recipe.id}`);
+                }
+            },
+            {
+                label: 'Remove',
+                icon: 'pi pi-trash',
+                command: () => {
+                    deleteRecipeFunc(recipe.id);
+                }
+            },
+        )
+    }
+
+    isLoading.value = false;
+})
+
+const showAlert = ref(false);
+const alertKey = ref(0);
+const alertType = ref("");
+const alertText = ref("");
+
+function showAlertMessage(type, text) {
+    alertType.value = type;
+    alertText.value = text;
+    showAlert.value = true;
+    alertKey.value++;
+    }
+
+const path = await getRecipeImage(1);
 </script>
 
 <template>
@@ -81,7 +123,7 @@ const actionButtons = ref([
         <div style="position: relative; display: flex; align-items: center; min-width: 320px">
             <Button @click="router.back" icon="pi pi-chevron-left" style="height: 35px; width: 35px; background-color: transparent; color: white; border: 0px;"/>
             <h2 style="max-width: 240px;">{{ recipe.name }}</h2>
-            <SpeedDial v-if="user.id" :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -11%);">
+            <SpeedDial :visible="deletingFlag" v-if="user.id" :model="actionButtons" direction="down" style="position: absolute; top: 50%; right: 0; transform: translate(0, -11%);">
             </SpeedDial>
         </div> 
 

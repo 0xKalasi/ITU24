@@ -4,7 +4,7 @@
 import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import filters from "@/components/filters/filtersHomepage.vue"
-import { readPublicRecipes, readPublicRecipesFilterName, readFilters, getRecipeImage } from "../../utils/api";
+import { readPublicRecipes, readPublicRecipesFilterName, readFilters, getRecipeImage, getLastUsedFilters } from "@utils/api";
 
 import { useUserStore } from '../stores/userStore';
 const user = useUserStore();
@@ -16,11 +16,11 @@ const publicRecipes = ref();
 
 // SEARCH FIELD - DYNAMIC PLACEHOLDER
 const texts = [
-    "Vyhledejte recept",
-    "Podle ingrediencií",
-    "Podle kategorií",
-    "Zkuste něco nové",
-    "Vyskoušejte filtry"
+  "Vyhledejte recept",
+  "Podle ingrediencií",
+  "Podle kategorií",
+  "Zkuste něco nové",
+  "Vyskoušejte filtry"
 ];
 let textsIndex = 0;
 const dynamicPlaceHolder = ref(texts[textsIndex]);
@@ -35,10 +35,6 @@ const search = async () => {
     isLoading.value = !isLoading.value;
   })
 }
-
-// FILTERS
-const userFilters = ref(await readFilters(user.id));
-console.log(userFilters.value);
 
 const path = ref();
 onBeforeMount(async () => {
