@@ -43,7 +43,7 @@ vue_app
 │   │   ├── basicPageHeader.vue
 │   │   ├── ConvSelect.vue (xjabur02)
 │   │   ├── Divider.vue (xjabur02, )
-│   │   ├── EditTimer.vue 
+│   │   ├── EditTimer.vue (xsatin03)
 │   │   ├── filters
 │   │   │   ├── alergensPick.vue
 │   │   │   ├── categoriesPick.vue
@@ -58,11 +58,11 @@ vue_app
 │   │   ├── navigation
 │   │   │   ├── button.vue
 │   │   │   └── navigation.vue
-│   │   ├── NewTimer.vue
+│   │   ├── NewTimer.vue (xsatin03)
 │   │   ├── photoUploader.vue
-│   │   ├── TimeInput.vue
+│   │   ├── TimeInput.vue (xsatin03)
 │   │   ├── timePicker.vue
-│   │   ├── TimerView.vue
+│   │   ├── TimerView.vue (xsatin03)
 │   │   └── UnblockEntry.vue (xjabur02)
 │   ├── main.js
 │   ├── router
@@ -74,8 +74,8 @@ vue_app
 │   ├── style.css
 │   └── views !!! JEDNOTLIVÉ STRÁNKY APLIKACE
 │       ├── AddGroupchatMember.vue (xjabur02)
-│       ├── CookModeStep.vue
-│       ├── CookMode.vue
+│       ├── CookModeStep.vue (xsatin03)
+│       ├── CookMode.vue (xsatin03)
 │       ├── EditGroupchat.vue (xjabur02)
 │       ├── filters
 │       │   ├── CreateFilter.vue
@@ -96,8 +96,8 @@ vue_app
 │       └── Users.vue (xjabur02, )
 ├── utils
 │   ├── add_recipe_api.js
-│   ├── api_cookmode.js
-│   ├── api.js
+│   ├── api_cookmode.js (xsatin03)
+│   ├── api.js (všichni)
 │   ├── groupchat_api.js (xjabur02)
 │   ├── likes_api.js (xjabur02)
 │   ├── subscription_api.js (xjabur02)
