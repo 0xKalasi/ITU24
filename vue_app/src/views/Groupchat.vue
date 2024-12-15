@@ -118,7 +118,7 @@ const isLoading = ref(false);
   <div v-else>
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
       
-      <BasicPageHeader :text="truncateStr(currentGroup.name, 16)"></BasicPageHeader>
+      <BasicPageHeader :text="truncateStr(currentGroup.name, 16)" backArrow></BasicPageHeader>
 
       <ConfirmDialog style="width: 300px"></ConfirmDialog>
 

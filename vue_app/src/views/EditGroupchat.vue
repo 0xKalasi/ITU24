@@ -144,7 +144,7 @@ const DeleteGroupchat = async () => {
     :key="userRemovedKey">
   </Alert>
 
-  <BasicPageHeader text="Spravovat skupinu"></BasicPageHeader>
+  <BasicPageHeader text="Spravovat skupinu" backArrow></BasicPageHeader>
 
   <div>
 

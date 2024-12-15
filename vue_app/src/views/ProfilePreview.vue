@@ -1,6 +1,8 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
+import { ref, onBeforeMount } from "vue";
+
 import { useRouter } from "vue-router";
 const router = useRouter();
 
@@ -13,53 +15,80 @@ import { readUsersPublicRecipe } from "../../utils/api.js";
 import { getAllUsersLikes } from "../../utils/likes_api.js";
 
 
-const usersRecipes = await readUsersPublicRecipe(currentUser.id);
-const recipeCnt = usersRecipes.length;
-const totalLikes = await getAllUsersLikes(currentUser.id);
+let usersRecipes;
+let recipeCnt;
+let totalLikes;
+
+const GetUserInfo = async () => {
+  usersRecipes = await readUsersPublicRecipe(currentUser.id);
+  recipeCnt = usersRecipes.length;
+  totalLikes = await getAllUsersLikes(currentUser.id);
+}
+
+const isLoading = ref(false);
+
+const LoadData = async () => {
+  isLoading.value = true;
+  GetUserInfo()
+  .then(async (result) => {
+    isLoading.value = false;
+  });
+}
+
+onBeforeMount(async () => {
+  await LoadData();
+})
 
 </script>
 
 <template>
-  <div style="color: aquamarine; display: flex; justify-content: center;">
-    Takto Vás uvidí ostatní uživatelé
-  </div>
-  <Divider></Divider>
-  
-  <BasicPageHeader text="Náhled profilu"></BasicPageHeader>
+  <LoadingScreen v-if="isLoading"></LoadingScreen>
 
-  <div style="position: relative; overflow-y: auto; height: calc(100vh - 235px);">
-    <div style="margin-bottom: 20px;">
-      <h2>
-        {{ previewData.name }}
-      </h2>
-      <i>
-        {{ previewData.bio }}
-      </i>
+  <div v-else>
+
+    <div style="color: aquamarine; display: flex; justify-content: center;">
+      Takto Vás uvidí ostatní uživatelé
     </div>
 
     <Divider></Divider>
+    
+    <BasicPageHeader text="Náhled profilu" backArrow></BasicPageHeader>
 
-    <h3 v-if="recipeCnt >= 5">{{ usersRecipes.length }} veřejných receptů</h3>
-    <h3 v-else-if="recipeCnt >= 2">{{ usersRecipes.length }} veřejné recepty</h3>
-    <h3 v-else-if="recipeCnt == 1">{{ usersRecipes.length }} veřejný recept</h3>
-    <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 235px);">
+      <div style="margin-bottom: 20px;">
+        <h2>
+          {{ previewData.name }}
+        </h2>
+        <i>
+          {{ previewData.bio }}
+        </i>
+      </div>
 
-    <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
-    <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
-    <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
-    <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
+      <Divider></Divider>
 
-    <Divider></Divider>
+      <h3 v-if="recipeCnt >= 5">{{ usersRecipes.length }} veřejných receptů</h3>
+      <h3 v-else-if="recipeCnt >= 2">{{ usersRecipes.length }} veřejné recepty</h3>
+      <h3 v-else-if="recipeCnt == 1">{{ usersRecipes.length }} veřejný recept</h3>
+      <h3 v-else>Žádné veřejné recepty</h3> <!-- recipeCnt == 0 -->
 
-    <h2>Recepty</h2>
+      <h3 v-if="totalLikes >= 5">{{ totalLikes }} kladně hodnocených receptů</h3>
+      <h3 v-else-if="totalLikes >= 2">{{ totalLikes }} kladně hodnocené recepty</h3>
+      <h3 v-else-if="totalLikes == 1">{{ totalLikes }} kladně hodnocený recept</h3>
+      <h3 v-else>Dosud žádná hodnocení receptů</h3> <!-- totalLike == 0 -->
 
-    <div v-for="recipe in usersRecipes">
-      <!-- This is a preview, so click functionality is disabled -->
-      <Message
-        severity="success"
-        icon="pi pi-play-circle">
-        {{ recipe.name }}
-      </Message>
+      <Divider></Divider>
+
+      <h2>Recepty</h2>
+
+      <div v-for="recipe in usersRecipes">
+        <!-- This is a preview, so click functionality is disabled -->
+        <Message
+          severity="success"
+          icon="pi pi-play-circle">
+          {{ recipe.name }}
+        </Message>
+      </div>
+
     </div>
 
   </div>

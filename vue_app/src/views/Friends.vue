@@ -137,7 +137,8 @@ const ToggleMenu = (event) => {
   <!-- Header -->
   <div>
     <div style="position: relative; display: flex; align-items: center; min-width: 320px;">
-      <BasicPageHeader text="Konverzace"></BasicPageHeader>
+
+      <BasicPageHeader text="Konverzace" backArrow></BasicPageHeader>
 
       <div>
         <Button 

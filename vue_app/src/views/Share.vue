@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -15,25 +15,46 @@ import { readUsersFriends, sendChatMessage } from "../../utils/users_api.js";
 import { readUsersGroupchats, sendGroupchatMessage } from "../../utils/groupchat_api.js";
 
 
-const recipeId = router.currentRoute.value.params.recipe_id;
-const recipe = await readPublicRecipe(recipeId);
+let recipe = "";
+let friends;
+let groupchats;
 
-const friends = await readUsersFriends(currentUser.id);
-const groupchats = await readUsersGroupchats(currentUser.id);
+let friendsButtonsPressed;
+let groupsButtonsPressed;
 
+const GetShareInfo = async () => {
+  const recipeId = router.currentRoute.value.params.recipe_id;
+  recipe = await readPublicRecipe(recipeId);
 
-const friendsButtonsPressed = ref(
-  friends.reduce((arr, friend) => {
-    arr[friend.id] = false;
-    return arr;
-  }, {})
-);
-const groupsButtonsPressed = ref(
-  groupchats.reduce((arr, groupchat) => {
-    arr[groupchat.id] = false;
-    return arr;
-  }, {})
-); 
+  friends = await readUsersFriends(currentUser.id);
+  groupchats = await readUsersGroupchats(currentUser.id);
+
+  friendsButtonsPressed = ref(
+    friends.reduce((arr, friend) => {
+      arr[friend.id] = false;
+      return arr;
+    }, {})
+  );
+  groupsButtonsPressed = ref(
+    groupchats.reduce((arr, groupchat) => {
+      arr[groupchat.id] = false;
+      return arr;
+    }, {})
+  );
+}
+
+const isLoading = ref(true);
+
+const LoadData = async () => {
+  GetShareInfo()
+  .then(async (result) => {
+    isLoading.value = false;
+  });
+}
+
+onBeforeMount(async () => {
+  await LoadData();
+});
 
 const textMessage = ref("");
 const alertKey = ref(0);
@@ -92,94 +113,100 @@ const GroupchatButtonType = (id) => {
     :key="alertKey">
   </Alert>
 
-  <BasicPageHeader text="Sdílení"></BasicPageHeader>
+  <LoadingScreen v-if="isLoading"></LoadingScreen>
 
-  <h2>
-    <i>
-      {{ recipe.name }}
-    </i>
-  </h2>
+  <div v-else>
 
-  <div style="position: relative; overflow-y: auto; height: calc(100vh - 290px);">
-    <div v-if="IsLoggedOut">
-      Pro sdílení receptu se přihlaste.
-    </div>
+    <BasicPageHeader text="Sdílení" backArrow></BasicPageHeader>
 
-    <div v-else>
-      <Divider></Divider>
+    <h2>
+      <i>
+        {{ recipe.name }}
+      </i>
+    </h2>
 
-      <!-- Entry field -->
-      <div style="margin-top: 10px; margin-bottom: 20px;">
-        <label for="input_field">Zpráva</label>
-        <InputText
-          id="input_field"
-          v-model="textMessage"
-          placeholder="Vaše zpráva"
-          size="large"
-          style="margin-top: 10px; width: 100%;">
-        </InputText>
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 290px);">
+      <div v-if="IsLoggedOut">
+        Pro sdílení receptu se přihlaste.
       </div>
 
-      <Divider></Divider>
+      <div v-else>
+        <Divider></Divider>
 
-      <!-- Friends -->
-      <div style="margin-bottom: 20px;">
-        <h3>Přátelé</h3>
-
-        <div v-if="friends.length == 0">
-          Váš seznam přátel je prázdný.
+        <!-- Entry field -->
+        <div style="margin-top: 10px; margin-bottom: 20px;">
+          <label for="input_field">Zpráva</label>
+          <InputText
+            id="input_field"
+            v-model="textMessage"
+            placeholder="Vaše zpráva"
+            size="large"
+            style="margin-top: 10px; width: 100%;">
+          </InputText>
         </div>
 
-        <div v-else>
-          <div
-            v-for="friend in friends"
-            style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px">
-            <Message 
-              severity="secondary"
-              @click="GoToFriend(friend.id)"
-              style="flex-grow: 1;">
-              {{ friend.name }}
-            </Message>
+        <Divider></Divider>
 
-            <Button
-              icon="pi pi-send"
-              @click="FriendSend(friend.id)"
-              :class="ChatButtonType(friend.id)">
-            </Button>
+        <!-- Friends -->
+        <div style="margin-bottom: 20px;">
+          <h3>Přátelé</h3>
+
+          <div v-if="friends.length == 0">
+            Váš seznam přátel je prázdný.
+          </div>
+
+          <div v-else>
+            <div
+              v-for="friend in friends"
+              style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px">
+              <Message 
+                severity="secondary"
+                @click="GoToFriend(friend.id)"
+                style="flex-grow: 1;">
+                {{ friend.name }}
+              </Message>
+
+              <Button
+                icon="pi pi-send"
+                @click="FriendSend(friend.id)"
+                :class="ChatButtonType(friend.id)">
+              </Button>
+            </div>
           </div>
         </div>
+
+        <Divider></Divider>
+
+        <!-- Groups -->
+        <div style="margin-bottom: 20px;">
+          <h3>Skupiny</h3>
+
+          <div v-if="groupchats.length == 0">
+            Nejste členem žádné skupiny.
+          </div>
+
+          <div v-else>
+            <div
+              v-for="groupchat in groupchats"
+              style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px; align-items: center;">
+              <b style="flex-grow: 1;">
+                {{ groupchat.name }}
+              </b>
+
+              <Button
+                icon="pi pi-send"
+                @click="GroupSend(groupchat.id);"
+                :class="GroupchatButtonType(groupchat.id)">
+              </Button>
+            </div>
+          </div>
+        </div>
+      
       </div>
 
       <Divider></Divider>
 
-      <!-- Groups -->
-      <div style="margin-bottom: 20px;">
-        <h3>Skupiny</h3>
-
-        <div v-if="groupchats.length == 0">
-          Nejste členem žádné skupiny.
-        </div>
-
-        <div v-else>
-          <div
-            v-for="groupchat in groupchats"
-            style="display: flex; width: 100%; gap: 30px; margin-bottom: 5px; align-items: center;">
-            <b style="flex-grow: 1;">
-              {{ groupchat.name }}
-            </b>
-
-            <Button
-              icon="pi pi-send"
-              @click="GroupSend(groupchat.id);"
-              :class="GroupchatButtonType(groupchat.id)">
-            </Button>
-          </div>
-        </div>
-      </div>
-    
     </div>
-
-    <Divider></Divider>
 
   </div>
 

@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -17,21 +17,43 @@ import { readUsersFriends } from "../../utils/users_api";
 const currentGroupId = router.currentRoute.value.params.groupchat_id;
 const currentGroup = await readGroupchat(currentGroupId);
 
-const friends = await readUsersFriends(currentUser.id);
-const members = await readGroupchatMembers(currentGroup.id);
-const isInGroup = ref(
-  friends.reduce((arr, friend) => {
-    for (const member of members) {
-      if (member.id == friend.id) {
-        arr[friend.id] = false;
-        return arr;
-      }
-    }
 
-    arr[friend.id] = true;
-    return arr;
-  }, {})
-);
+let friends;
+let members;
+let isInGroup;
+
+const GetGroupMembers = async () => {
+  friends = await readUsersFriends(currentUser.id);
+  members = await readGroupchatMembers(currentGroup.id);
+  isInGroup = ref(
+    friends.reduce((arr, friend) => {
+      for (const member of members) {
+        if (member.id == friend.id) {
+          arr[friend.id] = false;
+          return arr;
+        }
+      }
+
+      arr[friend.id] = true;
+      return arr;
+    }, {})
+  );
+}
+
+const isLoading = ref(false);
+
+const LoadData = async () => {
+  isLoading.value = true;
+  GetGroupMembers()
+  .then(async (result) => {
+    isLoading.value = false;
+  });
+}
+
+onBeforeMount(async () => {
+  await LoadData();
+});
+
 
 // Alert:
 const addedMember = ref(false);
@@ -54,44 +76,50 @@ const AddToGroup = async (id) => {
     :key="addedMemberKey">
   </Alert>
 
-  <BasicPageHeader text=""></BasicPageHeader> <!-- Only for the back button, the text itself will be lower -->
+  <LoadingScreen v-if="isLoading"></LoadingScreen>
 
-  <h2>
-    Přídat členy do skupiny {{ currentGroup.name }}
-  </h2>
-  
-  <Divider></Divider>
+  <div v-else>
 
-  <div style="position: relative; overflow-y: auto; height: calc(100vh - 300px);">
-    <div
-      v-for="friend in friends"
-      style="margin-top: 10px;">
+    <BasicPageHeader text="" backArrow></BasicPageHeader> <!-- Only for the back button, the text itself will be lower -->
 
-      <div style="margin-bottom: 10px; display: flex; align-items: center;">
-        <b>
-          -> {{ friend.name }}
-        </b>
+    <h2>
+      Přídat členy do skupiny {{ currentGroup.name }}
+    </h2>
+    
+    <Divider></Divider>
 
-        <div style="display: flex; flex: 1; justify-content: end;">
-          <Button
-            v-if="isInGroup[friend.id]"
-            label="Přidat"
-            icon="pi pi-plus"
-            @click="AddToGroup(friend.id)">
-          </Button>
+    <div style="position: relative; overflow-y: auto; height: calc(100vh - 300px);">
+      <div
+        v-for="friend in friends"
+        style="margin-top: 10px;">
 
-          <Button
-            v-else
-            label="Už je členem skupiny"
-            severity="secondary"
-            size="small"
-            style="pointer-events: none;">
-          </Button>
+        <div style="margin-bottom: 10px; display: flex; align-items: center;">
+          <b>
+            -> {{ friend.name }}
+          </b>
+
+          <div style="display: flex; flex: 1; justify-content: end;">
+            <Button
+              v-if="isInGroup[friend.id]"
+              label="Přidat"
+              icon="pi pi-plus"
+              @click="AddToGroup(friend.id)">
+            </Button>
+
+            <Button
+              v-else
+              label="Už je členem skupiny"
+              severity="secondary"
+              size="small"
+              style="pointer-events: none;">
+            </Button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <Divider></Divider>
+    <Divider></Divider>
+
+  </div>
 
 </template>
