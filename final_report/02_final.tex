@@ -114,7 +114,7 @@ Bohužel se nepodařilo implementovat veškerou kýženou funkcionalitu, přesn�
     \item Postupné načítání zpráv chatu (ačkoli zprávy by nejlépe byly donačítány postupně,
         při uživatelském testování uživatelům tento způsob vyhovoval, zejména protože
         jsou na stahování zpráv upozorněni načítáním)
-    \item Pri vytváření receptu není možné přidat časovače ke jednotlivým krokům
+    \item Při vytváření receptu není možné přidat časovače k jednotlivým krokům.
     \item 
     \item \todo
 \end{itemize}
@@ -195,12 +195,16 @@ Jednotlivé prvky implementace GUI jsou v projektu umístěny následovně:
 \todo
 
 \subsection{Část Tomáše T.}
-\todo
+
 Mým úkolem bylo implementovat vkládání, mazání a úpravy receptů. Inspiroval jsem se především 
-aplikací samsung foods, která mi při počátečním průzkumu přišla uživatelsky nejpřívětivější. Odklon od této aplikace je na
-zadávání ingrediencí, mají na to jediné zaškrtávací políčko a jakousi funkci, která určuje, co ze zadaných ingrediencí je název pokrmu.
-složky, jaké je množství a jaká je jednotka. Protože jsem nevěděl, jak takovou funkci implementovat, mám pro zjednodušení
-Tento vstup jsem rozdělil na několik vstupů. Při úpravě receptu se zobrazí stejná stránka jako při jeho vytváření, ale
+aplikací Samsung Foods, která mi při počátečním průzkumu přišla uživatelsky nejpřívětivější. Odklon od této aplikace je na
+zadávání ingrediencí, mají na to jediné zaškrtávací políčko a jakousi funkci, která určuje, co ze zadaných ingrediencí je název pokrmu,
+složky, jaké je množství a jaká je jednotka.
+
+Protože jsem nevěděl, jak takovou funkci implementovat, mám pro zjednodušení
+Tento vstup jsem rozdělil na několik vstupů.
+
+Při úpravě receptu se zobrazí stejná stránka jako při jeho vytváření, ale
 samotné údaje o receptu budou předvyplněny. Toto rozhodnutí bylo nejpřijatelnější, protože by mělo uživatele nejméně mást
 díky jednotnosti. Existují dvě místa pro odstranění receptu, a to z důvodu variability naší uživatelské základny.
 Prvním místem je při prohlížení receptů, kdy dlouhé podržení receptu vyvolá možnost odstranění. Druhé místo 
@@ -233,8 +237,6 @@ Uživatelé mohou tvořit, spravovat a popř.\ rušit skupinové konverzace,
 vést v nich diskuse a sdílet recepty stejně jako v osobních konverzacích a přidávat,
 popř.\ odebírat jejich členy.
 
-% Propojení GUI komponent: Demonstruje pouze částečně, k lepšímu hodnocení projektu je vhodné ještě vylepšit/rozšířit.
-\todo
 
 \section{Testování}\label{testovani}
 
@@ -359,10 +361,10 @@ Testování zde probíhalo opět pomocí vzdáleného přístupu a zadáváním 
 
 \subsection{Testování Tomáše T.}
 Testování bylo provedeno vzdáleně pomocí programu TeamViewer, který umožňuje vzdálený přístup k počítači. Uživatelé
-byla moje matka, která byla zároveň uživatelem vstupního dotazníku. Druhým uživatelem byl můj přítel, který
-patří k mé generaci. 
+byla moje matka, která byla zároveň uživatelem vstupního dotazníku. Druhým uživatelem byla moje přítelkyně, která
+patří k mé generaci. \\
 
-\noindent\textbf{Mama Tomáša T} \\[-1em]
+\noindent\textbf{Máma Tomáše T.} \\[-1em]
 \begin{itemize}
     \item 50-60 let
     \item Je učitelkou informatiky, ale s mobilními aplikacemi nemá mnoho zkušeností.
@@ -371,20 +373,20 @@ patří k mé generaci.
 
 \textbf{Zjištění:}
 \begin{itemize}
-    \item Při vytváření receptu měla problém s přeskupováním keřů, v té době tomu nic nenasvědčovalo,
+    \item Při vytváření receptu měla problém s přeskupování kroků, v té době tomu nic nenasvědčovalo,
     že je možné kroky přesouvat, a neexistoval způsob, jak vkládat kroky mezi stávající kroky, což bylo později implementováno.
     právě kvůli jejím připomínkám.
 
-
-    \item Pri upravovaní receptu sa jej napáčilo, že potvrdzujúce tlačítka boli až na spodku pre to boli pridané aj na vrchol
+    \item Při upravovaní receptu se jí nelíbilo, že potvrzovací tlačítka byla až na spodku, proto byla přidaná i na vršek
     pri upravovaní.
 
-    \item Při úpravě receptu se jí líbilo, že potvrzovací tlačítka byla dole, protože byla přidána i nahoře.
-    při úpravách.
+    \item Při ovládání celé aplikace nepoznala význam některých ikonek, avšak na tento fakt jsme
+    nebrali až takový ohled, protože mladším lidem dávaly tyto ikonky smysl, a zároveň po jejich
+    stisku zpětně pochopila, co znamenají.
 
 \end{itemize}
 
-\noindent\textbf{Priateľka Tomáša T} \\[-1em]
+\noindent\textbf{Přítelkyně Tomáše T.} \\[-1em]
 \begin{itemize}
     \item 22
     \item Je studentkou informatiky a má bohaté zkušenosti s mobilními aplikacemi a sociálními sítěmi. 
@@ -394,7 +396,7 @@ patří k mé generaci.
 \textbf{Zjištění:}
 \begin{itemize}
     \item Ne všechny funkce byly vidět na první pohled, ale vše pochopila velmi rychle, především díky
-    její znalosti sociálních sítí
+    její znalosti sociálních sítí.
 
     \item Rozhraní se jí zdálo obecně přívětivé a uměla se v něm orientovat.
 
