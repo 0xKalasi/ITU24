@@ -135,7 +135,7 @@ Pro úplnost zde uvádíme rozdělení, jak bylo původně zamýšleno, a jak js
 \end{itemize}
 
 V rámci implementace jsme se společně podíleli na některých prvcích projektu.
-Přesněji se jedná o některé komponenty z adresáře \t{/vue\_app/components/}.
+Přesněji se jedná o některé komponenty z adresáře \t{/vue\_app/src/components/}.
 V některých případech byla jedna komponenta navržena více členy týmu.
 V takových případech jsou jména všech podílejících se členů označena
 v hlavičce jejího souboru.
@@ -163,7 +163,7 @@ Zamýšlené principy zůstaly.
 
 Jednotlivé prvky implementace jsou v projektu umístěny následovně:
 \begin{itemize}
-    \item \t{/vue\_app/src/components/} obsahující vytvořené komponenty
+    \item \t{vue\_app/src/components/} obsahující vytvořené komponenty
         \begin{itemize}
             \item \t{ConvSelect.vue}\,--\,komponenta pro výběr chatů, žádostí o přátelství a zablokovaných uživatelů
             \item \t{FriendRequest.vue}\,--\,žádost o přátelství
@@ -174,7 +174,7 @@ Jednotlivé prvky implementace jsou v projektu umístěny následovně:
             \item \t{MessageComp.vue}\,--\,zpráva v konverzaci
             \item \t{UnblockEntry.vue}\,--\,odkaz na zablokovaného uživatele
         \end{itemize}
-    \item \t{/vue\_app/src/views/} obsahující implementace jednotlivých stránek
+    \item \t{vue\_app/src/views/} obsahující implementace jednotlivých stránek
         \begin{itemize}
             \item \t{AddGroupchatMember.vue}\,--\,stránka pro přidání nových členů do skupiny
             \item \t{EditGroupchat.vue}\,--\,správa skupiny z pohledu jejího tvůrce
@@ -313,7 +313,7 @@ Testování zde probíhalo opět pomocí vzdáleného přístupu a zadáváním 
 \begin{itemize}
     \item Velmi význačným aspektem tohoto testu bylo, že Daan pochází z Nizozemska, a tedy
     pochopitelně neumí česky\,--\,jazykem, ve kterém je daná aplikace vytvořena. Tento test však
-    potvrdil, že s využitým vhodných ikon je i on schopen bez vynaložení velkého úsilí pochopit,
+    potvrdil, že s využitým vhodných ikon a rozložení prvku GUI je i on schopen bez vynaložení velkého úsilí pochopit,
     kde najít jakou funkcionalitu. Aplikaci zvládl použít i přes jazykovou bariéru, což považujeme
     za velký úspěch.
 
