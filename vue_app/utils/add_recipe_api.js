@@ -1,3 +1,9 @@
+/*
+    FILE:       add_recipe_api.js
+    AUTHOR:     Tomáš Tomcsányi, xtomcs00 
+    DATE:       15.12.2024
+*/
+
 import { supabase } from "./supabase";
 
 // Function to insert into the Recipe table

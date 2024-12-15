@@ -1,3 +1,9 @@
+/*
+    FILE:       update_recipe_api.js
+    AUTHOR:     Tomáš Tomcsányi, xtomcs00 
+    DATE:       15.12.2024
+*/
+
 import { supabase } from "./supabase";
 import { insertIngredients, insertRecipeAlergens, insertRecipeCategories, insertSteps, insertUtencils } from "./add_recipe_api";
 

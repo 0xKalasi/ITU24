@@ -1,3 +1,9 @@
+<!-- 
+    FILE:       addIngredient.vue
+    AUTHOR:     Tomáš Tomcsányi, xtomcs00 
+    DATE:       15.12.2024
+-->
+
 <script setup>
     import { ref, defineModel} from "vue";
     import MyOnFloatLabel from "./myOnFloatLabel.vue";
@@ -200,7 +206,7 @@
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
     }
-    
+
     .draggable-icon {
     cursor: grab;
     margin-right: 0.5rem;

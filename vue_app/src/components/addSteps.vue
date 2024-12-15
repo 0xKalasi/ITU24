@@ -1,3 +1,9 @@
+<!-- 
+    FILE:       addSteps.vue
+    AUTHOR:     Tomáš Tomcsányi, xtomcs00 
+    DATE:       15.12.2024
+-->
+
 <script setup>
     import { ref, onBeforeMount } from "vue";
     import PhotoUploader from "./photoUploader.vue";
