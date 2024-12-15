@@ -212,7 +212,6 @@ const getRecipeImage = async (recipe_id) => {
 
     const pathToImage = `/recipes/${recipe_id}/main.jpg`;
     const { data: imgUrl, error } = supabase.storage.from('Images').getPublicUrl(pathToImage);
-    console.log(imgUrl.publicUrl);
     return imgUrl.publicUrl;
 }
 
@@ -426,16 +425,93 @@ const editFilter = async (filterId, name, alergenArr, categoriesArr, keyword) =>
     }
 }
 
-const selectFilter = async (usedId, filterId) => {
+const selectFilter = async (userId, filterId) => {
     const filters = await readFilters(userId);
-    console.log(filters);
 
     const lastUsed = filters.find((filter) => filter.last_used == 1);
     const secondLastUsed = filters.find((filter) => filter.last_used == 2);
 
-    console.log("last used: ", lastUsed);
-    console.log("second last used: ", secondLastUsed);
+    const newLastUsed = [];
 
+    // if filter is not already last used, set it as last used
+    // last_used == 1 -> last used
+    // last_used == 2 -> second last used
+    if(!lastUsed){
+        newLastUsed.push({
+            id: filterId,
+            last_used: 1
+        });
+    } else {
+        if(!(filterId == lastUsed.id)){
+            newLastUsed.push({
+                id: filterId,
+                last_used: 1
+            });
+
+            // there is second last used already
+            if(secondLastUsed){
+                
+                // new second last used is the previous last used
+                newLastUsed.push({
+                    id: lastUsed.id,
+                    last_used: 2
+                });
+                
+                // remove previous second last used from last_used flag
+                newLastUsed.push({
+                    id: secondLastUsed.id,
+                    last_used: null
+                });
+            } else{
+                // new second last used is the previous last used
+                newLastUsed.push({
+                    id: lastUsed.id,
+                    last_used: 2
+                });
+            }
+        }
+    }
+
+    try {
+        // update 
+        for(const one of newLastUsed){
+            await supabase
+            .from('Filter')
+            .update({ last_used: one.last_used })
+            .eq('id', one.id);
+        }
+    } catch(error){
+        console.log(error);
+        return false;
+    }
+}
+
+const getLastUsedFilters = async (userId) => {
+    const filters = await readFilters(userId);
+
+    let lastUsed = filters.find((filter) => filter.last_used == 1);
+    let secondLastUsed = filters.find((filter) => filter.last_used == 2);
+
+    // user didnt use any filter yet and there is >= 2 filters, so show first two
+    if(!lastUsed && filters.length >= 2){
+        lastUsed = filters[0];
+        secondLastUsed = filters[1];
+    }
+
+    // user didnt use any filter yet and there is only one, so show just the one
+    if(!lastUsed && filters.length == 1){
+        lastUsed = filters[0];
+    }
+
+    // there is lastUsed, but secondLastUsed is not set yet -> find some user's filter that isnt lastUsed
+    if(!secondLastUsed){
+        secondLastUsed = filters.find((filter => filter.id != lastUsed.id));
+    }
+
+    return { 
+        first: lastUsed, 
+        second: secondLastUsed 
+    }
 }
 
 export { 
@@ -458,5 +534,6 @@ export {
     readFilterAlergens,
     readFilterCategories,
     editFilter,
-    selectFilter
+    selectFilter,
+    getLastUsedFilters
 };

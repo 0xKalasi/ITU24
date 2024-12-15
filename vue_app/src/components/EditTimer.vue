@@ -1,10 +1,11 @@
+<!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 
 import { defineProps } from 'vue';
 import TimeInput from './TimeInput.vue';
 
 const model = defineModel( { default: { show: false } } );
-const emit = defineEmits( [ 'reload' ] )
+const emit = defineEmits( [ 'reload', 'change' ] )
 
 import {
 	getCookTimers, createCookTimer,
@@ -13,8 +14,11 @@ import {
 
 function change_timer_time( delta ) {
 	updateCookTimer(
-		open_timer_model.id,
-		{ rem_length: open_timer_model.time.value + delta }
+		model.value.id.value,
+		{
+			rem_length: model.value.time.value + delta,
+			start: ((new Date()).toISOString()).toLocaleString('zh-TW')
+		}
 	)
 	.then( ( value ) => { emit( "reload" ); } )
 }
@@ -58,26 +62,41 @@ function delete_timer() {
 		<!-- edit timer -->
 		<div v-if="model.show.value" class="modal_background" @click="model.show.value = false" />
 		<div v-if="model.show.value" class="modal">
-			<div><h2>Upravit časovač</h2></div>
+			<div style="text-align: center;"><h2>Upravit časovač</h2></div>
 			<form>
-				<label for="name">Název</label><br>
-				<input id="name" v-model="model.name.value"></input><br>
-				<TimeInput v-model="model.time.value" />
-				<div id="state">{{ model.state.value == 0 ? "Zastaven" : "Spuštěn" }}</div>
-				<Button @click="change_timer_time( +1  )">+1 s</Button>
-				<Button @click="change_timer_time( -1  )">-1 s</Button>
-				<Button @click="change_timer_time( +10 )">+10 s</Button>
-				<Button @click="change_timer_time( -10 )">-10 s</Button>
-				<Button @click="change_timer_time( +1  * 60 )">+1 min</Button>
-				<Button @click="change_timer_time( -1  * 60 )">-1 min</Button>
-				<Button @click="change_timer_time( +10 * 60 )">+10 min</Button>
-				<Button @click="change_timer_time( -10 * 60 )">-10 min</Button>
+				<label for="name">Název</label>
 				<br>
-				<Button @click="model.show.value = false">Zavřit</Button>
-				<Button v-if="model.state.value == 0" @click="start_timer">Spustit</Button>
-				<Button v-if="model.state.value == 1" @click="stop_timer">Zastavit</Button>
-				<Button @click="update_timer">Uložit</Button>
-				<Button @click="delete_timer">Smazat</Button>
+				<div style="display: flex">
+					<Textarea
+						id="name" v-model="model.name.value"
+						style="width: 80%"
+					/>
+					<Button @click="update_timer" style="width: 20%">Uložit</Button>
+				</div>
+				<br>
+				<div style="margin-left: auto; width: 100%; display: flex; justify-content: center">
+					<TimeInput
+						v-model="model.time.value"
+						@change="(n) => change_timer_time( n )"
+					/>
+				</div>
+				<br>
+				<div>
+					<Button
+						v-if="model.state.value == 0"
+						@click="start_timer"
+						style="width: 100%"
+					><i class="pi-play" /></Button>
+					<Button
+						v-if="model.state.value == 1"
+						@click="stop_timer"
+						style="width: 100%"
+					><i class="pi-pause" /></Button>
+				</div>
+				<div>
+					<Button style="width: 50%" @click="model.show.value = false">Zavřit</Button>
+					<Button style="width: 50%" @click="delete_timer">Smazat</Button>
+				</div>
 			</form>
 		</div>
 	</Teleport>

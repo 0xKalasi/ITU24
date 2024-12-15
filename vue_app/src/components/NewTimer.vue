@@ -1,3 +1,4 @@
+<!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 
 import { defineProps, ref } from 'vue';
@@ -37,7 +38,9 @@ function create_timer() {
 					style="width: 100%"
 				></Textarea><br>
 				<label for="time">Čas</label><br>
-				<TimeInput v-model="model.time.value" />
+				<div style="width: 100%">
+					<TimeInput v-model="model.time.value" />
+				</div>
 				<br>
 				<div style="margin: 1em; display: flex;">
 					<Button

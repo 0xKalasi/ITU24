@@ -1,7 +1,10 @@
+<!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 import { ref, onMounted } from 'vue'
 
 const model = defineModel();
+
+const emit = defineEmits( [ 'change' ] );
 
 let digits = [
 	ref( 0 ),
@@ -63,10 +66,12 @@ const digit_weight = [
 ];
 
 function increment( i ) {
+	emit( "change", +digit_weight[ 5 - i ] );
 	set_time( get_time() + digit_weight[ 5 - i ] )
 }
 
 function decrement( i ) {
+	emit( "change", -digit_weight[ 5 - i ] );
 	set_time( get_time() - digit_weight[ 5 - i ] )
 }
 
@@ -81,23 +86,25 @@ onMounted( () => {
 </script>
 
 <template>
-	<div style="display: flex">
-		<template v-for="i in [ 5, 4, -1, 3, 2, -1, 1, 0 ]">
-			<div
-				v-if="i >= 0"
-				class="digit"
-			>
-				<Button @click="increment( i )">▲</Button>
-				<div>{{ digits[ i ].value }}</div>
-				<Button @click="decrement( i )">▼</Button>
-			</div>
-			<div
-				class="colon"
-				v-else
-			>
-				<div>:</div>
-			</div>
-		</template>
+	<div>
+		<div style="display: flex">
+			<template v-for="i in [ 5, 4, -1, 3, 2, -1, 1, 0 ]">
+				<div
+					v-if="i >= 0"
+					class="digit"
+				>
+					<Button @click="increment( i )">▲</Button>
+					<div>{{ digits[ i ].value }}</div>
+					<Button @click="decrement( i )">▼</Button>
+				</div>
+				<div
+					class="colon"
+					v-else
+				>
+					<div>:</div>
+				</div>
+			</template>
+		</div>
 	</div>
 </template>
 

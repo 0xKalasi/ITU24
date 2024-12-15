@@ -35,12 +35,16 @@ const touchEnd = (id, event) => {
     // hold is less than 500ms -> its a click
     if(endTime.value - startTime.value < 500){
         if(event.target.tagName === 'DIV'){
-            // clicked on message, not on span with buttons
             
-            // TODO: emit search with this filter (id)
-            console.log("selected filter with id:", id)
+            // clicked on message, not on span with buttons
+            selectFilterById(id);
         }
     } 
+}
+
+const selectFilterById = async (id) => {
+    await selectFilter(user.id, id);
+    router.push("/");
 }
 
 // function to close opened options on filter if 
