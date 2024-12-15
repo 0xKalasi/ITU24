@@ -90,7 +90,7 @@ const DateColor = computed(() => {
   margin-top: 10px;
   width: 250px;
   margin-left: auto;
-  background: linear-gradient(to top, aquamarine, rgb(47, 131, 96));
+  background: rgb(0, 185, 124);
   color: black;
 }
 
