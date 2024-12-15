@@ -1,3 +1,5 @@
+/* Ondřej Šatinský, xsatin03 */
+
 import { supabase } from "./supabase";
 
 export const getCookTimers = async ( cook_state_id ) => {

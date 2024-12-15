@@ -1,3 +1,4 @@
+<!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 import { ref, onMounted } from 'vue'
 

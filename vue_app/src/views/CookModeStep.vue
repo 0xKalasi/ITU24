@@ -1,3 +1,4 @@
+<!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 import { ref, useTemplateRef } from "vue";
 import {

@@ -1,3 +1,4 @@
+<!-- Ondřej Šatinský, xsatin03 -->
 <script setup>
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
