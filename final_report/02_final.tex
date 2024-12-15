@@ -116,6 +116,11 @@ Bohužel se nepodařilo implementovat veškerou kýženou funkcionalitu, přesn�
         jsou na stahování zpráv upozorněni načítáním)
     \item Při vytváření receptu není možné přidat časovače k jednotlivým krokům.
     \item Při vložení obrázku k receptu anebo jejich krokům se neuloží
+    \item Přepočítávní ingrediencí podle porcí
+    \item Zadávání nutričních dat (původní myšlenka se ukázala jako velmi nepraktická,
+        uživatelé mohou sami nutriční data zadat jen velmi těžko a jejich automatické
+        generování by bylo na implementaci své logiky extrémně náročné)
+    \item Vyhledávaní receptů podle vybraného filtru.
     \item \todo
 \end{itemize}
 
@@ -130,7 +135,7 @@ interaktivního režimu vaření nebo možnosti sdílení na stránku receptu.
 
 Pro úplnost zde uvádíme rozdělení, jak bylo původně zamýšleno, a jak jsme se jej drželi:
 \begin{itemize}
-    \item \textbf{Tomáš B.}\,--\,Komplexní vyhledávání, ukládání a hodnocení cizích receptů.
+    \item \textbf{Tomáš B.}\,--\,Správa filtrů, vyhledávání v receptech, zobrazení receptu - jeho uložení a propojení na ostatní části aplikace. 
     \item \textbf{Martin}\,--\,Správa uživatelských profilů, konverzací, skupin a sdílení receptů.
     \item \textbf{Ondřej}\,--\,Interaktivní režim s~ukládáním stavu a časovači.
     \item \textbf{Tomáš T.}\,--\,Kompletní správa receptů: jejich tvorba, úprava a mazání.
@@ -151,7 +156,8 @@ V následujících podsekcích jsou uvedeny podrobnosti o zpracování jednotliv
 
 
 \subsection{Část Tomáše B.}
-\todo
+
+Implementace mojí části aplikace se nacházi 
 
 \subsection{Část Martina}
 Jak bylo uvedeno, implementovány byly skupinové a osobní chaty s možností sdílené nejen zpráv, ale i receptů.
@@ -476,7 +482,12 @@ patří k mé generaci. \\
 
 \subsection{Shrnutí testování a ponaučení}
 
-\todo
+Naši uživatelé byli všeobecně spokojeni s použitím aplikace. Ačkoli starší uživatelé zprvu nevěděli,
+jak ji přesně používat, záhy na to přišli a byli schopni ji snadno použít. Mladší uživatelé
+si počínali velmi dobře a aplikaci používali hned bez problémů.
+
+Testováním zjištěné nedostatky byly do velké míry doplněny, a tak byla aplikace učiněna
+ještě uživatelsky přívětivější.
 
 \end{document}
 
