@@ -1,18 +1,5 @@
 import { supabase } from "./supabase";
 
-// set Array to null, if there isnt any
-var recipeDataObj = {
-    name: String,
-    userId: Number,
-    isPrivate: Boolean,
-    portions: Number,
-    timeToCook: Number,
-    steps: Array,           // steps[{number, text, timers[], recipeId},{},{}] ... timers[{description, stepRecipeId, stepNumber, timeInSeconds}, {}, {}]
-    ingredients: Array,     // ingredients[{name, notes, unit, quantity, recipeId},{},{}]
-    utencils: Array,
-    alergens: Array,        // alergens[1, 4, 7]
-    categories: Array,      // categories[1, 6, 12]
-};
 // Function to insert into the Recipe table
 async function insertRecipe(recipeData) {
     const { data, error } = await supabase
@@ -90,24 +77,6 @@ async function insertRecipe(recipeData) {
     return true;
   }
   
-  // Function to insert into Timer table
-  async function insertTimers(recipeId, timers) {
-    const { data, error } = await supabase
-      .from('Timer')
-      .insert(timers.map(timer => ({
-        step_recipe: recipeId,
-        step_number: timer.step_number,
-        description: timer.description,
-        time: timer.time
-      })));
-  
-    if (error) {
-      console.error('Error inserting timers:', error);
-      return false;
-    }
-    return true;
-  }
-  
   // Function to insert into Utencils table
   async function insertUtencils(recipeId, utencils) {
     const { data, error } = await supabase
@@ -148,8 +117,14 @@ async function insertRecipe(recipeData) {
     try {
       // Insert the recipe data and get the recipe ID
       const recipeId = await insertRecipe(recipeData);
-      if (!recipeId) return false; // If recipe insertion fails, stop
-      var alergenInserted = true, categoriesInserted = true, stepsInserted = true, timersInserted = true, utencilsInserted = true, ingredientsInserted = true;
+      if (!recipeId) return false;
+
+      var alergenInserted = true, 
+        categoriesInserted = true, 
+        stepsInserted = true, 
+        utencilsInserted = true, 
+        ingredientsInserted = true;
+
       // Insert related tables
       if(recipeData.RecipeAlergens){
         alergenInserted = await insertRecipeAlergens(recipeId, recipeData.RecipeAlergens);
@@ -159,9 +134,6 @@ async function insertRecipe(recipeData) {
       }
       if(recipeData.Step){
         stepsInserted = await insertSteps(recipeId, recipeData.Step);
-      }
-      if(recipeData.timers){ 
-        timersInserted = await insertTimers(recipeId, recipeData.timers);
       }
       if(recipeData.Utencils){
         utencilsInserted = await insertUtencils(recipeId, recipeData.Utencils);
@@ -174,7 +146,6 @@ async function insertRecipe(recipeData) {
         alergenInserted &&
         categoriesInserted &&
         stepsInserted &&
-        timersInserted &&
         utencilsInserted &&
         ingredientsInserted
       ) {
@@ -203,30 +174,14 @@ async function insertRecipe(recipeData) {
       return 1;
     }
   }
-
-  async function updateRecipe(Recipe) {
-    console.log(Recipe.Ingredients);
-    const { data, error } = await supabase
-    .from("Recipe")
-    .update(Recipe)
-    .eq("id", Recipe.id);
-
-    if (error) {
-      console.error("Error updating recipe:", error);
-    } else {
-      console.log("Updated everything aight");
-    }
-  }
   
   export {
     insertRecipe,
     insertRecipeAlergens,
     insertRecipeCategories,
     insertSteps,
-    insertTimers,
     insertUtencils,
     insertIngredients,
     insertCompleteRecipe,
     deleteRecipe,
-    updateRecipe,
   };

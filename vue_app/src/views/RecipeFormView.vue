@@ -6,18 +6,18 @@
   import { insertCompleteRecipe } from '../../utils/add_recipe_api'
   import { updateCompleteRecipe } from '../../utils/update_recipe_api'
   import { useUserStore } from '../stores/userStore';
-  import PhotoUploader from '../components/photoUploader.vue';
-  import TimePicker from '../components/timePicker.vue';
   import { useRouter } from "vue-router";
   import { readPublicRecipe } from "../../utils/api";
   import ToggleSwitch from 'primevue/toggleswitch';
 
+  // custom components
+  import TimePicker from '../components/timePicker.vue';
+  import PhotoUploader from '../components/photoUploader.vue';
   import addUtencils from '../components/addUtencils.vue';
   import addSteps from '../components/addSteps.vue';
   import addIngredient from '../components/addIngredient.vue';
   import alergensPick from '../components/filters/alergensPick.vue';
   import categoriesPick from '../components/filters/categoriesPick.vue';
-  import { readFilterAlergens } from '../../utils/api';
   
   const currentUser = useUserStore();
   const router = useRouter();
@@ -28,6 +28,13 @@
   const alertText = ref("");
   const recipeId = router.currentRoute.value.params.recipe_id;
   const isLoading = ref(true);
+
+  let delete_recipe = false;
+
+  // fullscreen image for the recipe image
+  const isFullImage = ref(false);
+  // Reference for file input
+  const fileInput = ref(null);
   
   const recipe = recipeId ? ref({}) : ref({
     name: "",
@@ -49,14 +56,15 @@
   
   const checked= ref();
 
-  // Alert utilities
+  // Show alert message
   function showAlertMessage(type, text) {
     alertType.value = type;
     alertText.value = text;
     showAlert.value = true;
     alertKey.value++;
-    }
+  }
 
+    // Reading of initial data when in edit mode
   onBeforeMount(async () => {
     if(recipeId){
       readPublicRecipe(recipeId).then(async (result) => {
@@ -81,96 +89,87 @@
     window.scrollTo(0, 0);
   }) 
 
-    var delete_recipe = false;
-    async function cancelEditing(){
-        if (!delete_recipe){
-          showAlertMessage("warn","Naozaj chcete smazat vaše úpravy?");
-          delete_recipe = true;
-        } else {
-            //await deleteRecipe(recipe);
-            if(recipeId){
-              router.replace(`/recipe/public/${recipe.value.id}`)
-            }
-            else {
-              router.replace(`/recipes`)
-            }
-
-        }
-
-    }
-
-    // Functions for handling edits
-    function updateRecipeLocal() {
-    if (recipe.value.name) {
-        console.log("Before update");
-        console.log(recipe.value);
-        updateCompleteRecipe(recipe.value)
-        .then(() => {
-            showAlertMessage("success", "Recept úspešne uložen!");
-            router.replace(`/recipe/public/${recipe.value.id}`);
-        })
-    } else {
-        showAlertMessage("error", "Název receptu nesmí být prázdný.");
-      }
-    }
-
-    function createRecipe(){
-      if(recipe.value.name != "") {
-        if(recipeId){
-          recipe.value.name = recipe.value.name + " (kopie)";
-        }
-        insertCompleteRecipe(recipe.value)
-        .then(() => {
-            showAlertMessage("success", "Recept úspešne vytvořen!");
-            router.replace("/recipes");
-        })
-        
+  async function cancelEditing(){
+      if (!delete_recipe){
+        showAlertMessage("warn","Naozaj chcete smazat vaše úpravy?");
+        delete_recipe = true;
       } else {
-        showAlertMessage("error", "Není možné vytvořit recept bez jména");
+          if(recipeId){
+            router.replace(`/recipes`)
+          }
+          else {
+            router.replace(`/recipes`)
+          }
+
       }
-    }
 
-    function setPublic() {
-      recipe.value.private = !recipe.value.private;
-      checked.value = recipe.value.private; // Ensure the switch reflects the change
-      console.log("Recipe private status:", recipe.value.private ? "Private" : "Public");
-    }
-
-    
-    // Full-screen view state
-const isFullImage = ref(false);
-const toggleFullImage = () => {
-  isFullImage.value = !isFullImage.value;
-};
-
-// Reference for file input
-const fileInput = ref(null);
-
-// Trigger the hidden file input for editing an existing photo
-const triggerFileInput = () => {
-  fileInput.value.click();
-};
-
-// Handle the file change for editing the photo
-const handleFileEdit = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      recipe.value.photo = reader.result; // Update the photo
-    };
-    reader.readAsDataURL(file);
   }
-};
 
-// Delete the photo
-const deleteRecipePhoto = () => {
-  recipe.value.photo = ''; // Clear the photo
-};
-  </script>
+  // Functions for handling edits
+  function updateRecipeLocal() {
+  if (recipe.value.name) {
+      updateCompleteRecipe(recipe.value)
+      .then(() => {
+          showAlertMessage("success", "Recept úspešne uložen!");
+          router.replace(`/recipe/public/${recipe.value.id}`);
+      })
+  } else {
+      showAlertMessage("error", "Název receptu nesmí být prázdný.");
+    }
+  }
+
+  function createRecipe(){
+    if(recipe.value.name != "") {
+      if(recipeId){
+        recipe.value.name = recipe.value.name + " (kopie)";
+      }
+      insertCompleteRecipe(recipe.value)
+      .then(() => {
+          showAlertMessage("success", "Recept úspešne vytvořen!");
+          router.replace("/recipes");
+      })
+      
+    } else {
+      showAlertMessage("error", "Není možné vytvořit recept bez jména");
+    }
+  }
+
+  function setPublic() {
+    recipe.value.private = !recipe.value.private;
+    checked.value = recipe.value.private;
+    console.log("Recipe private status:", recipe.value.private ? "Private" : "Public");
+  }
+
+  // Full-screen view state
+  const toggleFullImage = () => {
+    isFullImage.value = !isFullImage.value;
+  };
+
+  // Trigger the hidden file input for editing an existing photo
+  const triggerFileInput = () => {
+    fileInput.value.click();
+  };
+
+  // Handle the file change for editing the photo
+  const handleFileEdit = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        recipe.value.photo = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Delete the photo
+  const deleteRecipePhoto = () => {
+    recipe.value.photo = '';
+  };
+</script>
 
 <template>
-  <!-- Aert component for showing alerts use the fucntion showAlertMessage -->
+  <!-- Alert component for showing alerts use the fucntion showAlertMessage -->
   <Alert v-if="showAlert" :type="alertType" :text="alertText" :key="alertKey"></Alert>
 
   <!-- If loading the recipe from database wait for it to load -->
@@ -222,7 +221,7 @@ const deleteRecipePhoto = () => {
 
     <!-- Title TextArea Input -->
     <div class="p-field p-d-flex p-ai-center p-mb-3 title-container in-one-row">
-      <!-- <h2>Název</h2> -->
+
       <Textarea
       id="title"
       placeholder="Vložte název pro váš recept!"
@@ -307,143 +306,139 @@ const deleteRecipePhoto = () => {
 </template>
 
 <style scoped>
-.title-container {
-  display: flex;
-  align-items: center; 
-  justify-content: space-between; 
-}
+  .title-container {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+  }
 
-.title-textarea {
-  width: 100%; 
-  font-size: 1rem;
-  background-color: #5a5a5a;
-  border: none; 
-  border-radius: 5px;
-  resize: none; 
-  padding: 10px;
-  color: #fff;
-  overflow: hidden; 
-  line-height: 1.5;
-}
+  .title-textarea {
+    width: 100%; 
+    font-size: 1rem;
+    background-color: #5a5a5a;
+    border: none; 
+    border-radius: 5px;
+    resize: none; 
+    padding: 10px;
+    color: #fff;
+    overflow: hidden; 
+    line-height: 1.5;
+  }
 
-.image-container {
-  position: relative; 
-  width: 100%; 
-  max-height: 100px; 
-}
+  .image-container {
+    position: relative; 
+    width: 100%; 
+    max-height: 100px; 
+  }
 
-/* Image preview */
-.image-preview {
-  width: 100%; 
-  max-height: 100px; 
-  object-fit: cover;
-  border-radius: 5px;
-}
+  .image-preview {
+    width: 100%; 
+    max-height: 100px; 
+    object-fit: cover;
+    border-radius: 5px;
+  }
 
-.full-image-overlay {
-  position: fixed; 
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000; 
-  cursor: pointer; 
-}
-.in-one-row {
-  display: flex;
-  align-items: center;
-}
+  .full-image-overlay {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; 
+    cursor: pointer; 
+  }
 
-/* Full-Screen Image */
-.full-image {
-  max-width: 90%; 
-  max-height: 90%;
-  object-fit: contain; 
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
+  .in-one-row {
+    display: flex;
+    align-items: center;
+  }
 
-/* Delete button positioned at the top-right corner */
-.delete-photo-button {
-  position: absolute; 
-  top: 5px; 
-  right: 5px; 
-  padding: 5px; 
-  width: 30px; 
-  height: 30px; 
-  border-radius: 50%; 
-  display: flex; 
-  align-items: center;
-  justify-content: center; 
-  font-size: 1rem;
-  z-index: 10;
-}
+  .full-image {
+    max-width: 90%; 
+    max-height: 90%;
+    object-fit: contain; 
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
 
-/* Edit button positioned below the delete button */
-.edit-photo-button {
-  position: absolute; 
-  top: 45px; 
-  right: 5px; 
-  padding: 5px; 
-  width: 30px; 
-  height: 30px; 
-  border-radius: 50%; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  font-size: 1rem; 
-  z-index: 10; 
-}
+  .delete-photo-button {
+    position: absolute; 
+    top: 5px; 
+    right: 5px; 
+    padding: 5px; 
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    font-size: 1rem;
+    z-index: 10;
+  }
 
-h2 {
-  position: relative;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.5rem; 
-}
+  .edit-photo-button {
+    position: absolute; 
+    top: 45px; 
+    right: 5px; 
+    padding: 5px; 
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1rem; 
+    z-index: 10; 
+  }
 
-h2::after {
-  content: ""; 
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 2px; 
-  background-color: #ccc; 
-  border-radius: 2px; 
-}
+  h2 {
+    position: relative;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem; 
+  }
 
-/* General Info Section Styling */
-.general-info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+  /* white line for better visibiality */
+  h2::after {
+    content: ""; 
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px; 
+    background-color: #ccc; 
+    border-radius: 2px; 
+  }
 
-.info-row {
-  display: flex;
-  gap: 0.5rem; 
-}
+  .general-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-.input-wrapper {
-  width: 100%; 
-}
+  .info-row {
+    display: flex;
+    gap: 0.5rem; 
+  }
 
-.info-row h3 {
-  margin: 0;
-  font-size: 1rem; 
-}
+  .input-wrapper {
+    width: 100%; 
+  }
 
-.wide-button {
-  margin-top: 0.5rem;  
+  .info-row h3 {
+    margin: 0;
+  }
+
+  .wide-button {
+    margin-top: 0.5rem;  
     min-width: 120px;
     font-size: 1rem;
     margin-right: 2rem;
     text-align: center;
-}
+  }
 
 </style>

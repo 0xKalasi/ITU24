@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import { insertIngredients, insertRecipeAlergens, insertRecipeCategories, insertSteps, insertTimers, insertUtencils } from "./add_recipe_api";
+import { insertIngredients, insertRecipeAlergens, insertRecipeCategories, insertSteps, insertUtencils } from "./add_recipe_api";
 
 // Function to update the Recipe table
 async function updateRecipe(recipeData) {
@@ -20,7 +20,7 @@ async function updateRecipe(recipeData) {
       console.error('Error updating recipe:', error);
       return false;
     }
-    return true; // Successfully updated
+    return true;
   }
   
   // Function to update RecipeAlergens table
@@ -74,23 +74,6 @@ async function updateRecipe(recipeData) {
     return await insertSteps(recipeId, steps);
   }
   
-  // Function to update Timers table
-  async function updateTimers(recipeId, timers) {
-    // Clear existing timers
-    const { error: deleteError } = await supabase
-      .from('Timer')
-      .delete()
-      .eq('step_recipe', recipeId);
-  
-    if (deleteError) {
-      console.error('Error deleting timers:', deleteError);
-      return false;
-    }
-  
-    // Insert new timers
-    return await insertTimers(recipeId, timers);
-  }
-  
   // Function to update Utencils table
   async function updateUtencils(recipeId, utencils) {
     // Clear existing utencils
@@ -135,7 +118,6 @@ async function updateRecipe(recipeData) {
       let alergensUpdated = true,
         categoriesUpdated = true,
         stepsUpdated = true,
-        timersUpdated = true,
         utencilsUpdated = true,
         ingredientsUpdated = true;
   
@@ -149,9 +131,6 @@ async function updateRecipe(recipeData) {
       if (recipeData.Step) {
         stepsUpdated = await updateSteps(recipeData.id, recipeData.Step);
       }
-      if (recipeData.Timers) {
-        timersUpdated = await updateTimers(recipeData.id, recipeData.Timers);
-      }
       if (recipeData.Utencils) {
         utencilsUpdated = await updateUtencils(recipeData.id, recipeData.Utencils);
       }
@@ -163,7 +142,6 @@ async function updateRecipe(recipeData) {
         alergensUpdated &&
         categoriesUpdated &&
         stepsUpdated &&
-        timersUpdated &&
         utencilsUpdated &&
         ingredientsUpdated
       ) {

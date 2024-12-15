@@ -1,46 +1,51 @@
 <script setup>
-import { ref, onBeforeMount } from "vue";
-import PhotoUploader from "./photoUploader.vue";
+    import { ref, onBeforeMount } from "vue";
+    import PhotoUploader from "./photoUploader.vue";
 
-const steps = defineModel();
-// Step data
-const newStep = ref({ number: 1, text: "", name: "Krok 1", photo: "", name_was_edited: false});
-const editedStep = ref({ number: 0, text: "", name: "", photo: "", name_was_edited: false });
-const editingStepIndex = ref(null);
+     // Aray which is propagated out of the component
+    const steps = defineModel();
+    // Step data
+    const newStep = ref({ number: 1, text: "", name: "Krok 1", photo: "", name_was_edited: false});
+    const editedStep = ref({ number: 0, text: "", name: "", photo: "", name_was_edited: false });
+    const editingStepIndex = ref(null);
 
+    // Dragging logic
+    const draggedStep = ref(null);
+    const draggingIndex = ref(null);
 
-// Update step numbers after adding or deleting a step
-function updateStepNumbers() {
-    steps.value.forEach((step, idx) => {
-        step.number = idx + 1;
-        if(!step.name_was_edited){
-          step.name = "Krok " + step.number;
-        }
-        //console.log(step);
-    });
-    newStep.value.number = steps.value.length + 1; // Next step number
-    newStep.value.name = "Krok " + newStep.value.number;
-};
-
-onBeforeMount(async () => {
-    updateStepNumbers();
-  }) 
-
-// Add new step
-function PushStep() {
-    console.log(newStep.value.name);
-    if(newStep.value.name === ""){
+    const temporarySteps = ref({});
+    // Update step numbers 
+    function updateStepNumbers() {
+        steps.value.forEach((step, idx) => {
+            step.number = idx + 1;
+            if(!step.name_was_edited){
+            step.name = "Krok " + step.number;
+            }
+        });
+        newStep.value.number = steps.value.length + 1;
         newStep.value.name = "Krok " + newStep.value.number;
-        newStep.value.name_was_edited = false;
-    }
-    steps.value.push({ ...newStep.value }); // Push the step into the recipe
-    newStep.value.number++; // Increment the step number
-    newStep.value = { 
-        number: newStep.value.number, // Retain the number for the next step
-        text: "", 
-        name: "Krok " + newStep.value.number, 
-        photo: ""
-      }; // Reset newStep
+    };
+
+    onBeforeMount(async () => {
+        updateStepNumbers();
+    }) 
+
+    // Add new step
+    function PushStep() {
+        console.log(newStep.value.name);
+        if(newStep.value.name === ""){
+            newStep.value.name = "Krok " + newStep.value.number;
+            newStep.value.name_was_edited = false;
+        }
+        steps.value.push({ ...newStep.value });
+        newStep.value.number++;
+        // Reset newStep to initial values
+        newStep.value = { 
+            number: newStep.value.number,
+            text: "", 
+            name: "Krok " + newStep.value.number, 
+            photo: ""
+        }; 
     }
 
     // Edit step
@@ -51,18 +56,10 @@ function PushStep() {
 
     // Delete step
     function deleteStep(index) {
-    // Get the number of the step being deleted
     const deletedStepNumber = steps.value[index].number;
-
-    // Remove the step at the specified index
     steps.value.splice(index, 1);
-
-    // Update the numbers and names of remaining steps
     updateStepNumbers();
-
-    // Optionally log the number of the deleted step
-    console.log(`Deleted step number: ${deletedStepNumber}`);
-  }
+    }
 
     // Save edited step
     function saveStep(index) {
@@ -72,89 +69,73 @@ function PushStep() {
       editedStep.value = { number: 1, text: "", name: "", photo: "" };
     }
 
-    // Cancel step edit
-    function cancelStepEdit() {
-      editingStepIndex.value = null;
-      editedStep.value = { number: 1, text: "", name: "", photo: "" };
-    }
-    
-// Dragging logic
-const draggedStep = ref(null);
-const draggingIndex = ref(null); // To track the index being dragged
+    // Start dragging
+    function handleDragStart(event, index) {
+        if(!editingStepIndex.value){
+            draggedStep.value = index;
+            draggingIndex.value = index;
+            event.dataTransfer.effectAllowed = "move";
+        }
 
-// Start dragging
-function handleDragStart(event, index) {
-    if(!editingStepIndex.value){
-        draggedStep.value = index;
-        draggingIndex.value = index; // Set the index for styling
-        event.dataTransfer.effectAllowed = "move";
     }
 
-}
-
-// Allow dropping
-function handleDragOver(event) {
-    event.preventDefault(); // Necessary for drop to work
-    event.dataTransfer.dropEffect = "move";
-}
-
-// Handle dropping
-function handleDrop(event, index) {
-    event.preventDefault();
-    if (draggedStep.value !== null && draggedStep.value !== index) {
-        const step = steps.value.splice(draggedStep.value, 1)[0]; // Remove dragged step
-        steps.value.splice(index, 0, step); // Insert step at new position
-        updateStepNumbers(); // Recalculate step numbers
+    // Allow dropping
+    function handleDragOver(event) {
+        event.preventDefault(); 
+        event.dataTransfer.dropEffect = "move";
     }
-    draggedStep.value = null;
-    draggingIndex.value = null; // Reset after drop
-}
 
-// Cancel dragging
-function handleDragEnd() {
-    draggedStep.value = null;
-    draggingIndex.value = null; // Reset after drag ends
-}
+    // Handle dropping
+    function handleDrop(event, index) {
+        event.preventDefault();
+        if (draggedStep.value !== null && draggedStep.value !== index) {
+            const step = steps.value.splice(draggedStep.value, 1)[0];
+            steps.value.splice(index, 0, step);
 
-// Function to delete the photo in editing mode
-function deletePhoto(mode) {
-    if (mode === "new") {
-        newStep.value.photo = ""; // Clear the photo for the new step
-    } else if (mode === "edit") {
-        editedStep.value.photo = ""; // Clear the photo for the editing step
+            updateStepNumbers();
+        }
+        draggedStep.value = null;
+        draggingIndex.value = null;
     }
-}
 
-const temporarySteps = ref({}); // Track temporary inputs for "add between" fields
-
-// Add step between function
-function addStepBetween(index) {
-    if (!temporarySteps.value[index]) {
-        temporarySteps.value[index] = {
-            number: steps.value[index].number + 1,
-            name: "Krok " + (steps.value[index].number + 1),
-            text: "",
-            photo: "",
-            isVisible: true,
-            name_was_edited: false,
-        };
+    // Cancel dragging
+    function handleDragEnd() {
+        draggedStep.value = null;
+        draggingIndex.value = null;
     }
-};
 
-// Finalize the temporary step
-function finalizeStepBetween(index){
-    const tempStep = temporarySteps.value[index];
-    if (tempStep && tempStep.name.trim() !== "" && tempStep.text.trim() !== "") {
-        steps.value.splice(index + 1, 0, { ...tempStep });
-        delete temporarySteps.value[index]; // Clear temporary step
-        updateStepNumbers();
+    // Function to delete the photo in both editing mode and new mode
+    function deletePhoto(mode) {
+        if (mode === "new") {
+            newStep.value.photo = "";
+        } else if (mode === "edit") {
+            editedStep.value.photo = "";
+        }
     }
-};
 
-// Cancel editing and remove temporary step
-function cancelStepBetween (index) {
-    delete temporarySteps.value[index];
-};
+    // Add step between function
+    function addStepBetween(index) {
+        if (!temporarySteps.value[index]) {
+            temporarySteps.value[index] = {
+                number: steps.value[index].number + 1,
+                name: "Krok " + (steps.value[index].number + 1),
+                text: "",
+                photo: "",
+                isVisible: true,
+                name_was_edited: false,
+            };
+        }
+    };
+
+    // Finalize the temporary step
+    function finalizeStepBetween(index){
+        const tempStep = temporarySteps.value[index];
+        if (tempStep && tempStep.name.trim() !== "" && tempStep.text.trim() !== "") {
+            steps.value.splice(index + 1, 0, { ...tempStep });
+            delete temporarySteps.value[index];
+            updateStepNumbers();
+        }
+    };
 </script>
 
 <template>
@@ -305,137 +286,133 @@ function cancelStepBetween (index) {
 
 
 <style scoped>
-.step-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-}
+    .step-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
 
-.step-name-input {
-    width: 100%;
-    font-size: 1.2rem;
-    padding: 0.5rem;
-}
+    .step-name-input {
+        width: 100%;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+    }
 
-.step-input-row {
-    display: flex;
-    width: 100%;
-    gap: 1rem;
-    align-items: flex-start;
-}
+    .step-input-row {
+        display: flex;
+        width: 100%;
+        gap: 1rem;
+        align-items: flex-start;
+    }
 
-.step-textarea {
-    flex: 2;
-    font-size: 1rem;
-    padding: 0.5rem;
-    resize: none;
-}
+    .step-textarea {
+        flex: 2;
+        font-size: 1rem;
+        padding: 0.5rem;
+        resize: none;
+    }
 
-.image-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
+    .image-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-.image-wrapper {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .image-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.image-preview {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+    .image-preview {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-.delete-photo-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .delete-photo-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.steps-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
+    .steps-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
 
-.step-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    transition: box-shadow 0.3s ease;
-}
+    .step-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        transition: box-shadow 0.3s ease;
+    }
 
-.step-display {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+    .step-item:hover {
+        background-color: rgb(42, 42, 42);
+    }
 
-.step-name {
-    font-weight: bold;
-    font-size: 1.4rem;
-    overflow: scroll;
-    white-space: nowrap;
-    max-width: 300px;
-}
+    .step-display {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 
-.step-text {
-    font-size: 1rem;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    line-height: 1.5;
-    max-width: 300px;
-}
+    .step-name {
+        font-weight: bold;
+        font-size: 1.4rem;
+        overflow: scroll;
+        white-space: nowrap;
+        max-width: 300px;
+    }
 
-.step-actions {
-    display: flex;
-    gap: 0.5rem;
-}
+    .step-text {
+        font-size: 1rem;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        line-height: 1.5;
+        max-width: 300px;
+    }
 
-.button-wrapper {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-start;
-}
+    .button-wrapper {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-start;
+    }
 
-.wide-button {
-    margin-top: 0.5rem;  
-    min-width: 120px;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    text-align: center;
-}
+    .wide-button {
+        margin-top: 0.5rem;  
+        min-width: 120px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        text-align: center;
+    }
 
-.draggable-icon {
-    cursor: grab;
-    margin-right: 0.5rem;
-    color: #888;
-    font-size: 1.2rem;
-    vertical-align: middle;
-}
+    .draggable-icon {
+        cursor: grab;
+        margin-right: 0.5rem;
+        color: #888;
+        font-size: 1.2rem;
+        vertical-align: middle;
+    }
 
-.draggable-icon:hover {
-    color: #333;
-}
 </style>
