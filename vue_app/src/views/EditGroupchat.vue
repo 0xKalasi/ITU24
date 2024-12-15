@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, onBeforeMount } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -31,8 +31,6 @@ const members = ref([]);
 
 let memberChanges;
 onMounted(async () => {
-  members.value = await readGroupchatMembers(currentGroup.id);
-
   memberChanges = await createSubscription("*", "GroupchatMembers", async () => {
     members.value = await readGroupchatMembers(currentGroup.id);
   });
@@ -46,6 +44,23 @@ const isCreator = (currentUser.id == currentGroup.creator) ? true : false;
 const groupName = ref(currentGroup.name);
 
 
+const isLoading = ref(false);
+
+const InitialLoad = async () => {
+  isLoading.value = true;
+
+  readGroupchatMembers(currentGroup.id)
+  .then(async (result) => {
+    members.value = result;
+    isLoading.value = false;
+  });
+}
+
+onBeforeMount(async () => {
+  await InitialLoad();
+});
+
+
 // Alert detection:
 const nameChanged = ref(false);
 const nameChangedKey = ref(0);
@@ -54,6 +69,8 @@ const userRemovedKey = ref(0);
 
 
 const isInvalid = ref(false);
+
+
 
 const Rename = async () => {
   if (groupName.value != "") {
@@ -217,27 +234,34 @@ const DeleteGroupchat = async () => {
 
       <Divider></Divider>
 
-      <div
-        v-for="member in members"
-        style="margin-top: 10px">
+      <div v-if="isLoading" style="display: flex; justify-content: center;">
+        <i class="pi pi-spin pi-th-large" style="font-size: 2rem; padding: 30px"></i>
+      </div>
 
-        <div style="margin-bottom: 10px; display: flex; align-items: center;">
-          -> {{ member.name }}
+      <div v-else>
+        <div
+          v-for="member in members"
+          style="margin-top: 10px">
 
-          <div style="display: flex; flex: 1; justify-content: end;">
-            <Button
-              v-if="member.id != currentUser.id"
-              icon="pi pi-minus"
-              style="background: crimson; border: 1px solid crimson;"
-              @click="RemoveUser(member.id)">
-            </Button>
-            <Button
-              v-else
-              severity="secondary"
-              label="Tvůrce"
-              style="pointer-events: none;">
-            </Button>
+          <div style="margin-bottom: 10px; display: flex; align-items: center;">
+            -> {{ member.name }}
+
+            <div style="display: flex; flex: 1; justify-content: end;">
+              <Button
+                v-if="member.id != currentUser.id"
+                icon="pi pi-minus"
+                style="background: crimson; border: 1px solid crimson;"
+                @click="RemoveUser(member.id)">
+              </Button>
+              <Button
+                v-else
+                severity="secondary"
+                label="Tvůrce"
+                style="pointer-events: none;">
+              </Button>
+            </div>
           </div>
+
         </div>
 
       </div>

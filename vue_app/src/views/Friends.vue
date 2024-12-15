@@ -1,7 +1,7 @@
 <!-- Martin Jabůrek, xjabur02 -->
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, computed, onMounted, onUnmounted, onBeforeMount, nextTick } from "vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -22,18 +22,9 @@ const blockedUsers = ref([]);
 const groupchats = ref([]);
 
 let friendListChanges;
-//let friendRequestChanges;
-//let blockedUsersChanges;
 let groupsChanges;
 onMounted(async () => {
-  friends.value = await readUsersFriends(currentUser.id);
-  friendRequests.value = await readUsersRequests(currentUser.id);
-  blockedUsers.value = await readUsersBlocked(currentUser.id);
-  groupchats.value = await readUsersGroupchats(currentUser.id);
-
-  await ConstructChatList();
-
-  // Update every time the relation changes
+  // Update every time the relations change
   friendListChanges = await createSubscription("*", "FriendStatus", async () => {
     friends.value = await readUsersFriends(currentUser.id);
     friendRequests.value = await readUsersRequests(currentUser.id);
@@ -51,8 +42,6 @@ onMounted(async () => {
 });
 onUnmounted(async () => {
   await removeSubscription(friendListChanges);
-  //await removeSubscription(friendRequestChanges);
-  //await removeSubscription(blockedUsersChanges);
   await removeSubscription(groupsChanges);
 });
 
@@ -73,6 +62,31 @@ const ConstructChatList = async () => {
 
   chats.value.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
 }
+
+
+const isLoading = ref(false);
+
+const LoadAllData = async () => {
+  friends.value = await readUsersFriends(currentUser.id);
+  friendRequests.value = await readUsersRequests(currentUser.id);
+  blockedUsers.value = await readUsersBlocked(currentUser.id);
+  groupchats.value = await readUsersGroupchats(currentUser.id);
+
+  await ConstructChatList();
+}
+
+const InitialLoad = async () => {
+  isLoading.value = true;
+
+  LoadAllData()
+  .then(async (result) => {
+    isLoading.value = false;
+  });
+}
+
+onBeforeMount(async () => {
+  await InitialLoad();
+});
 
 
 const CreateGroupchat = ref(false);
@@ -129,6 +143,7 @@ const ToggleMenu = (event) => {
   menu.value.toggle(event);
 }
 
+
 </script>
 
 
@@ -174,16 +189,25 @@ const ToggleMenu = (event) => {
    v-if="selected.option == Options.REQUESTS"
    class="entries">
     
-    <div
-      v-if="friendRequests.length == 0"
-      class="empty-notif">
-      Nemáte žádné žádosti o přátelství.
+    <div v-if="isLoading">
+      <div style="display: flex; justify-content: center;">
+        <i class="pi pi-spin pi-th-large" style="font-size: 2rem; position: absolute; margin-top: 70%;"></i>
+      </div>
     </div>
 
     <div v-else>
-      <div v-for="request in friendRequests">
-        <FriendRequest :friend="request"></FriendRequest>
+      <div
+        v-if="friendRequests.length == 0"
+        class="empty-notif">
+        Nemáte žádné žádosti o přátelství.
       </div>
+
+      <div v-else>
+        <div v-for="request in friendRequests">
+          <FriendRequest :friend="request"></FriendRequest>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -194,59 +218,70 @@ const ToggleMenu = (event) => {
     v-if="selected.option == Options.CHATS"
     class="entries">
     
-    <div
-      v-if="chats.length == 0"
-      class="empty-notif">
-      Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
+    <div v-if="isLoading">
+      <div style="display: flex; justify-content: center;">
+        <i class="pi pi-spin pi-th-large" style="font-size: 2rem; position: absolute; margin-top: 70%;"></i>
+      </div>
     </div>
 
     <div v-else>
       <div
-        v-if="CreateGroupchat"
-        style="display: flex; gap: 10px; margin-top: 20px;">
-
-        <div>
-          <InputText
-            id="createGroupText"
-            v-model="newGroupName"
-            size="large"
-            placeholder="Nová skupina"
-            :invalid="isInvalid"
-            @input="SetValid"
-            @keydown.enter="CreateNewGroupchat"
-            style="width: calc(320px - 100px - 10px)"> <!-- (width of entry) - (width of buttons) - (width of space in between) -->
-          </InputText>
-          <Message
-            v-if="isInvalid"
-            variant="simple"
-            severity="error"
-            size="small">
-            Není zadáno žádné jméno
-          </Message>
-        </div>
-
-        <ButtonGroup>
-          <Button
-            icon="pi pi-check"
-            raised
-            size="large"
-            @click="CreateNewGroupchat"
-            style="width: 50px">
-          </Button>
-
-          <Button
-            icon="pi pi-times"
-            raised
-            size="large"
-            @click="CancelCreatingGroupchat"
-            style="width: 50px; background: crimson; border: 1px solid crimson;">
-          </Button>
-
-        </ButtonGroup>
+        v-if="chats.length == 0"
+        class="empty-notif">
+        Seznam konverzací je prázdný. Spojte se se svými známými nebo si vytvořte skupinu!
       </div>
 
-      <div v-for="chat in chats">
-        <ChatLink :chatWith="chat"></ChatLink>
+      <div v-else>
+        <div
+          v-if="CreateGroupchat"
+          style="display: flex; gap: 10px; margin-top: 20px;">
+
+          <!-- CREATING NEW GROUP -->
+          
+          <div>
+            <InputText
+              id="createGroupText"
+              v-model="newGroupName"
+              size="large"
+              placeholder="Nová skupina"
+              :invalid="isInvalid"
+              @input="SetValid"
+              @keydown.enter="CreateNewGroupchat"
+              style="width: calc(320px - 100px - 10px)"> <!-- (width of entry) - (width of buttons) - (width of space in between) -->
+            </InputText>
+            <Message
+              v-if="isInvalid"
+              variant="simple"
+              severity="error"
+              size="small">
+              Není zadáno žádné jméno
+            </Message>
+          </div>
+
+          <ButtonGroup>
+            <Button
+              icon="pi pi-check"
+              raised
+              size="large"
+              @click="CreateNewGroupchat"
+              style="width: 50px">
+            </Button>
+
+            <Button
+              icon="pi pi-times"
+              raised
+              size="large"
+              @click="CancelCreatingGroupchat"
+              style="width: 50px; background: crimson; border: 1px solid crimson;">
+            </Button>
+
+          </ButtonGroup>
+        </div>
+
+        <div v-for="chat in chats">
+          <ChatLink :chatWith="chat"></ChatLink>
+        </div>
+
       </div>
 
     </div>
@@ -258,16 +293,26 @@ const ToggleMenu = (event) => {
   <div
     v-if="selected.option == Options.BLOCKED"
     class="entries">
-    <div
-      v-if="blockedUsers.length == 0"
-      class="empty-notif">
-      Seznam zablokovaných uživatelů je prázdný.
-    </div>
 
-    <div v-else>
-      <div v-for="blocked in blockedUsers">
-        <UnblockEntry :blocked="blocked"></UnblockEntry>
+    <div v-if="isLoading">
+      <div style="display: flex; justify-content: center;">
+        <i class="pi pi-spin pi-th-large" style="font-size: 2rem; position: absolute; margin-top: 70%;"></i>
       </div>
+    </div>
+    
+    <div v-else>
+      <div
+        v-if="blockedUsers.length == 0"
+        class="empty-notif">
+        Seznam zablokovaných uživatelů je prázdný.
+      </div>
+
+      <div v-else>
+        <div v-for="blocked in blockedUsers">
+          <UnblockEntry :blocked="blocked"></UnblockEntry>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -275,6 +320,7 @@ const ToggleMenu = (event) => {
   <Divider position="absolute"></Divider>
 
 </template>
+
 
 <style scoped>
 .entries {
