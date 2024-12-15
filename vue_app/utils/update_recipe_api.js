@@ -143,8 +143,8 @@ async function updateRecipe(recipeData) {
       if (recipeData.RecipeAlergens) {
         alergensUpdated = await updateRecipeAlergens(recipeData.id, recipeData.RecipeAlergens);
       }
-      if (recipeData.Categories) {
-        categoriesUpdated = await updateRecipeCategories(recipeData.id, recipeData.Categories);
+      if (recipeData.RecipeCategories) {
+        categoriesUpdated = await updateRecipeCategories(recipeData.id, recipeData.RecipeCategories);
       }
       if (recipeData.Step) {
         stepsUpdated = await updateSteps(recipeData.id, recipeData.Step);

@@ -151,11 +151,11 @@ async function insertRecipe(recipeData) {
       if (!recipeId) return false; // If recipe insertion fails, stop
       var alergenInserted = true, categoriesInserted = true, stepsInserted = true, timersInserted = true, utencilsInserted = true, ingredientsInserted = true;
       // Insert related tables
-      if(recipeData.alergens){
-        alergenInserted = await insertRecipeAlergens(recipeId, recipeData.alergens);
+      if(recipeData.RecipeAlergens){
+        alergenInserted = await insertRecipeAlergens(recipeId, recipeData.RecipeAlergens);
       }
-      if(recipeData.categories){
-        categoriesInserted = await insertRecipeCategories(recipeId, recipeData.categories);
+      if(recipeData.RecipeCategories){
+        categoriesInserted = await insertRecipeCategories(recipeId, recipeData.RecipeCategories);
       }
       if(recipeData.Step){
         stepsInserted = await insertSteps(recipeId, recipeData.Step);

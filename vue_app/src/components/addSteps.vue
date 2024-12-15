@@ -124,6 +124,37 @@ function deletePhoto(mode) {
         editedStep.value.photo = ""; // Clear the photo for the editing step
     }
 }
+
+const temporarySteps = ref({}); // Track temporary inputs for "add between" fields
+
+// Add step between function
+function addStepBetween(index) {
+    if (!temporarySteps.value[index]) {
+        temporarySteps.value[index] = {
+            number: steps.value[index].number + 1,
+            name: "Krok " + (steps.value[index].number + 1),
+            text: "",
+            photo: "",
+            isVisible: true,
+            name_was_edited: false,
+        };
+    }
+};
+
+// Finalize the temporary step
+function finalizeStepBetween(index){
+    const tempStep = temporarySteps.value[index];
+    if (tempStep && tempStep.name.trim() !== "" && tempStep.text.trim() !== "") {
+        steps.value.splice(index + 1, 0, { ...tempStep });
+        delete temporarySteps.value[index]; // Clear temporary step
+        updateStepNumbers();
+    }
+};
+
+// Cancel editing and remove temporary step
+function cancelStepBetween (index) {
+    delete temporarySteps.value[index];
+};
 </script>
 
 <template>
@@ -154,7 +185,7 @@ function deletePhoto(mode) {
                             <Textarea
                                 v-model="editedStep.text"
                                 class="step-textarea"
-                                placeholder="Sem pište vaše kroky"
+                                placeholder="Sem vložte vaše kroky"
                                 rows="3"
                                 autoResize
                             />
@@ -179,7 +210,10 @@ function deletePhoto(mode) {
                 <!-- Display Mode -->
                 <template v-else>
                     <div class="step-display">
-                        <div class="step-name">{{ step.name }}</div>
+                        <div class="step-name">
+                            <i class="pi pi-bars draggable-icon" title="Drag to reorder"></i>
+                            {{ step.name }}
+                        </div>
                         <div class="step-text" :title="step.text">{{ step.text }}</div>
                         <div class="button-wrapper">
                             <Button icon="pi pi-pencil" class="wide-button p-button-outlined" @click="editStep(index, step)" />
@@ -190,6 +224,45 @@ function deletePhoto(mode) {
                         <img :src="step.photo" alt="step-preview" class="image-preview" />
                     </div>
                 </template>
+
+                <div v-if="index < steps.length - 1" class="p-d-flex p-ai-center p-my-2">
+                  <Button
+                      label="Přidat krok mezi jiné kroky"
+                      class="p-button-outlined p-button-secondary"
+                      @click="addStepBetween(index)"
+                  />
+              </div>
+              <!-- Add step inbetween -->
+              <div v-if="temporarySteps[index]?.isVisible" class="temporary-step-container">
+                <div class="step-container">
+            <InputText 
+                v-model="newStep.name" 
+                class="step-name-input"
+                @input="temporarySteps[index].name_was_edited = true" 
+            />
+            <div class="step-input-row">
+                <Textarea
+                    v-model="temporarySteps[index].text"
+                    class="step-textarea"
+                    placeholder="Sem vložte vaše kroky"
+                    rows="3"
+                    autoResize
+                />
+                <div class="image-container">
+                    <div class="image-wrapper" v-if="temporarySteps[index].photo">
+                        <img 
+                            :src="temporarySteps[index].photo" 
+                            alt="new-step-photo" 
+                            class="image-preview" 
+                        />
+                        <button class="delete-photo-btn p-button-danger" @click="deletePhoto('new')">×</button>
+                    </div>
+                    <PhotoUploader v-model="temporarySteps[index].photo" />
+                </div>
+            </div>  
+        </div>
+                  <Button icon="pi pi-check" class="wide-button p-button-outlined" @click="finalizeStepBetween(index)" />
+              </div>
             </div>
         </div>
   
@@ -200,6 +273,7 @@ function deletePhoto(mode) {
                 placeholder="Krok 1" 
                 class="step-name-input"
                 @input="newStep.name_was_edited = true" 
+                @keyup.enter="PushStep"
             />
             <div class="step-input-row">
                 <Textarea
@@ -208,6 +282,7 @@ function deletePhoto(mode) {
                     placeholder="Sem pište vaše kroky"
                     rows="3"
                     autoResize
+                    @keyup.enter="PushStep"
                 />
                 <div class="image-container">
                     <div class="image-wrapper" v-if="newStep.photo">
@@ -216,7 +291,7 @@ function deletePhoto(mode) {
                             alt="new-step-photo" 
                             class="image-preview" 
                         />
-                        <button class="delete-photo-btn p-button-danger" @click="deletePhoto('new')">×</button>
+                        <button class="delete-photo-btn p-button-danger" @click="deletePhoto('new')" />
                     </div>
                     <PhotoUploader v-model="newStep.photo" />
                 </div>
@@ -226,7 +301,7 @@ function deletePhoto(mode) {
             <Button icon="pi pi-plus" class="wide-button p-button-outlined" @click="PushStep" />
         </div>
     </div>
-  </template>
+</template>
 
 
 <style scoped>
@@ -350,5 +425,17 @@ function deletePhoto(mode) {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     text-align: center;
+}
+
+.draggable-icon {
+    cursor: grab;
+    margin-right: 0.5rem;
+    color: #888;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+.draggable-icon:hover {
+    color: #333;
 }
 </style>

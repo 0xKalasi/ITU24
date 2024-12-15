@@ -38,7 +38,7 @@
     portions: 4,
     time_to_cook: 0,
     RecipeAlergens: [],
-    categories: [],
+    RecipeCategories: [],
     Step: [],
     Ingredients: [],
     Utencils: [],
@@ -67,8 +67,12 @@
         aler.push(a.alergen.id);
       }
       recipe.value.RecipeAlergens = aler;
-      console.log("alergens:", aler);
-      console.log("recipe:", recipe.value);
+
+      let cat = [];
+      for(const a of recipe.value.RecipeCategories){
+        cat.push(a.category.id);
+      }
+      recipe.value.RecipeCategories = cat;
     })
     } else {
       isLoading.value = false;
@@ -174,8 +178,8 @@ const deleteRecipePhoto = () => {
 
   <!-- Show the form for creating/editing a recipe -->
   <div v-else>
-    <BasicPageHeader v-if="recipeId" text="Uprav recept"/>
-    <BasicPageHeader v-else text="Vytvoř recept"/>
+    <BasicPageHeader backArrow v-if="recipeId" text="Uprav recept"/>
+    <BasicPageHeader backArrow v-else text="Vytvoř recept"/>
       <div v-if="recipe.photo" class="image-container">
         <img :src="recipe.photo" alt="Preview" class="image-preview" @click="toggleFullImage" />
 
@@ -208,6 +212,14 @@ const deleteRecipePhoto = () => {
         </div>
       </div>
 
+    <div class="flex justify-between items-center px-4">
+      <div v-if="recipeId" class="flex space-x-4">
+        <Button label="Zrušit" class="wide-button p-button-danger" @click='cancelEditing();'></Button>
+        <Button label="Uložit úpravy" class="wide-button p-button-ok" @click='updateRecipeLocal();'></Button>
+        <Button label="Vytvořit jako kopii" class=" wide-button p-button-ok" @click='createRecipe();'></Button>
+      </div>
+    </div>
+
     <!-- Title TextArea Input -->
     <div class="p-field p-d-flex p-ai-center p-mb-3 title-container in-one-row">
       <!-- <h2>Název</h2> -->
@@ -222,13 +234,13 @@ const deleteRecipePhoto = () => {
       <PhotoUploader v-if="!recipe.photo" v-model="recipe.photo" />
     </div>
 
-    <h2>Ingredence</h2>
+    <h2>Ingredience</h2>
     <addIngredient v-model="recipe.Ingredients"/>
 
     <h2>Instrukce</h2>
     <addSteps v-model="recipe.Step"/>
 
-    <h2>Speciální pomúcky</h2>
+    <h2>Speciální náčiní</h2>
     <addUtencils v-model="recipe.Utencils"/>
     
     <div class="general-info-section p-mb-3">
@@ -274,7 +286,7 @@ const deleteRecipePhoto = () => {
     <alergensPick v-model="recipe.RecipeAlergens"></alergensPick>
 
     <h3>Vyberte kategorie</h3>  
-    <categoriesPick v-model="recipe.categories"></categoriesPick>
+    <categoriesPick v-model="recipe.RecipeCategories"></categoriesPick>
  
     </div>
 

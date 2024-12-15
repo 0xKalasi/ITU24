@@ -102,7 +102,9 @@ function handleDragEnd() {
                 <template v-else>
                 <!-- Display Mode -->
                 <div class="ingredient-display">
-                    <div class="ingredient-field ingredient-name">{{ ingredient.name }}</div>
+                    <i class="pi pi-bars draggable-icon" title="Pťesunutím lze zmľnit pořadí"></i>
+                    <div class="ingredient-field ingredient-name">{{ ingredient.name }}
+                    </div>
                     <div class="ingredient-field ingredient-unit">{{ ingredient.quantity }} {{ ingredient.unit }}</div>
                     <div class="ingredient-field ingredient-notes">{{ ingredient.notes }}</div>
                     <div class="ingredient-buttons">
@@ -123,11 +125,11 @@ function handleDragEnd() {
         </div>
 
         <!-- New Ingredient Input -->
-        <MyOnFloatLabel style="flex" label="Název Ingredence" v-model="newIngredient.name" />
+        <MyOnFloatLabel style="flex" label="Název Ingredence" v-model="newIngredient.name" @keyup.enter="PushIngredient"/>
         <div class="in-one-row">
-                <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" />
-                <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" />
-                <MyOnFloatLabel label="Poznámka" v-model="newIngredient.notes" />
+                <MyOnFloatLabel :number="true" label="Množství" v-model="newIngredient.quantity" @keyup.enter="PushIngredient"/>
+                <MyOnFloatLabel label="Jednotka" v-model="newIngredient.unit" @keyup.enter="PushIngredient"/>
+                <MyOnFloatLabel label="Poznámka" v-model="newIngredient.notes" @keyup.enter="PushIngredient"/>
               </div>
               <Button icon="pi pi-plus" class="wide-button p-button-outlined" @click="PushIngredient" />
     </div>
@@ -196,6 +198,18 @@ function handleDragEnd() {
     min-width: 100px;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+}
+
+.draggable-icon {
+    cursor: grab;
+    margin-right: 0.5rem;
+    color: #888;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+.draggable-icon:hover {
+    color: #333;
 }
 </style>
 

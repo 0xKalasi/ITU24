@@ -59,7 +59,7 @@ function cancelEdit() {
     <div v-for="(utencil, index) in utencils" :key="index" class="utencil-row">
       <div class="utencil-name">
         <template v-if="editingIndex === index">
-          <MyOnFloatLabel v-model="editedUtencil" @keyup.enter="saveUtencil(index)" label="Název pomúcky" />
+          <MyOnFloatLabel v-model="editedUtencil" @keyup.enter="saveUtencil(index)" label="Název náčiní" />
         </template>
         <template v-else>
           <div >
@@ -87,7 +87,7 @@ function cancelEdit() {
     </div>
 
     <div>
-      <MyOnFloatLabel v-model="newUtencil" @keyup.enter="PushUtencil" label="Název pomúcky" />
+      <MyOnFloatLabel v-model="newUtencil" @keyup.enter="PushUtencil" label="Název náčiní" />
       <Button 
         icon="pi pi-plus" 
         class="wide-button p-button-outlined" 
